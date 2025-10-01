@@ -35,25 +35,19 @@ internal class Grid2D<T>(T[,] data) : IEnumerable<T>,
 
     public void Map(Grid2DView<T> source, Vec2I position, Rect2DI area)
     {
-        var offsetArea = new Rect2DI()
+        var areaPos = new Vec2I(area.Left, area.Top);
+
+        var move = areaPos - position;
+        
+        var mapArea = new Rect2DI()
         {
-            Left   = area.Left   + position.X,
-            Top    = area.Top    + position.Y,
-            Right  = area.Right  + position.X,
-            Bottom = area.Bottom + position.Y,
+            Left   = move.X,
+            Top    = move.Y,
+            Right  = move.X + Width,
+            Bottom = move.Y = Height,
         };
-
-        if (!offsetArea.Overlaps(0, 0, Width, Height))
-        {
-            return;
-        }
-
-        area.SetToOverlap(offsetArea);
-
-        area.Left   -= position.X;
-        area.Top    -= position.Y;
-        area.Right  -= position.X;
-        area.Bottom -= position.Y;
+        
+        area.SetToOverlap(mapArea);
 
         for (int y = area.Top; y < area.Bottom; y++)
         {
