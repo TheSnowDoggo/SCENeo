@@ -2,7 +2,7 @@
 
 namespace SCENeo;
 
-internal sealed class Grid2DView<T>(Grid2D<T> grid) : IEnumerable<T>,
+public sealed class Grid2DView<T>(Grid2D<T> grid) : IEnumerable<T>,
     ICloneable
 {
     private readonly Grid2D<T> _grid = grid;

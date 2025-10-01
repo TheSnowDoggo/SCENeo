@@ -1,6 +1,6 @@
 ﻿namespace SCENeo;
 
-internal struct Vec2I(int x, int y) : IEquatable<Vec2I>
+public struct Vec2I(int x, int y) : IEquatable<Vec2I>
 {
     public int X = x;
     public int Y = y;
@@ -43,6 +43,6 @@ internal struct Vec2I(int x, int y) : IEquatable<Vec2I>
 
     public readonly override string ToString()
     {
-        return $"{X}, {Y}";
+        return $"{{ {X}, {Y} }}";
     }
 }

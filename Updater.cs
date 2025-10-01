@@ -2,7 +2,7 @@
 
 namespace SCENeo;
 
-internal sealed class Updater
+public sealed class Updater
 {
     private readonly Thread _thread;
 

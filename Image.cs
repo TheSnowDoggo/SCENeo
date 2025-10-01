@@ -1,6 +1,6 @@
 ﻿namespace SCENeo;
 
-internal class Image : Grid2D<Pixel>
+public class Image : Grid2D<Pixel>
 {
     public Image(Pixel[,] data) 
         : base(data)

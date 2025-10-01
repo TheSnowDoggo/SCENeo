@@ -2,7 +2,7 @@
 
 namespace SCENeo;
 
-internal static class BufferUtils
+public static class BufferUtils
 {
     public static short ToAttributes(ColorInfo colorInfo)
     {

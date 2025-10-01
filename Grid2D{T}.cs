@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace SCENeo;
 
-internal class Grid2D<T>(T[,] data) : IEnumerable<T>,
+public class Grid2D<T>(T[,] data) : IEnumerable<T>,
     ICloneable
 {
     private readonly T[,] _data = data;
@@ -32,34 +32,6 @@ internal class Grid2D<T>(T[,] data) : IEnumerable<T>,
     }
 
     public static implicit operator Grid2DView<T>(Grid2D<T> grid) => new(grid);
-
-    public void Map(Grid2DView<T> source, Vec2I position, Rect2DI area)
-    {
-        var areaPos = new Vec2I(area.Left, area.Top);
-
-        var move = areaPos - position;
-        
-        var mapArea = new Rect2DI()
-        {
-            Left   = move.X,
-            Top    = move.Y,
-            Right  = move.X + Width,
-            Bottom = move.Y = Height,
-        };
-        
-        area.SetToOverlap(mapArea);
-
-        for (int y = area.Top; y < area.Bottom; y++)
-        {
-            for (int x = area.Left; x < area.Right; x++)
-            {
-                this[position] = source[x, y];
-                position.X++;
-            }
-            position.X = 0;
-            position.Y++;
-        }
-    }
 
     public void Fill(T item)
     {
