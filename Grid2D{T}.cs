@@ -4,7 +4,7 @@ using System.Collections;
 namespace SCENeo;
 
 public class Grid2D<T>(T[,] data) : IEnumerable<T>,
-    ICloneable
+    ICloneable, IDimensioned
 {
     public Grid2D(int width, int height)
         : this(new T[width, height])

@@ -3,7 +3,7 @@ using SCENeo.Utils;
 
 namespace SCENeo.UI;
 
-public sealed class TextBoxUI : UIBase
+public sealed class TextBoxUI : UIBaseImage
 {
     private bool _update = false;
 
@@ -92,9 +92,16 @@ public sealed class TextBoxUI : UIBase
         return list;
     }
 
-    private void Update()
+    protected override void Update()
     {
-        _image.Fill(BasePixel);
+        if (!_update)
+        {
+            return;
+        }
+
+        _update = false;
+
+        _data.Fill(BasePixel);
 
         var lines = SplitLines(Text);
 
@@ -112,18 +119,7 @@ public sealed class TextBoxUI : UIBase
 
             string subStr = lines[i].Substring(startX - x, endX - startX);
 
-            _image.MapLine(subStr, startX, y, _textColorInfo);
+            _data.MapLine(subStr, startX, y, _textColorInfo);
         }
-    }
-
-    public override Grid2DView<Pixel> Render()
-    {
-        if (_update)
-        {
-            Update();
-            _update = false;
-        }
-
-        return _image;
     }
 }

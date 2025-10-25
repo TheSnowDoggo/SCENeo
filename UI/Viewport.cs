@@ -2,7 +2,7 @@
 
 namespace SCENeo.UI;
 
-internal sealed class Viewport : UIBase
+public sealed class Viewport : UIBaseImage
 {
     private sealed class Comparer : IComparer<IRenderable?>
     {
@@ -30,9 +30,9 @@ internal sealed class Viewport : UIBase
 
     public Pixel BaseColor = new(SCEColor.Black);
 
-    private void Update()
+    protected override void Update()
     {
-        _image.Fill(BaseColor);
+        _data.Fill(BaseColor);
 
         var sorted = new List<IRenderable>(Renderables.Count);
 
@@ -54,14 +54,7 @@ internal sealed class Viewport : UIBase
 
             Vec2I anchorOffset = renderable.Anchor.AnchorDimension(view.Dimensions, Dimensions);
 
-            _image.MergeMap(view, anchorOffset + renderable.Position);
+            _data.MergeMap(view, anchorOffset + renderable.Position);
         }
-    }
-
-    public override Grid2DView<Pixel> Render()
-    {
-        Update();
-
-        return _image;
     }
 }
