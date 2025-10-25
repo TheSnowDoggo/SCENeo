@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using SCENeo.Utils;
 
 namespace SCENeo;
 
@@ -9,14 +9,19 @@ public struct Pixel(char element, ColorInfo colorInfo)
 
     public ColorInfo Colors = colorInfo;
 
-    public Pixel(ConsoleColor backgroundColor)
-        : this(' ', new ColorInfo(ConsoleColor.Black, backgroundColor))
+    public Pixel(SCEColor backgroundColor)
+        : this(' ', new ColorInfo(SCEColor.Black, backgroundColor))
     {
     }
 
     public static bool operator ==(Pixel p1, Pixel p2) => p1.Equals(p2);
 
     public static bool operator !=(Pixel p1, Pixel p2) => !p1.Equals(p2);
+
+    public readonly Pixel Merge(Pixel other)
+    {
+        return new Pixel(Element.Merge(other.Element), Colors.Merge(other.Colors));
+    }
 
     public readonly bool Equals(Pixel other)
     {

@@ -1,12 +1,12 @@
 ﻿using SCEBufferAPI;
 
-namespace SCENeo;
+namespace SCENeo.Utils;
 
 public static class BufferUtils
 {
     public static short ToAttributes(ColorInfo colorInfo)
     {
-        return (short)((short)colorInfo.ForegroundColor + ((short)colorInfo.BackgroundColor << 4));
+        return (short)((short)colorInfo.ForegroundColor.ToConsoleColor() + ((short)colorInfo.BackgroundColor.ToConsoleColor() << 4));
     }
 
     public static CharInfo ToCharInfo(Pixel pixel)
@@ -22,7 +22,7 @@ public static class BufferUtils
         return charInfo;
     }
 
-    public static CharInfo[] ToCharInfoBuffer(Grid2D<Pixel> grid)
+    public static CharInfo[] ToCharInfoBuffer(Grid2DView<Pixel> grid)
     {
         var buffer = new CharInfo[grid.Size];
 
@@ -38,7 +38,7 @@ public static class BufferUtils
         return buffer;
     }
 
-    public static SmallRect WriteGrid(Grid2D<Pixel> grid, Coord pos)
+    public static SmallRect WriteGrid(Grid2DView<Pixel> grid, Coord pos)
     {
         var buf = ToCharInfoBuffer(grid);
 
@@ -51,8 +51,8 @@ public static class BufferUtils
         return rect;
     }
 
-    public static SmallRect WriteGrid(Grid2D<Pixel> grid)
+    public static SmallRect WriteGrid(Grid2DView<Pixel> grid)
     {
-        return WriteGrid(grid, new Coord(0, 0));
+        return WriteGrid(grid, Coord.Zero);
     }
 }

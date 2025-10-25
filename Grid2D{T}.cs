@@ -6,23 +6,30 @@ namespace SCENeo;
 public class Grid2D<T>(T[,] data) : IEnumerable<T>,
     ICloneable
 {
-    private readonly T[,] _data = data;
-
     public Grid2D(int width, int height)
         : this(new T[width, height])
     {
     }
 
-    public int Width  => _data.GetLength(0);
+    public Grid2D(Vec2I dimensions)
+       : this(dimensions.X, dimensions.Y)
+    {
+    }
 
-    public int Height => _data.GetLength(1);
+    public T[,] Data = data;
 
-    public int Size   => _data.Length;
+    public int Width { get { return Data.GetLength(0); } }
+
+    public int Height { get { return Data.GetLength(1); } }
+
+    public int Size { get { return Data.Length; } }
+
+    public Vec2I Dimensions { get { return new(Width, Height); } }
 
     public T this[int x, int y]
     {
-        get => _data[x, y];
-        set => _data[x, y] = value;
+        get { return Data[x, y]; }
+        set { Data[x, y] = value; }
     }
 
     public T this[Vec2I pos]
@@ -32,6 +39,55 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
     }
 
     public static implicit operator Grid2DView<T>(Grid2D<T> grid) => new(grid);
+
+    #region Map
+
+    public void Map(Grid2DView<T> view, Vec2I position, Rect2DI area)
+    {
+        Vec2I difference = area.Start - position;
+
+        Rect2DI trim = area.Trim(difference, Dimensions + difference);
+
+        Vec2I newPos = position + trim.Start;
+
+        for (int y = trim.Top, curY = newPos.Y; y < trim.Bottom; y++, curY++)
+        {
+            for (int x = trim.Left, curX = newPos.X; x < trim.Right; x++, curX++)
+            {
+                this[curX, curY] = view[x, y];
+            }
+        }
+    }
+
+    public void Map(Grid2DView<T> view, Rect2DI area)
+    {
+        Map(view, Vec2I.Zero, area);
+    }
+
+    public void Map(Grid2DView<T> view, Vec2I position)
+    {
+        Map(view, position, view.Area());
+    }
+
+    public void Map(Grid2DView<T> view)
+    {
+        Map(view, Vec2I.Zero);
+    }
+
+    #endregion
+
+    #region Fill
+
+    public void Fill(T item, Rect2DI area)
+    {
+        for (int y = area.Start.Y; y < area.End.Y; y++)
+        {
+            for (int x = area.Start.X; x < area.End.X; x++)
+            {
+                this[x, y] = item;
+            }
+        }
+    }
 
     public void Fill(T item)
     {
@@ -44,9 +100,43 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
         }
     }
 
+    #endregion
+
+    #region Resize
+
+    public void Resize(int width, int height)
+    {
+        var newData = new T[width, height];
+
+        int minWidth  = Math.Min(width, Width );
+        int minHeight = Math.Min(width, Height);
+
+        for (int y = 0; y < minHeight; y++)
+        {
+            for (int x = 0; x < minWidth; x++)
+            {
+                newData[x, y] = this[x, y];
+            }
+        }
+
+        Data = newData;
+    }
+
+    public void Resize(Vec2I dimensions)
+    {
+        Resize(dimensions.X, dimensions.Y);
+    }
+
+    #endregion
+
+    public Rect2DI Area()
+    {
+        return new Rect2DI(Width, Height);
+    }
+
     public void Clear()
     {
-        Array.Clear(_data);
+        Array.Clear(Data);
     }
 
     public override string ToString()
@@ -80,7 +170,7 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
 
     public IEnumerator<T> GetEnumerator()
     {
-        return (IEnumerator<T>) _data.GetEnumerator();
+        return (IEnumerator<T>) Data.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -94,7 +184,7 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
 
     public object Clone()
     {
-        return new Grid2D<T>((T[,])_data.Clone());
+        return new Grid2D<T>((T[,])Data.Clone());
     }
 
     #endregion

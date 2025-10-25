@@ -5,7 +5,19 @@ public struct Vec2I(int x, int y) : IEquatable<Vec2I>
     public int X = x;
     public int Y = y;
 
+    #region Presets
+
+    public static Vec2I Zero  => new(+0, +0);
+    public static Vec2I Up    => new(+0, -1);
+    public static Vec2I Down  => new(+0, +1);
+    public static Vec2I Left  => new(-1, +0);
+    public static Vec2I Right => new(+1, +0);
+
+    #endregion
+
     #region Operators
+
+    public static implicit operator Vec2(Vec2I v) => new(v.X, v.Y);
 
     public static bool operator ==(Vec2I v1, Vec2I v2) => v1.Equals(v2);
 
@@ -26,6 +38,22 @@ public struct Vec2I(int x, int y) : IEquatable<Vec2I>
 
     #endregion
 
+    #region Maths
+
+    public readonly Vec2I Abs()
+    {
+        return new Vec2I(Math.Abs(X), Math.Abs(Y));
+    }
+
+    public readonly Vec2I Invert()
+    {
+        return new Vec2I(Y, X);
+    }
+
+    #endregion
+
+    #region Equality
+
     public readonly bool Equals(Vec2I other)
     {
         return X == other.X && Y == other.Y;
@@ -40,6 +68,8 @@ public struct Vec2I(int x, int y) : IEquatable<Vec2I>
     {
         return HashCode.Combine(X, Y);
     }
+
+    #endregion
 
     public readonly override string ToString()
     {

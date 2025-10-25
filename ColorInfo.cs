@@ -1,14 +1,21 @@
-﻿namespace SCENeo;
+﻿using SCENeo.Utils;
 
-public struct ColorInfo(ConsoleColor foregroundColor, ConsoleColor backgroundColor)
+namespace SCENeo;
+
+public struct ColorInfo(SCEColor foregroundColor, SCEColor backgroundColor)
     : IEquatable<ColorInfo>
 {
-    public ConsoleColor ForegroundColor = foregroundColor;
-    public ConsoleColor BackgroundColor = backgroundColor;
+    public SCEColor ForegroundColor = foregroundColor;
+    public SCEColor BackgroundColor = backgroundColor;
 
     public static bool operator ==(ColorInfo c1, ColorInfo c2) => c1.Equals(c2);
 
     public static bool operator !=(ColorInfo c1, ColorInfo c2) => !c1.Equals(c2);
+
+    public readonly ColorInfo Merge(ColorInfo other)
+    {
+        return new ColorInfo(ForegroundColor.Merge(other.ForegroundColor), BackgroundColor.Merge(other.BackgroundColor));
+    }
 
     public readonly bool Equals(ColorInfo other)
     {
@@ -26,7 +33,7 @@ public struct ColorInfo(ConsoleColor foregroundColor, ConsoleColor backgroundCol
         return HashCode.Combine(ForegroundColor, BackgroundColor);
     }
 
-    public override string ToString()
+    public readonly override string ToString()
     {
         return $"{{ {ForegroundColor}, {BackgroundColor} }}";
     }

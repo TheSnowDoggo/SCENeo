@@ -7,20 +7,24 @@ public sealed class Grid2DView<T>(Grid2D<T> grid) : IEnumerable<T>,
 {
     private readonly Grid2D<T> _grid = grid;
 
-    public int Width  => _grid.Width;
+    public int Width { get { return _grid.Width; } }
 
-    public int Height => _grid.Height;
+    public int Height { get { return _grid.Height; } }
 
-    public int Size   => _grid.Size;
+    public int Size { get { return _grid.Size; } }
 
-    public T this[int x, int y] => _grid[x, y];
+    public Vec2I Dimensions {  get { return _grid.Dimensions; } }
 
-    public T this[Vec2I pos]    => _grid[pos];
+    public T this[int x, int y] { get { return _grid[x, y]; } }
+
+    public T this[Vec2I pos] { get { return _grid[pos]; } }
 
     public override string ToString()
     {
         return _grid.ToString();
     }
+
+    public Rect2DI Area() => _grid.Area();
 
     #region IEnumerable
 
