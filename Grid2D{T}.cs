@@ -77,23 +77,43 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
     public void Fill(T item, Rect2DI area)
     {
         for (int y = area.Start.Y; y < area.End.Y; y++)
-        {
             for (int x = area.Start.X; x < area.End.X; x++)
-            {
                 this[x, y] = item;
-            }
-        }
     }
 
     public void Fill(T item)
     {
         for (int y = 0; y < Height; y++)
-        {
             for (int x = 0; x < Width; x++)
-            {
                 this[x, y] = item;
-            }
-        }
+    }
+
+    public void Fill(Func<int, int, T> item, Rect2DI area)
+    {
+        for (int y = area.Start.Y; y < area.End.Y; y++)
+            for (int x = area.Start.X; x < area.End.X; x++)
+                this[x, y] = item.Invoke(x, y);
+    }
+
+    public void Fill(Func<int, int, T> item)
+    {
+        for (int y = 0; y < Height; y++)
+            for (int x = 0; x < Width; x++)
+                this[x, y] = item.Invoke(x, y);
+    }
+
+    public void Fill(Func<T> item, Rect2DI area)
+    {
+        for (int y = area.Start.Y; y < area.End.Y; y++)
+            for (int x = area.Start.X; x < area.End.X; x++)
+                this[x, y] = item.Invoke();
+    }
+
+    public void Fill(Func<T> item)
+    {
+        for (int y = 0; y < Height; y++)
+            for (int x = 0; x < Width; x++)
+                this[x, y] = item.Invoke();
     }
 
     #endregion

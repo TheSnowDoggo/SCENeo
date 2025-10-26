@@ -16,12 +16,6 @@ public class Node2D : Node
                 return;
             }
 
-            if (Parent == null)
-            {
-                _position = value;
-                return;
-            }
-
             _position = value;
 
             UpdateChildrenGlobalPosition();

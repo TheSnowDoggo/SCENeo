@@ -1,29 +1,23 @@
 ﻿namespace SCENeo.UI;
 
-public abstract class UIBase<T>(T data) : IRenderable, IDimensioned, IResizeable
+public abstract class UIBase<T>(T source) : IRenderable, IDimensioned, IResizeable
     where T : IDimensioned, IResizeable
 {
-    protected readonly T _data = data;
+    protected readonly T _source = source;
 
-    public int Width { get { return _data.Width; } }
-
-    public int Height { get { return _data.Height; } }
-
-    public int Size { get { return _data.Size; } }
-
-    public Vec2I Dimensions { get { return _data.Dimensions; } }
+    public int Width { get { return _source.Width; } }
+    public int Height { get { return _source.Height; } }
+    public int Size { get { return _source.Size; } }
+    public Vec2I Dimensions { get { return _source.Dimensions; } }
 
     public bool Enabled { get; set; } = true;
-
     public Vec2I Offset { get; set; } = Vec2I.Zero;
-
     public int ZOffset { get; set; } = 0;
-
     public Anchor Anchor { get; set; } = Anchor.None;
 
     public virtual void Resize(int width, int height)
     {
-        _data.Resize(width, height);
+        _source.Resize(width, height);
     }
          
     public abstract Grid2DView<Pixel> Render();

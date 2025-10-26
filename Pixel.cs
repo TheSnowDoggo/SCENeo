@@ -9,10 +9,13 @@ public readonly struct Pixel(char element, ColorInfo colorInfo)
 
     public readonly ColorInfo Colors = colorInfo;
 
+    public Pixel(char element, SCEColor foregroundColor, SCEColor backgroundColor)
+        : this(element, new ColorInfo(foregroundColor, backgroundColor))
+    { }
+
     public Pixel(SCEColor backgroundColor)
-        : this(' ', new ColorInfo(SCEColor.Black, backgroundColor))
-    {
-    }
+        : this(' ', SCEColor.Black, backgroundColor)
+    { }
 
     public static bool operator ==(Pixel p1, Pixel p2) => p1.Equals(p2);
 

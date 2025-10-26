@@ -8,6 +8,8 @@ internal sealed class Manager
 {
     private readonly Updater _updater;
 
+    private readonly RenderEngine _re;
+
     private readonly NodeManager _nm;
 
     private readonly Viewport _viewport;
@@ -15,8 +17,6 @@ internal sealed class Manager
     private readonly Display<Viewport> _display;
 
     private readonly TextBoxUI _fpsUI;
-
-    private readonly RenderChannel _renderChannel;
 
     public Manager()
     {
@@ -36,9 +36,25 @@ internal sealed class Manager
             OnResize     = Display_OnResize,
         };
 
-        _renderChannel = new RenderChannel()
+        var rc1 = new RenderChannel()
         {
             BasePixel = new Pixel(SCEColor.DarkCyan),
+        };
+
+        var rc1Filter = new Filter<RenderChannel>(rc1)
+        {
+            FilterMode = FilterPresets.Grayscale,
+        };
+
+        var rc2 = new RenderChannel(30, 20)
+        {
+            BasePixel = new Pixel(SCEColor.DarkCyan),
+            Anchor    = Anchor.Right | Anchor.Bottom,
+        };
+
+        var rc2Filter = new Filter<RenderChannel>(rc2)
+        {
+            FilterMode = FilterPresets.Grayscale, 
         };
 
         _fpsUI = new TextBoxUI(20, 2)
@@ -46,39 +62,49 @@ internal sealed class Manager
             Text = "FPS: None",
         };
 
-        _viewport.Renderables.AddEvery(_renderChannel, _fpsUI);
+        _viewport.Renderables.AddEvery(rc1Filter, rc2, _fpsUI);
 
-        _nm = new NodeManager();
+        _re = new RenderEngine()
+        {
+            Channels = new() 
+            {
+                { 0, rc1 },
+                { 1, rc2 },
+            },
+        };
 
-        _nm.Channels[0] = _renderChannel;
+        _nm = new NodeManager()
+        {
+            Engines = [_re]
+        };
 
-        var camera = new Camera2D()
+        var cam1 = new Camera2D()
         {
             Name    = "Camera",
             Channel = 0,
         };
 
-        _nm.Tree.Root.AddChild(camera);
-
-        var sprite = new Sprite2D<DisplayMap>()
+        var player = new Player()
         {
-            Name   = "Sprite2D",
-            Source = new DisplayMap(10, 5)
+            Name     = "Player",
+            Rotation = SCEUtils.DegToRad(15),
+        };
+
+        var block = new Sprite2D<DisplayMap>()
+        {
+            Name     = "Block",
+            Position = new Vec2(30, 20),
+            Source   = new DisplayMap(30, 5)
             {
                 Anchor = Anchor.Right | Anchor.Bottom,
             },
         };
 
-        sprite.Source.Fill(new Pixel(SCEColor.Yellow));
+        var rand = new Random();
 
-        var test = new Test()
-        {
-            Name = "Test",
-        };
+        block.Source.Fill(() => new Pixel((SCEColor)rand.Next(15)));
 
-        test.AddChild(sprite);
-
-        _nm.Tree.Root.AddChild(test);
+        _nm.Tree.Root.AddChildren(player, cam1, block);
     }
 
     public void Run()
@@ -98,11 +124,11 @@ internal sealed class Manager
 
         _display.Update();
 
-        _fpsUI.Text = $"FPS: {_updater.FPS}\n{_nm.Tree.Root.GetNode<Node2D>("Test/Sprite2D").GlobalPosition}";
+        _fpsUI.Text = $"FPS: {_updater.FPS}\n{_nm.Tree.Root.GetNode<Node2D>("Player/Sprite2D").GlobalPosition}";
     }
 
     private void Display_OnResize(Vec2I newDimensions)
     {
-        _renderChannel.Resize(newDimensions);
+        _re.Channels[0].Resize(newDimensions);
     }
 }

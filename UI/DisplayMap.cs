@@ -1,21 +1,11 @@
-﻿namespace SCENeo;
+﻿namespace SCENeo.UI;
 
 public sealed class DisplayMap : Image, IRenderable
 {
-    public DisplayMap(Pixel[,] data)
-        : base(data)
-    {
-    }
-
-    public DisplayMap(int width, int height)
-        : base(width, height)
-    {
-    }
-
-    public DisplayMap(Vec2I dimensions)
-       : base(dimensions)
-    {
-    }
+    public DisplayMap(Pixel[,] data)  : base(data) { }
+    public DisplayMap() : base() { }
+    public DisplayMap(int width, int height) : base(width, height) { }
+    public DisplayMap(Vec2I dimensions) : base(dimensions) { }
 
     public bool Enabled { get; set; } = true;
 

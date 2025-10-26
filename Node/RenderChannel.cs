@@ -6,13 +6,17 @@ public sealed class RenderChannel : UIBaseImage
 {
     public Pixel BasePixel;
 
+    public RenderChannel() : base() { }
+    public RenderChannel(int width, int height) : base(width, height) { }
+    public RenderChannel(Vec2I dimensions) : base(dimensions) { }
+
     public void Clear()
     {
-        _data.Fill(BasePixel);
+        _source.Fill(BasePixel);
     }
 
     public void Load(Grid2DView<Pixel> view, Vec2I position)
     {
-        _data.MergeMap(view, position);
+        _source.MergeMap(view, position);
     }
 }

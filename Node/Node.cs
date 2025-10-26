@@ -88,6 +88,14 @@ public class Node
         _tree?.OnNodeAdded?.Invoke(child);
     }
 
+    public void AddChildren(params Node[] children)
+    {
+        foreach (Node child in children)
+        {
+            AddChild(child);
+        }
+    }
+
     public void RemoveChild(string name)
     {
         if (!_children.TryGetValue(name, out Node? child))

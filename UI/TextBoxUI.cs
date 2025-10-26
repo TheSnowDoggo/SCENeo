@@ -18,9 +18,7 @@ public sealed class TextBoxUI : UIBaseImage
     private bool _textOverflow = false;
 
     public TextBoxUI() : base() { }
-
     public TextBoxUI(int width, int height) : base(width, height) { }
-
     public TextBoxUI(Vec2I dimensions) : base(dimensions) { }
 
     public Pixel BasePixel
@@ -103,7 +101,7 @@ public sealed class TextBoxUI : UIBaseImage
 
         _update = false;
 
-        _data.Fill(BasePixel);
+        _source.Fill(BasePixel);
 
         var lines = SplitLines(Text);
 
@@ -121,7 +119,7 @@ public sealed class TextBoxUI : UIBaseImage
 
             string subStr = lines[i].Substring(startX - x, endX - startX);
 
-            _data.MapLine(subStr, startX, y, _textColorInfo);
+            _source.MapLine(subStr, startX, y, _textColorInfo);
         }
     }
 }

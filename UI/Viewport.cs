@@ -23,9 +23,7 @@ public sealed class Viewport : UIBaseImage
     }
 
     public Viewport() : base() { }
-
     public Viewport(int width, int height) : base(width, height) { }
-
     public Viewport(Vec2I dimensions) : base(dimensions) { }
 
     public readonly List<IRenderable> Renderables = [];
@@ -34,7 +32,7 @@ public sealed class Viewport : UIBaseImage
 
     protected override void Update()
     {
-        _data.Fill(BasePixel);
+        _source.Fill(BasePixel);
 
         var sorted = new List<IRenderable>(Renderables.Count);
 
@@ -56,7 +54,7 @@ public sealed class Viewport : UIBaseImage
 
             Vec2I anchorOffset = renderable.Anchor.AnchorDimension(Dimensions - view.Dimensions);
 
-            _data.MergeMap(view, anchorOffset + renderable.Offset);
+            _source.MergeMap(view, anchorOffset + renderable.Offset);
         }
     }
 }

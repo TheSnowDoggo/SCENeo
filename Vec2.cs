@@ -66,6 +66,35 @@ public struct Vec2(float x, float y) : IEquatable<Vec2>
         return new Vec2(MathF.Round(X), MathF.Round(Y));
     }
 
+    public readonly Vec2 Rotated(float rotation)
+    {
+        return new Vec2()
+        {
+            X = X * MathF.Cos(rotation) - Y * MathF.Sin(rotation),
+            Y = X * MathF.Sin(rotation) + Y * MathF.Cos(rotation),
+        };
+    }
+
+    public readonly Vec2 Rotate90C()
+    {
+        return new Vec2(Y, -X);
+    }
+
+    public readonly Vec2 Rotate90AC()
+    {
+        return new Vec2(-Y, X);
+    }
+
+    public readonly Vec2 Rotate180()
+    {
+        return new Vec2(-X, -Y);
+    }
+
+    public readonly float Angle()
+    {
+        return MathF.Atan(Y / X);
+    }
+
     #endregion
 
     #region Equality
