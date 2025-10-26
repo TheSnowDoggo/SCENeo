@@ -2,15 +2,22 @@
 
 namespace SCENeo;
 
-public readonly struct Pixel(char element, ColorInfo colorInfo)
+public readonly struct Pixel(char element, ColorInfo colors)
     : IEquatable<Pixel>
 {
     public readonly char Element     = element;
-
-    public readonly ColorInfo Colors = colorInfo;
+    public readonly ColorInfo Colors = colors;
 
     public Pixel(char element, SCEColor foregroundColor, SCEColor backgroundColor)
         : this(element, new ColorInfo(foregroundColor, backgroundColor))
+    { }
+
+    public Pixel(ColorInfo colors)
+        : this(' ', colors)
+    { }
+
+    public Pixel(SCEColor foregroundColor, SCEColor backgroundColor)
+        : this(' ', foregroundColor, backgroundColor)
     { }
 
     public Pixel(SCEColor backgroundColor)

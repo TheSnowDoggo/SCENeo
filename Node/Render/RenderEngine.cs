@@ -1,7 +1,6 @@
 ﻿using SCENeo.Utils;
-using System.Threading.Channels;
 
-namespace SCENeo.Node;
+namespace SCENeo.Node.Render;
 
 public sealed class RenderEngine : IEngine
 {
@@ -47,7 +46,7 @@ public sealed class RenderEngine : IEngine
 
             renderChannel.Clear();
 
-            Rect2DI gcArea = new Rect2DI(position, position + renderChannel.Dimensions);
+            Rect2DI gcArea = new Rect2DI(position, position + renderChannel.Dimensions());
 
             foreach (RenderItem? renderItem in renderItems)
             {

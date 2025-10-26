@@ -138,6 +138,11 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
         Data = newData;
     }
 
+    public void CleanResize(int width, int height)
+    {
+        Data = new T[width, height];
+    }
+
     #endregion
 
     public Rect2DI Area()

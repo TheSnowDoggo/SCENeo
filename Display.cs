@@ -26,7 +26,7 @@ internal sealed class Display<T>(T source)
 
         Vec2I winDimensions = SCEUtils.WindowDimensions();
 
-        if (winDimensions == Source.Dimensions) return;
+        if (winDimensions == Source.Dimensions()) return;
 
         Source.Resize(winDimensions);
 

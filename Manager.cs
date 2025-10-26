@@ -1,6 +1,7 @@
 ﻿using SCENeo.Node;
 using SCENeo.UI;
 using SCENeo.Utils;
+using SCENeo.Node.Render;
 
 namespace SCENeo;
 
@@ -41,11 +42,6 @@ internal sealed class Manager
             BasePixel = new Pixel(SCEColor.DarkCyan),
         };
 
-        var rc1Filter = new Filter<RenderChannel>(rc1)
-        {
-            FilterMode = FilterPresets.BlackAndWhite,
-        };
-
         var rc2 = new RenderChannel(30, 20)
         {
             BasePixel = new Pixel(SCEColor.DarkCyan),
@@ -62,7 +58,7 @@ internal sealed class Manager
             Text = "FPS: None",
         };
 
-        _viewport.Renderables.AddEvery(rc1Filter, rc2, _fpsUI);
+        _viewport.Renderables.AddEvery(rc1, rc2Filter, _fpsUI);
 
         _re = new RenderEngine()
         {
@@ -102,7 +98,7 @@ internal sealed class Manager
 
         var rand = new Random();
 
-        block.Source.Fill(() => new Pixel((char)('a' + rand.Next(26)), SCEColor.White, (SCEColor)rand.Next(15)));
+        block.Source.Fill(() => new Pixel((char)('a' + rand.Next(26)), SCEColor.White, rand.NextColor()));
 
         _nm.Tree.Root.AddChildren(player, cam1, block);
     }

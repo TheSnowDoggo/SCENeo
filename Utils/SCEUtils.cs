@@ -26,6 +26,47 @@ internal static class SCEUtils
         list.AddRange(items);
     }
 
+    #region CollisionData
+
+    public static bool GetBit(this ushort data, int bit)
+    {
+        if (bit < 0 || bit > 15)
+            throw new ArgumentOutOfRangeException(nameof(bit), bit, "Mask must be between 0 and 15.");
+        return ((1 << data) & 1) == 1;
+    }
+
+    public static ushort SetBit(this ushort data, int bit, bool value)
+    {
+        if (bit < 0 || bit > 15)
+            throw new ArgumentOutOfRangeException(nameof(bit), bit, "Mask must be between 0 and 15.");
+        return (ushort)(value ? data | (1 << bit) : data & ~(1 << bit));
+    }
+
+    #endregion
+
+    #region Grid2D
+
+    public static void CleanResize<T>(this Grid2D<T> grid, Vec2I dimensions)
+    {
+        grid.CleanResize(dimensions.X, dimensions.Y);
+    }
+
+    #endregion
+
+    #region IDimensioned
+
+    public static int Size(this IDimensioned dimensioned)
+    {
+        return dimensioned.Width * dimensioned.Height;
+    } 
+
+    public static Vec2I Dimensions(this IDimensioned dimensioned)
+    {
+        return new Vec2I(dimensioned.Width, dimensioned.Height);
+    }
+
+    #endregion
+
     #region Anchor
 
     public static int AnchorHorizontal(this Anchor anchor, int difference)
@@ -91,6 +132,11 @@ internal static class SCEUtils
     public static bool IsLight(this SCEColor color)
     {
         return color is SCEColor.White or SCEColor.Gray or SCEColor.Yellow or SCEColor.Cyan;
+    }
+
+    public static SCEColor NextColor(this Random random, bool includeTransparent = false)
+    {
+        return includeTransparent ? (SCEColor)random.Next(16) : (SCEColor)random.Next(17) - 1;
     }
 
     #endregion

@@ -1,8 +1,17 @@
-﻿namespace SCENeo.UI;
+﻿using SCENeo.Utils;
 
-public sealed class Filter<T>(T source) : UIModifier<T>(source)
+namespace SCENeo.UI;
+
+public sealed class Filter<T> : UIModifier<T>
     where T : IRenderable, IDimensioned
 {
+    private readonly Image _buffer;
+
+    public Filter(T source) : base(source)
+    {
+        _buffer = new Image(source.Dimensions());
+    }
+
     public Func<Pixel, Pixel>? FilterMode = null;
 
     public override Grid2DView<Pixel> Render()
@@ -11,10 +20,13 @@ public sealed class Filter<T>(T source) : UIModifier<T>(source)
 
         if (FilterMode == null) return view;
 
-        Image image = new Image(view.Dimensions);
+        if (_buffer.Dimensions != view.Dimensions)
+        {
+            _buffer.CleanResize(view.Dimensions);
+        }
 
-        image.Fill((x, y) => FilterMode.Invoke(view[x, y]));
+        _buffer.Fill((x, y) => FilterMode.Invoke(view[x, y]));
 
-        return image;
+        return _buffer;
     }
 }

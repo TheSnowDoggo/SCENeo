@@ -52,7 +52,7 @@ public sealed class Viewport : UIBaseImage
         {
             Grid2DView<Pixel> view = renderable.Render();
 
-            Vec2I anchorOffset = renderable.Anchor.AnchorDimension(Dimensions - view.Dimensions);
+            Vec2I anchorOffset = renderable.Anchor.AnchorDimension(this.Dimensions() - view.Dimensions);
 
             _source.MergeMap(view, anchorOffset + renderable.Offset);
         }

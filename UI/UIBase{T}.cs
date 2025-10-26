@@ -7,8 +7,6 @@ public abstract class UIBase<T>(T source) : IRenderable, IDimensioned, IResizeab
 
     public int Width { get { return _source.Width; } }
     public int Height { get { return _source.Height; } }
-    public int Size { get { return _source.Size; } }
-    public Vec2I Dimensions { get { return _source.Dimensions; } }
 
     public bool Enabled { get; set; } = true;
     public Vec2I Offset { get; set; } = Vec2I.Zero;

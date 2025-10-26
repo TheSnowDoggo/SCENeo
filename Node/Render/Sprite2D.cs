@@ -1,4 +1,4 @@
-﻿namespace SCENeo.Node;
+﻿namespace SCENeo.Node.Render;
 
 public sealed class Sprite2D<T> : Node2D, IRenderable
     where T : IRenderable

@@ -1,4 +1,5 @@
 ﻿using SCENeo.UI;
+using SCENeo.Node.Render;
 
 namespace SCENeo.Node;
 
@@ -19,16 +20,27 @@ internal sealed class Player : Node2D
             Position = new Vec2(-15, -10),
         };
 
-        var sprite = new Sprite2D<DisplayMap>()
+        var dpMap = new DisplayMap(5, 5)
         {
-            Name   = "Sprite2D",
-            Source = new DisplayMap(10, 5)
-            {
-                Anchor = Anchor.Center | Anchor.Middle,
-            },
+            Anchor = Anchor.Center | Anchor.Middle,
         };
 
-        sprite.Source.Fill(new Pixel(SCEColor.Yellow));
+        dpMap.Fill(new Pixel(SCEColor.White, SCEColor.DarkYellow));
+
+        for (int y = 0; y < dpMap.Height; y++)
+        {
+            dpMap.MapLine("hello", 0, y, new ColorInfo(SCEColor.White, SCEColor.Transparent));
+        }
+
+        var sprite = new Sprite2D<HorizontalScaler<DisplayMap>>()
+        {
+            Name   = "Sprite2D",
+            Source = new(dpMap, 2)
+            {
+                TextScaling = TextScaleMode.Slide,
+                Bake        = true,
+            },
+        };
 
         AddChildren(cam2, sprite);
     }
