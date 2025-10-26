@@ -7,7 +7,7 @@ public sealed class Sprite2D<T> : Node2D, IRenderable
 
     public bool Enabled { get { return Source != null; } }
 
-    public Vec2I Offset { get { return (Vec2I)GlobalPosition.Round() + GetSource().Offset; } }
+    public Vec2I Offset { get { return (Vec2I)GlobalPosition.Round() * new Vec2I(2, 1) + GetSource().Offset; } }
 
     public int ZOffset { get { return GetSource().ZOffset; } }
 

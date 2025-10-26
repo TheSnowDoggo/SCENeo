@@ -14,7 +14,7 @@ public sealed class RenderEngine : IEngine
 
     public Dictionary<int, RenderChannel> Channels { get; init; } = [];
 
-    public void Update(double delta, IReadOnlyList<Node> nodes)
+    public void Update(double _, IReadOnlyList<Node> nodes)
     {
         var channels    = new Dictionary<int, Vec2I>(Channels.Count);
         var renderItems = new Queue<RenderItem>();
@@ -23,7 +23,7 @@ public sealed class RenderEngine : IEngine
         {
             if (node is Camera2D camera && Channels.ContainsKey(camera.Channel) && !channels.ContainsKey(camera.Channel))
             {
-                channels[camera.Channel] = (Vec2I)camera.GlobalPosition.Round();
+                channels[camera.Channel] = camera.RenderPosition();
             }
 
             if (node is IRenderable renderable && renderable.Enabled)

@@ -1,5 +1,7 @@
 ﻿using SCENeo.UI;
 using SCENeo.Node.Render;
+using SCENeo.Node.Collision;
+using SCENeo.Utils;
 
 namespace SCENeo.Node;
 
@@ -13,14 +15,14 @@ internal sealed class Player : Node2D
 
     public Player()
     {
-        var cam2 = new Camera2D()
+        var camera = new Camera2D()
         {
             Name     = "Camera2D",
             Channel  = 1,
-            Position = new Vec2(-15, -10),
+            Position = new Vec2(-8, -5),
         };
 
-        var dpMap = new DisplayMap(5, 5)
+        var dpMap = new DisplayMap(4, 4)
         {
             Anchor = Anchor.Center | Anchor.Middle,
         };
@@ -42,7 +44,14 @@ internal sealed class Player : Node2D
             },
         };
 
-        AddChildren(cam2, sprite);
+        var collider = new SphereCollider2D()
+        {
+            Radius = 2.0f,
+            Layers = SCEUtils.CreateFlags(0),
+            OnCollisionReceive = OnCollisionReceive,
+        };
+        
+        AddChildren(camera, sprite, collider);
     }
 
     public override void Start()
@@ -53,5 +62,10 @@ internal sealed class Player : Node2D
     public override void Update(double delta)
     {
         Position += _moveVec * (float)(MoveSpeed * delta);
+    }
+
+    private void OnCollisionReceive(IListen listener)
+    {
+        throw new Exception("collided");
     }
 }

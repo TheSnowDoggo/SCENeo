@@ -55,6 +55,21 @@ public struct Vec2(float x, float y) : IEquatable<Vec2>
         return MathF.Sqrt(X * X + Y * Y);
     }
 
+    public readonly float DistanceTo(Vec2 other)
+    {
+        return (other - this).Magnitude();
+    }
+
+    public readonly bool HasGradientBetwen(Vec2 other)
+    {
+        return X != other.X;
+    }
+
+    public readonly float GradientBetween(Vec2 other)
+    {
+        return (other.Y - Y) / (other.X - X);
+    }
+
     public readonly Vec2 Normalized()
     {
         float magnitude = Magnitude();

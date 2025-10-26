@@ -26,20 +26,63 @@ internal static class SCEUtils
         list.AddRange(items);
     }
 
-    #region CollisionData
-
-    public static bool GetBit(this ushort data, int bit)
+    public static void MinMax(float a, float b, out float min, out float max)
     {
-        if (bit < 0 || bit > 15)
-            throw new ArgumentOutOfRangeException(nameof(bit), bit, "Mask must be between 0 and 15.");
+        if (a < b)
+        {
+            min = a;
+            max = b;
+        }
+        else
+        {
+            min = b;
+            max = a;
+        }
+    }
+
+    public static bool InInclusiveRange(this float value, float min, float max)
+    {
+        return value >= min && value <= max;
+    }
+
+    #region Collision
+
+    public static bool GetFlag(this ushort data, int flag)
+    {
+        if (flag < 0 || flag > 15)
+            throw new ArgumentOutOfRangeException(nameof(flag), flag, "Mask must be between 0 and 15.");
         return ((1 << data) & 1) == 1;
     }
 
-    public static ushort SetBit(this ushort data, int bit, bool value)
+    public static ushort SetFlag(this ushort data, int flag, bool value)
     {
-        if (bit < 0 || bit > 15)
-            throw new ArgumentOutOfRangeException(nameof(bit), bit, "Mask must be between 0 and 15.");
-        return (ushort)(value ? data | (1 << bit) : data & ~(1 << bit));
+        if (flag < 0 || flag > 15)
+            throw new ArgumentOutOfRangeException(nameof(flag), flag, "Mask must be between 0 and 15.");
+        return (ushort)(value ? data | (1 << flag) : data & ~(1 << flag));
+    }
+
+    public static IEnumerable<int> EnumerateFlags(this ushort data)
+    {
+        ushort cur = data;
+        for (int i = 0; i < 16; i++)
+        {
+            if ((cur & 1) == 1)
+            {
+                yield return i;
+            }
+
+            cur <<= 1;
+        }
+    }
+
+    public static ushort CreateFlags(params int[] flags)
+    {
+        ushort data = 0;
+        foreach (int bit in flags)
+        {
+            data = SetFlag(data, bit, true);
+        }
+        return data;
     }
 
     #endregion

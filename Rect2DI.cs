@@ -39,6 +39,8 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
         return End - Start;
     }
 
+    #region Overlaps
+
     public readonly bool Overlaps(int left, int top, int right, int bottom)
     {
         if (Right < left || Left > right)
@@ -62,6 +64,10 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
         return Overlaps(other.Start, other.End);
     }
 
+    #endregion
+
+    #region Trim
+
     public readonly Rect2DI Trim(int left, int top, int right, int bottom)
     {
         return new Rect2DI()
@@ -80,8 +86,39 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
 
     public readonly Rect2DI Trim(Rect2DI other)
     {
-        return Trim(other.Start, other.End);
+        return Trim(other.Left, other.Top, other.Right, other.Bottom);
     }
+
+    #endregion
+
+    #region Contains
+
+    public readonly bool Contains(int left, int top, int right, int bottom)
+    {
+        return left >= Left && right <= Right && top >= Top && bottom <= Bottom;
+    }
+
+    public readonly bool Contains(Vec2I start, Vec2I end)
+    {
+        return Contains(start.X, start.Y, end.X, end.Y);
+    }
+
+    public readonly bool Contains(Rect2DI rect)
+    {
+        return Contains(rect.Left, rect.Top, rect.Right, rect.Bottom);
+    }
+
+    public readonly bool Contains(int x, int y)
+    {
+        return x >= Left && x <= Right && y >= Top && y <= Bottom;
+    }
+
+    public readonly bool Contains(Vec2I position)
+    {
+        return Contains(position.X, position.Y);
+    }
+
+    #endregion
 
     #region Equality
 

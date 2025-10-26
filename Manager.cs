@@ -2,6 +2,7 @@
 using SCENeo.UI;
 using SCENeo.Utils;
 using SCENeo.Node.Render;
+using SCENeo.Node.Collision;
 
 namespace SCENeo;
 
@@ -42,20 +43,21 @@ internal sealed class Manager
             BasePixel = new Pixel(SCEColor.DarkCyan),
         };
 
-        var rc2 = new RenderChannel(30, 20)
+        var rc2 = new RenderChannel(40, 15)
         {
-            BasePixel = new Pixel(SCEColor.DarkCyan),
+            BasePixel = new Pixel(SCEColor.Cyan),
             Anchor    = Anchor.Right | Anchor.Bottom,
         };
 
         var rc2Filter = new Filter<RenderChannel>(rc2)
         {
-            FilterMode = FilterPresets.Grayscale, 
+            FilterMode = null, 
         };
 
         _fpsUI = new TextBoxUI(20, 2)
         {
-            Text = "FPS: None",
+            Text   = "FPS: None",
+            Anchor = Anchor.Right,
         };
 
         _viewport.Renderables.AddEvery(rc1, rc2Filter, _fpsUI);
@@ -71,10 +73,10 @@ internal sealed class Manager
 
         _nm = new NodeManager()
         {
-            Engines = [_re]
+            Engines = [_re, new CollisionEngine()],
         };
 
-        var cam1 = new Camera2D()
+        var camera = new Camera2D()
         {
             Name    = "Camera",
             Channel = 0,
@@ -83,24 +85,16 @@ internal sealed class Manager
         var player = new Player()
         {
             Name     = "Player",
-            Rotation = SCEUtils.DegToRad(15),
+            Rotation = SCEUtils.DegToRad(35.0f),
         };
 
-        var block = new Sprite2D<DisplayMap>()
+        var box = new Box()
         {
-            Name     = "Block",
-            Position = new Vec2(30, 20),
-            Source   = new DisplayMap(30, 5)
-            {
-                Anchor = Anchor.Right | Anchor.Bottom,
-            },
+            Name     = "Box",
+            Position = new Vec2(30, 15),
         };
 
-        var rand = new Random();
-
-        block.Source.Fill(() => new Pixel((char)('a' + rand.Next(26)), SCEColor.White, rand.NextColor()));
-
-        _nm.Tree.Root.AddChildren(player, cam1, block);
+        _nm.Tree.Root.AddChildren(player, box, camera);
     }
 
     public void Run()
