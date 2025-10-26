@@ -43,7 +43,7 @@ internal sealed class Manager
 
         var rc1Filter = new Filter<RenderChannel>(rc1)
         {
-            FilterMode = FilterPresets.Grayscale,
+            FilterMode = FilterPresets.BlackAndWhite,
         };
 
         var rc2 = new RenderChannel(30, 20)
@@ -102,7 +102,7 @@ internal sealed class Manager
 
         var rand = new Random();
 
-        block.Source.Fill(() => new Pixel((SCEColor)rand.Next(15)));
+        block.Source.Fill(() => new Pixel((char)('a' + rand.Next(26)), SCEColor.White, (SCEColor)rand.Next(15)));
 
         _nm.Tree.Root.AddChildren(player, cam1, block);
     }
