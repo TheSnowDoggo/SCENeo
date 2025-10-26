@@ -17,9 +17,9 @@ public sealed class DisplayMap : Image, IRenderable
     {
     }
 
-    public bool Active { get; set; } = true;
+    public bool Enabled { get; set; } = true;
 
-    public Vec2I Position { get; set; } = Vec2I.Zero;
+    public Vec2I Offset { get; set; } = Vec2I.Zero;
 
     public int ZOffset { get; set; } = 0;
 

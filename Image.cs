@@ -2,20 +2,13 @@
 
 public class Image : Grid2D<Pixel>
 {
-    public Image(Pixel[,] data) 
-        : base(data)
-    {
-    }
+    public Image(Pixel[,] data) : base(data) { }
 
-    public Image(int width, int height)
-        : base(width, height)
-    {
-    }
+    public Image() : base() { }
 
-    public Image(Vec2I dimensions)
-       : base(dimensions)
-    {
-    }
+    public Image(int width, int height) : base(width, height) { }
+
+    public Image(Vec2I dimensions) : base(dimensions) { }
 
     #region MergeMap
 

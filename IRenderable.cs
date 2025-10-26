@@ -2,9 +2,9 @@
 
 public interface IRenderable
 {
-    bool Active { get; }
+    bool Enabled { get; }
 
-    public Vec2I Position { get; }
+    public Vec2I Offset { get; }
 
     public int ZOffset { get; }
 

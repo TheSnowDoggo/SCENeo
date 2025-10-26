@@ -11,13 +11,18 @@ internal static class SCEUtils
         }
     }
 
-    public static bool IsEven(this int value)
+    public static void Resize(this IResizeable resizeable, Vec2I dimensions)
     {
-        return (value & 1) == 0;
+        resizeable.Resize(dimensions.X, dimensions.Y);
     }
 
-    public static bool IsOdd(this int value)
+    public static Vec2I WindowDimensions()
     {
-        return (value & 1) == 1;
+        return new Vec2I(Console.WindowWidth, Console.WindowHeight);
+    }
+
+    public static void AddEvery<T>(this List<T> list, params T[] items)
+    {
+        list.AddRange(items);
     }
 }

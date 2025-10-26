@@ -22,6 +22,8 @@ public class Node2D : Node
                 return;
             }
 
+            _position = value;
+
             UpdateChildrenGlobalPosition();
         }
     }

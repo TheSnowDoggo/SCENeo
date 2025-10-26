@@ -17,6 +17,8 @@ public sealed class TextBoxUI : UIBaseImage
 
     private bool _textOverflow = false;
 
+    public TextBoxUI() : base() { }
+
     public TextBoxUI(int width, int height) : base(width, height) { }
 
     public TextBoxUI(Vec2I dimensions) : base(dimensions) { }
@@ -105,14 +107,14 @@ public sealed class TextBoxUI : UIBaseImage
 
         var lines = SplitLines(Text);
 
-        int top = TextAnchor.AnchorVertical(lines.Count, Height);
+        int top = TextAnchor.AnchorVertical(Height - lines.Count);
 
         int startY = Math.Max(top, 0);
         int endY   = Math.Min(top + lines.Count, Height);
 
         for (int y = startY, i = startY - top; y < endY; y++, i++)
         {
-            int x = TextAnchor.AnchorHorizontal(lines[i].Length, Width);
+            int x = TextAnchor.AnchorHorizontal(Width - lines[i].Length);
 
             int startX = Math.Max(x, 0);
             int endX   = Math.Min(x + lines[i].Length, Width);

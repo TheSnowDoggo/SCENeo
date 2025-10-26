@@ -38,13 +38,12 @@ public static class BufferUtils
         return buffer;
     }
 
-    public static SmallRect WriteGrid(Grid2DView<Pixel> grid, Coord pos)
+    public static SmallRect WriteGrid(Grid2DView<Pixel> grid, Vec2I position)
     {
-        var buf = ToCharInfoBuffer(grid);
-
-        var size = new Coord((short)grid.Width, (short)grid.Height);
-
-        var rect = new SmallRect(pos.X, pos.Y, (short)(pos.X + size.X), (short)(pos.Y + size.Y));
+        CharInfo[] buf = ToCharInfoBuffer(grid);
+        Coord size     = new Coord((short)grid.Width, (short)grid.Height);
+        Coord pos      = new Coord((short)position.X, (short)position.Y);
+        SmallRect rect = new SmallRect(pos.X, pos.Y, (short)(pos.X + size.X), (short)(pos.Y + size.Y));
 
         BufferDrawer.Instance.WriteBuffer(buf, size, pos, ref rect);
 
@@ -53,6 +52,6 @@ public static class BufferUtils
 
     public static SmallRect WriteGrid(Grid2DView<Pixel> grid)
     {
-        return WriteGrid(grid, Coord.Zero);
+        return WriteGrid(grid, Vec2I.Zero);
     }
 }

@@ -61,6 +61,11 @@ public struct Vec2(float x, float y) : IEquatable<Vec2>
         return new Vec2(X / magnitude, Y / magnitude);
     }
 
+    public readonly Vec2 Round()
+    {
+        return new Vec2(MathF.Round(X), MathF.Round(Y));
+    }
+
     #endregion
 
     #region Equality

@@ -4,8 +4,6 @@ namespace SCENeo;
 
 public sealed class Updater
 {
-    private readonly Thread _thread;
-
     private bool _active = false;
 
     private int _fps = 0;
@@ -18,12 +16,9 @@ public sealed class Updater
 
     private double _realDelta = 0;
 
-    public Updater()
-    {
-        _thread = new(UpdateLoop);
-    }
+    public Updater() { }
 
-    public Action<double>? Update;
+    public Action<double>? OnUpdate;
 
     public double FPSUpdateRate { get; set; } = 1.0;
 
@@ -45,19 +40,9 @@ public sealed class Updater
 
     public void Start()
     {
-        _thread.Start();
-    }
-
-    public void Stop()
-    {
-        _active = false;
-    }
-
-    private void UpdateLoop()
-    {
         var deltaTimer = Stopwatch.StartNew();
-        var fpsTimer   = Stopwatch.StartNew();
-        var realTimer  = Stopwatch.StartNew();
+        var fpsTimer = Stopwatch.StartNew();
+        var realTimer = Stopwatch.StartNew();
 
         int frameCount = 0;
 
@@ -67,13 +52,11 @@ public sealed class Updater
         {
             realTimer.Restart();
 
-            Update?.Invoke(_delta);
+            OnUpdate?.Invoke(_delta);
 
             _realDelta = realTimer.Elapsed.TotalSeconds;
 
-            while (deltaTimer.Elapsed.TotalSeconds < _minimumDelta)
-            {
-            }
+            while (deltaTimer.Elapsed.TotalSeconds < _minimumDelta) { }
 
             _delta = deltaTimer.Elapsed.TotalSeconds;
             deltaTimer.Restart();
@@ -89,5 +72,10 @@ public sealed class Updater
                 fpsTimer.Restart();
             }
         }
+    }
+
+    public void Stop()
+    {
+        _active = false;
     }
 }

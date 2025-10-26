@@ -4,17 +4,13 @@ using System.Collections;
 namespace SCENeo;
 
 public class Grid2D<T>(T[,] data) : IEnumerable<T>,
-    ICloneable, IDimensioned
+    ICloneable, IDimensioned, IResizeable
 {
-    public Grid2D(int width, int height)
-        : this(new T[width, height])
-    {
-    }
+    public Grid2D() : this(new T[0, 0]) { }
 
-    public Grid2D(Vec2I dimensions)
-       : this(dimensions.X, dimensions.Y)
-    {
-    }
+    public Grid2D(int width, int height) : this(new T[width, height]) { }
+
+    public Grid2D(Vec2I dimensions) : this(dimensions.X, dimensions.Y) { }
 
     public T[,] Data = data;
 
@@ -120,11 +116,6 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
         }
 
         Data = newData;
-    }
-
-    public void Resize(Vec2I dimensions)
-    {
-        Resize(dimensions.X, dimensions.Y);
     }
 
     #endregion

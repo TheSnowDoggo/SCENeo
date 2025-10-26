@@ -22,23 +22,25 @@ public sealed class Viewport : UIBaseImage
         }
     }
 
+    public Viewport() : base() { }
+
     public Viewport(int width, int height) : base(width, height) { }
 
     public Viewport(Vec2I dimensions) : base(dimensions) { }
 
     public readonly List<IRenderable> Renderables = [];
 
-    public Pixel BaseColor = new(SCEColor.Black);
+    public Pixel BasePixel = new(SCEColor.Black);
 
     protected override void Update()
     {
-        _data.Fill(BaseColor);
+        _data.Fill(BasePixel);
 
         var sorted = new List<IRenderable>(Renderables.Count);
 
         foreach (IRenderable renderable in Renderables)
         {
-            if (!renderable.Active)
+            if (!renderable.Enabled)
             {
                 continue;
             }
@@ -52,9 +54,9 @@ public sealed class Viewport : UIBaseImage
         {
             Grid2DView<Pixel> view = renderable.Render();
 
-            Vec2I anchorOffset = renderable.Anchor.AnchorDimension(view.Dimensions, Dimensions);
+            Vec2I anchorOffset = renderable.Anchor.AnchorDimension(Dimensions - view.Dimensions);
 
-            _data.MergeMap(view, anchorOffset + renderable.Position);
+            _data.MergeMap(view, anchorOffset + renderable.Offset);
         }
     }
 }

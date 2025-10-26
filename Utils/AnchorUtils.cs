@@ -2,7 +2,7 @@
 
 internal static class AnchorUtils
 {
-    public static int AnchorHorizontal(this Anchor anchor, int source, int destination)
+    public static int AnchorHorizontal(this Anchor anchor, int difference)
     {
         bool right  = (anchor & Anchor.Right ) == Anchor.Right;
         bool center = (anchor & Anchor.Center) == Anchor.Center;
@@ -12,17 +12,15 @@ internal static class AnchorUtils
             return 0;
         }
 
-        int difference = destination - source;
-
         if (!center)
         {
             return difference;
         }
 
-        return right && difference.IsOdd() ? (difference / 2) + 1 : difference / 2;
+        return right && int.IsOddInteger(difference) ? (difference / 2) + 1 : difference / 2;
     }
 
-    public static int AnchorVertical(this Anchor anchor, int source, int destination)
+    public static int AnchorVertical(this Anchor anchor, int difference)
     {
         bool bottom = (anchor & Anchor.Bottom) == Anchor.Bottom;
         bool middle = (anchor & Anchor.Middle) == Anchor.Middle;
@@ -32,18 +30,16 @@ internal static class AnchorUtils
             return 0;
         }
 
-        int difference = destination - source;
-
         if (!middle)
         {
             return difference;
         }
 
-        return bottom && difference.IsOdd() ? (difference / 2) + 1 : difference / 2;
+        return bottom && int.IsOddInteger(difference) ? (difference / 2) + 1 : difference / 2;
     }
 
-    public static Vec2I AnchorDimension(this Anchor anchor, Vec2I source, Vec2I destination)
+    public static Vec2I AnchorDimension(this Anchor anchor, Vec2I difference)
     {
-        return new Vec2I(AnchorHorizontal(anchor, source.X, destination.X), AnchorVertical(anchor, source.Y, destination.Y));
+        return new Vec2I(AnchorHorizontal(anchor, difference.X), AnchorVertical(anchor, difference.Y));
     }
 }
