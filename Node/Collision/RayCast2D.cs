@@ -6,7 +6,7 @@ internal class RayCast2D : Node2D, IListen
 
     public Action<IReceive>? OnCollisionListen { get; set; }
 
-    public Vec2 EndPosition;
+    public Vec2 EndPosition { get; set; }
 
     public Vec2 GlobalEnd()
     {
@@ -15,6 +15,16 @@ internal class RayCast2D : Node2D, IListen
 
     public bool CollidesWith(IReceive other)
     {
+        if (other is BoxCollider2D box)
+        {
+            return GlobalCollision.Collides(this, box);
+        }
+
+        if (other is CircleCollider2D circle)
+        {
+            return GlobalCollision.Collides(this, circle);
+        } 
+
         throw new IncompatibleReceiverException(other);
     }
 }

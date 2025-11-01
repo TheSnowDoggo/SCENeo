@@ -7,19 +7,18 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
     public int Right  = right;
     public int Bottom = bottom;
 
-    public Rect2DI(Vec2I start, Vec2I end)
-        : this(start.X, start.Y, end.X, end.Y)
+    public Rect2DI(Vec2I start, Vec2I end) : this(start.X, start.Y, end.X, end.Y) { }
+    public Rect2DI(Vec2I dimensions) : this(Vec2I.Zero, dimensions) { }
+    public Rect2DI(int width, int height) : this(0, 0, width, height) { }
+
+    public static Rect2DI Vertical(int x, int y, int height)
     {
+        return new Rect2DI(x, y, x + 1, y + height);
     }
 
-    public Rect2DI(Vec2I dimensions)
-        : this(Vec2I.Zero, dimensions)
+    public static Rect2DI Horizontal(int x, int y, int width)
     {
-    }
-
-    public Rect2DI(int width, int height)
-        : this(0, 0, width, height)
-    {
+        return new Rect2DI(x, y, x + width, y + 1);
     }
 
     #region Operators

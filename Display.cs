@@ -3,7 +3,7 @@
 namespace SCENeo;
 
 internal sealed class Display<T>(T source)
-    where T : IRenderable, IDimensioned, IResizeable
+    where T : IRenderable, IResizeable
 {
     public readonly T Source = source;
 

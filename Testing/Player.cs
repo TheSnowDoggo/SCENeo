@@ -1,15 +1,14 @@
 ﻿using SCENeo.UI;
+using SCENeo.Node;
 using SCENeo.Node.Render;
 using SCENeo.Node.Collision;
 using SCENeo.Utils;
 
-namespace SCENeo.Node;
+namespace SCENeo.Testing;
 
-internal sealed class Player : Node2D
+internal sealed class Player : KinematicNode2D
 {
-    private Vec2 _moveVec;
-
-    public double MoveSpeed = 5;
+    public double MoveSpeed = 0;
 
     public float Rotation = 0;
 
@@ -34,17 +33,18 @@ internal sealed class Player : Node2D
             dpMap.MapLine("hello", 0, y, new ColorInfo(SCEColor.White, SCEColor.Transparent));
         }
 
-        var sprite = new Sprite2D<HorizontalScaler<DisplayMap>>()
+        var sprite = new Sprite2D()
         {
             Name   = "Sprite2D",
-            Source = new(dpMap, 2)
+            Source = new Stretcher(dpMap)
             {
-                TextScaling = TextScaleMode.Slide,
+                ScaleWidth  = 2,
+                TextScaling = Stretcher.Scaling.Slide,
                 Bake        = true,
             },
         };
 
-        var collider = new SphereCollider2D()
+        var collider = new CircleCollider2D()
         {
             Radius = 2.0f,
             Layers = SCEUtils.CreateFlags(0),
@@ -56,16 +56,16 @@ internal sealed class Player : Node2D
 
     public override void Start()
     {
-        _moveVec = Vec2.Right.Rotated(Rotation).Normalized();
+        Velocity = Vec2.Right.Rotated(Rotation).Normalized() * (float)MoveSpeed;
     }
 
     public override void Update(double delta)
     {
-        Position += _moveVec * (float)(MoveSpeed * delta);
+        Move(delta);
     }
 
     private void OnCollisionReceive(IListen listener)
     {
-        throw new Exception("collided");
+        //throw new Exception("collided");
     }
 }

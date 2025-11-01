@@ -1,6 +1,6 @@
 ﻿namespace SCENeo.Node.Collision;
 
-public sealed class SphereCollider2D : Collider2D
+public sealed class CircleCollider2D : Collider2D
 {
     public float Radius;
 
@@ -38,7 +38,7 @@ public sealed class SphereCollider2D : Collider2D
 
     public override bool CollidesWith(IReceive receiver)
     {
-        if (receiver is SphereCollider2D sphere)
+        if (receiver is CircleCollider2D sphere)
         {
             return GlobalCollision.Collides(this, sphere);
         }

@@ -4,6 +4,8 @@ namespace SCENeo;
 
 public sealed class Updater
 {
+    public const int Uncapped = -1;
+
     private bool _active = false;
 
     private int _fps = 0;
@@ -22,15 +24,15 @@ public sealed class Updater
 
     public double FPSUpdateRate { get; set; } = 1.0;
 
-    public double Delta     => _delta;
+    public double Delta { get { return _delta; } }
 
-    public double RealDelta => _realDelta;
+    public double RealDelta { get { return _realDelta; } }
 
-    public int FPS => _fps;
+    public int FPS { get { return _fps; } }
 
     public int FrameCap
     {
-        get => _frameCap;
+        get { return _frameCap; }
         set
         {
             _frameCap     = value;

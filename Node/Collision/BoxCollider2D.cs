@@ -16,7 +16,7 @@ public sealed class BoxCollider2D : Collider2D
             return GlobalCollision.Collides(this, box);
         }
 
-        if (receiver is SphereCollider2D sphere)
+        if (receiver is CircleCollider2D sphere)
         {
             return GlobalCollision.Collides(sphere, this);
         }

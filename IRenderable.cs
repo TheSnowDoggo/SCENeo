@@ -1,6 +1,6 @@
 ﻿namespace SCENeo;
 
-public interface IRenderable
+public interface IRenderable : IDimensioned
 {
     bool Enabled { get; }
 

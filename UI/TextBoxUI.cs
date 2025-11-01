@@ -94,10 +94,7 @@ public sealed class TextBoxUI : UIBaseImage
 
     protected override void Update()
     {
-        if (!_update)
-        {
-            return;
-        }
+        if (!_update) return;
 
         _update = false;
 
@@ -108,18 +105,13 @@ public sealed class TextBoxUI : UIBaseImage
         int top = TextAnchor.AnchorVertical(Height - lines.Count);
 
         int startY = Math.Max(top, 0);
-        int endY   = Math.Min(top + lines.Count, Height);
+        int endY = Math.Min(top + lines.Count, Height);
 
         for (int y = startY, i = startY - top; y < endY; y++, i++)
         {
             int x = TextAnchor.AnchorHorizontal(Width - lines[i].Length);
 
-            int startX = Math.Max(x, 0);
-            int endX   = Math.Min(x + lines[i].Length, Width);
-
-            string subStr = lines[i].Substring(startX - x, endX - startX);
-
-            _source.MapLine(subStr, startX, y, _textColorInfo);
+            _source.MapLine(lines[i], x, y, _textColorInfo);
         }
     }
 }

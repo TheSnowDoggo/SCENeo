@@ -1,39 +1,52 @@
-﻿namespace SCENeo.UI;
+﻿using SCENeo.Utils;
 
-public sealed class HorizontalScaler<T> : UIModifier<T>, IRenderable, IDimensioned
-    where T : IRenderable, IDimensioned
+namespace SCENeo.UI;
+
+public sealed class Stretcher : UIModifier<IRenderable>
 {
-    private readonly Image _buffer;
-
-    public HorizontalScaler(T source, int scaleWidth) : base(source)
+    public enum Scaling
     {
-        if (scaleWidth < 1)
-        {
-            throw new NotImplementedException("Scale width cannot be negative or zero.");
-        }
-
-        _buffer = new Image(source.Width * scaleWidth, source.Height);
-
-        ScaleWidth = scaleWidth;
+        None,
+        Stretch,
+        Slide,
+        Hide,
     }
 
-    public readonly int ScaleWidth;
+    private readonly Image _buffer = new Image();
 
-    public TextScaleMode TextScaling = TextScaleMode.None;
+    private int _scaleWidth;
 
-    public bool Bake = false;
+    public Stretcher(IRenderable source) : base(source) { }
 
-    public bool IsBaked = false;
+    public int ScaleWidth
+    {
+        get {  return _scaleWidth; }
+        set
+        {
+            if (value < 1)
+            {
+                throw new NotImplementedException("Scale width cannot be negative or zero.");
+            }
 
-    public override int Width { get { return _buffer.Width * ScaleWidth; } }
+            _scaleWidth = value;
+        }
+    }
+
+    public Scaling TextScaling { get; set; } = Scaling.None;
+
+    public bool Bake { get; set; } = false;
+
+    public bool IsBaked { get; set; } = false;
+
+    public override int Width { get { return _source.Width * ScaleWidth; } }
 
     private void Update()
     {
         Grid2DView<Pixel> view = _source.Render();
 
-        if (_buffer.Dimensions != view.Dimensions)
+        if (_buffer.Dimensions != this.Dimensions())
         {
-            _buffer.CleanResize(view.Width * ScaleWidth, view.Height);
+            _buffer.CleanResize(Width, view.Height);
         }
 
         for (int y = 0; y < view.Height; y++)
@@ -42,20 +55,20 @@ public sealed class HorizontalScaler<T> : UIModifier<T>, IRenderable, IDimension
             {
                 switch (TextScaling)
                 {
-                    case TextScaleMode.None:
+                    case Scaling.None:
                         _buffer[x * ScaleWidth, y] = view[x, y];
                         for (int i = 1; i < ScaleWidth; i++)
                             _buffer[x * ScaleWidth + i, y] = new Pixel(view[x, y].Colors);
                         break;
-                    case TextScaleMode.Stretch:
+                    case Scaling.Stretch:
                         for (int i = 0; i < ScaleWidth; i++)
                             _buffer[x * ScaleWidth + i, y] = view[x, y];
                         break;
-                    case TextScaleMode.Slide:
+                    case Scaling.Slide:
                         for (int i = 0; i < ScaleWidth; i++)
                             _buffer[x + view.Width * i, y] = view[x, y];
                         break;
-                    case TextScaleMode.Hide:
+                    case Scaling.Hide:
                         for (int i = 0; i < ScaleWidth; i++)
                             _buffer[x * ScaleWidth + i, y] = new Pixel(view[x, y].Colors);
                         break;

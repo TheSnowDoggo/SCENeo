@@ -1,6 +1,6 @@
 ﻿using SCENeo.UI;
 
-namespace SCENeo.Node;
+namespace SCENeo.Node.Render;
 
 public sealed class RenderChannel : UIBaseImage
 {

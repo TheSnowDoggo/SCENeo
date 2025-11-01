@@ -28,6 +28,10 @@ public readonly struct Pixel(char element, ColorInfo colors)
 
     public static bool operator !=(Pixel p1, Pixel p2) => !p1.Equals(p2);
 
+    public static Pixel Empty { get { return new Pixel(); } }
+
+    public static Pixel Transparent { get { return new Pixel('\0', SCEColor.Transparent, SCEColor.Transparent); } }
+
     public readonly Pixel Merge(Pixel other)
     {
         return new Pixel(Element.Merge(other.Element), Colors.Merge(other.Colors));

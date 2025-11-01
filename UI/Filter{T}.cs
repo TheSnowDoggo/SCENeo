@@ -2,14 +2,13 @@
 
 namespace SCENeo.UI;
 
-public sealed class Filter<T> : UIModifier<T>
-    where T : IRenderable, IDimensioned
+public sealed class Filter : UIModifier<IRenderable>
 {
     private readonly Image _buffer;
 
-    public Filter(T source) : base(source)
+    public Filter(IRenderable source) : base(source)
     {
-        _buffer = new Image(source.Dimensions());
+        _buffer = new Image(source.Width, source.Height);
     }
 
     public Func<Pixel, Pixel>? FilterMode = null;

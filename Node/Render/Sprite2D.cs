@@ -1,9 +1,12 @@
 ﻿namespace SCENeo.Node.Render;
 
-public sealed class Sprite2D<T> : Node2D, IRenderable
-    where T : IRenderable
+public sealed class Sprite2D : Node2D, IRenderable
 {
-    public T? Source { get; set; } = default;
+    public IRenderable? Source { get; set; } = default;
+
+    public int Width { get { return GetSource().Width; } }
+
+    public int Height { get { return GetSource().Height; } }
 
     public bool Enabled { get { return Source != null; } }
 

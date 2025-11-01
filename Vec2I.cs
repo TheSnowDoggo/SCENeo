@@ -65,6 +65,12 @@ public struct Vec2I(int x, int y) : IEquatable<Vec2I>
         return new Vec2I(-X, -Y);
     }
 
+    public readonly void Deconstruct(out int x, out int y)
+    {
+        x = X;
+        y = Y;
+    }
+
     #endregion
 
     #region Equality

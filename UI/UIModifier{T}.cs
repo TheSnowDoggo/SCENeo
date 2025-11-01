@@ -1,7 +1,7 @@
 ﻿namespace SCENeo.UI;
 
-public abstract class UIModifier<T>(T source) : IRenderable, IDimensioned
-    where T : IRenderable, IDimensioned
+public abstract class UIModifier<T>(T source) : IRenderable
+    where T : IRenderable
 {
     protected readonly T _source = source;
 

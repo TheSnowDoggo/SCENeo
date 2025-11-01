@@ -7,11 +7,11 @@ public struct Vec2(float x, float y) : IEquatable<Vec2>
 
     #region Presets
 
-    public static Vec2 Zero  => new(+0, +0);
-    public static Vec2 Up    => new(+0, -1);
-    public static Vec2 Down  => new(+0, +1);
-    public static Vec2 Left  => new(-1, +0);
-    public static Vec2 Right => new(+1, +0);
+    public static Vec2 Zero  => new( 0f,  0f);
+    public static Vec2 Up    => new( 0f, -1f);
+    public static Vec2 Down  => new( 0f, +1f);
+    public static Vec2 Left  => new(-1f,  0f);
+    public static Vec2 Right => new(+1f,  0f);
 
     #endregion
 
@@ -40,6 +40,27 @@ public struct Vec2(float x, float y) : IEquatable<Vec2>
 
     #region Maths
 
+    public readonly Rect2D AreaBetween(Vec2 other)
+    {
+        return new Rect2D()
+        {
+            Left   = MathF.Min(X, other.X),
+            Top    = MathF.Min(Y, other.Y),
+            Right  = MathF.Max(X, other.X),
+            Bottom = MathF.Max(Y, other.Y),
+        };
+    }
+
+    public readonly float Length()
+    {
+        return MathF.Sqrt(X * X + Y * Y);
+    }
+
+    public readonly float LengthSquared()
+    {
+        return X * X + Y * Y;
+    }
+
     public readonly Vec2 Abs()
     {
         return new Vec2(Math.Abs(X), Math.Abs(Y));
@@ -50,36 +71,52 @@ public struct Vec2(float x, float y) : IEquatable<Vec2>
         return new Vec2(Y, X);
     }
 
-    public readonly float Magnitude()
+    public readonly float DistanceTo(Vec2 target)
     {
-        return MathF.Sqrt(X * X + Y * Y);
-    }
-
-    public readonly float DistanceTo(Vec2 other)
-    {
-        return (other - this).Magnitude();
-    }
-
-    public readonly bool HasGradientBetwen(Vec2 other)
-    {
-        return X != other.X;
-    }
-
-    public readonly float GradientBetween(Vec2 other)
-    {
-        return (other.Y - Y) / (other.X - X);
+        return (target - this).Length();
     }
 
     public readonly Vec2 Normalized()
     {
-        float magnitude = Magnitude();
-        return new Vec2(X / magnitude, Y / magnitude);
+        float l = LengthSquared();
+
+        if (l == 0f) return Zero;
+
+        l = MathF.Sqrt(l);
+
+        return new Vec2(X / l, Y / l);
     }
 
-    public readonly Vec2 Round()
+    public readonly float Angle()
     {
-        return new Vec2(MathF.Round(X), MathF.Round(Y));
+        return MathF.Atan(Y / X);
     }
+
+    public readonly Vec2 DirectionTo(Vec2 target)
+    {
+        return (target - this).Normalized();
+    }
+
+    public readonly float Dot(Vec2 other)
+    {
+        return X * other.X + Y * other.Y;
+    }
+
+    public readonly Vec2 Truncate(float maxLength)
+    {
+        Vec2 result = this;
+        float length = result.Length();
+        if (length > 0f && length > maxLength)
+        {
+            result /= length;
+            result *= maxLength;
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Rotate
 
     public readonly Vec2 Rotated(float rotation)
     {
@@ -105,9 +142,70 @@ public struct Vec2(float x, float y) : IEquatable<Vec2>
         return new Vec2(-X, -Y);
     }
 
-    public readonly float Angle()
+    #endregion
+
+    #region Round
+
+    public readonly Vec2 Round()
     {
-        return MathF.Atan(Y / X);
+        return new Vec2(MathF.Round(X), MathF.Round(Y));
+    }
+
+    public readonly Vec2 Round(int digits)
+    {
+        return new Vec2(MathF.Round(X, digits), MathF.Round(Y, digits));
+    }
+
+    public readonly Vec2 Round(MidpointRounding mode)
+    {
+        return new Vec2(MathF.Round(X, mode), MathF.Round(Y, mode));
+    }
+
+    public readonly Vec2 Round(int digits, MidpointRounding mode)
+    {
+        return new Vec2(MathF.Round(X, digits, mode), MathF.Round(Y, digits, mode));
+    }
+
+    public readonly Vec2 Floor()
+    {
+        return new Vec2(MathF.Floor(X), MathF.Floor(Y));
+    }
+
+    public readonly Vec2 Ceiling()
+    {
+        return new Vec2(MathF.Ceiling(X), MathF.Ceiling(Y));
+    }
+
+    #endregion
+
+    #region Line
+
+    public readonly bool HasGradientBetwen(Vec2 other)
+    {
+        return X != other.X;
+    }
+
+    public readonly float GradientBetween(Vec2 other)
+    {
+        float d = other.X - X;
+        if (d == 0) return float.NaN;
+        return (other.Y - Y) / d;
+    }
+
+    public readonly void LineBetween(Vec2 other, out float gradient, out float yIntercept)
+    {
+        gradient = GradientBetween(other);
+        yIntercept = float.IsNaN(gradient) ? float.NaN : Y - gradient * X;
+    }
+
+    #endregion
+
+    #region Utility
+
+    public readonly void Deconstruct(out float x, out float y)
+    {
+        x = X;
+        y = Y;
     }
 
     #endregion

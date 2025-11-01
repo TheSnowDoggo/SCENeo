@@ -1,6 +1,6 @@
 ﻿namespace SCENeo.UI;
 
-public abstract class UIBase<T>(T source) : IRenderable, IDimensioned, IResizeable
+public abstract class UIBase<T>(T source) : IRenderable, IResizeable
     where T : IDimensioned, IResizeable
 {
     protected readonly T _source = source;

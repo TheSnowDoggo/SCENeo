@@ -40,9 +40,30 @@ internal static class SCEUtils
         }
     }
 
-    public static bool InInclusiveRange(this float value, float min, float max)
+    public static bool InFullRange(this float value, float min, float max)
     {
         return value >= min && value <= max;
+    }
+
+    public static float Squared(this float value)
+    {
+        return value * value;
+    }
+
+    public static bool InRange<T>(this IReadOnlyList<T> list, int index)
+    {
+        return index >= 0 && index < list.Count;
+    }
+
+    public static T TryGetOrDefault<T>(this IReadOnlyList<T> list, int index, T defaultValue)
+    {
+        return index >= 0 && index < list.Count ? list[index] : defaultValue;
+    }
+
+    public static int Mod(int a, int b)
+    {
+        int mod = a % b;
+        return a >= 0 ? mod : mod + b;
     }
 
     #region Collision
@@ -194,17 +215,13 @@ internal static class SCEUtils
     /// </summary>
     /// <param name="angle">The angle in radians.</param>
     /// <returns>The resulting angle in degrees.</returns>
-    public static float RadToDeg(float angle)
+    public static float RadToDeg(this float angle)
     {
         return angle * FRadDegFactor;
     }
 
-    /// <summary>
-    /// Converts from radians to degrees.
-    /// </summary>
-    /// <param name="angle">The angle in radians.</param>
-    /// <returns>The resulting angle in degrees.</returns>
-    public static double RadToDeg(double angle)
+    /// <inheritdoc cref="RadToDeg(float)"/>
+    public static double RadToDeg(this double angle)
     {
         return angle * DRadDegFactor;
     }
@@ -214,17 +231,13 @@ internal static class SCEUtils
     /// </summary>
     /// <param name="angle">The angle in degrees.</param>
     /// <returns>The resulting angle in radians.</returns>
-    public static float DegToRad(float angle)
+    public static float DegToRad(this float angle)
     {
         return angle / FRadDegFactor;
     }
 
-    /// <summary>
-    /// Converts from degrees to radians.
-    /// </summary>
-    /// <param name="angle">The angle in degrees.</param>
-    /// <returns>The resulting angle in radians.</returns>
-    public static double DegToRad(double angle)
+    /// <inheritdoc cref="DegToRad(float)"/>
+    public static double DegToRad(this double angle)
     {
         return angle / DRadDegFactor;
     }
@@ -240,13 +253,13 @@ internal static class SCEUtils
     /// <param name="min">The minimum value.</param>
     /// <param name="max">The maximum value.</param>
     /// <returns>The interpolated result.</returns>
-    public static float Lerp(float t, float min, float max)
+    public static float Lerp(this float t, float min, float max)
     {
         return min + (max - min) * t;
     }
 
-    /// <see cref="Lerp(float,float,float)"/>
-    public static double Lerp(double t, double min, double max)
+    /// <inheritdoc cref="Lerp(float,float,float)"/>
+    public static double Lerp(this double t, double min, double max)
     {
         return min + (max - min) * t;
     }
@@ -258,13 +271,13 @@ internal static class SCEUtils
     /// <param name="min">The minimum value.</param>
     /// <param name="max">The maximum value.</param>
     /// <returns>The ratio between min and max of the value.</returns>
-    public static float Unlerp(float value, float min, float max)
+    public static float Unlerp(this float value, float min, float max)
     {
         return (value - min) / (max - min);
     }
 
-    /// <see cref="Unlerp(float,float,float)"/>
-    public static double Unlerp(double value, double min, double max)
+    /// <inheritdoc cref="Unlerp(float,float,float)"/>
+    public static double Unlerp(this double value, double min, double max)
     {
         return (value - min) / (max - min);
     }

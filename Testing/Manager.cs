@@ -4,7 +4,7 @@ using SCENeo.Utils;
 using SCENeo.Node.Render;
 using SCENeo.Node.Collision;
 
-namespace SCENeo;
+namespace SCENeo.Testing;
 
 internal sealed class Manager
 {
@@ -46,10 +46,10 @@ internal sealed class Manager
         var rc2 = new RenderChannel(40, 15)
         {
             BasePixel = new Pixel(SCEColor.Cyan),
-            Anchor    = Anchor.Right | Anchor.Bottom,
+            //Anchor    = Anchor.Right | Anchor.Bottom,
         };
 
-        var rc2Filter = new Filter<RenderChannel>(rc2)
+        var rc2Filter = new Filter(rc2)
         {
             FilterMode = null, 
         };
@@ -85,7 +85,7 @@ internal sealed class Manager
         var player = new Player()
         {
             Name     = "Player",
-            Rotation = SCEUtils.DegToRad(35.0f),
+            Rotation = SCEUtils.DegToRad(10.0f),
         };
 
         var box = new Box()
@@ -94,7 +94,14 @@ internal sealed class Manager
             Position = new Vec2(30, 15),
         };
 
-        _nm.Tree.Root.AddChildren(player, box, camera);
+        var enemy = new Enemy()
+        {
+            Name        = "Enemy",
+            Position    = new Vec2(70, 70),
+            MaxVelocity = 10,
+        };
+
+        _nm.Tree.Root.AddChildren(enemy, player, box, camera);
     }
 
     public void Run()
@@ -114,11 +121,11 @@ internal sealed class Manager
 
         _display.Update();
 
-        _fpsUI.Text = $"FPS: {_updater.FPS}\n{_nm.Tree.Root.GetNode<Node2D>("Player/Sprite2D").GlobalPosition}";
+        _fpsUI.Text = $"FPS: {_updater.FPS}\n{_nm.Tree.Root.GetNode<Node2D>("Enemy").GlobalPosition}";
     }
 
     private void Display_OnResize(Vec2I newDimensions)
     {
-        _re.Channels[0].Resize(newDimensions);
+        _re.Channels[1].Resize(newDimensions);
     }
 }

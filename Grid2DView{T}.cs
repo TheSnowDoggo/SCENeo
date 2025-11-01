@@ -3,7 +3,7 @@
 namespace SCENeo;
 
 public sealed class Grid2DView<T>(Grid2D<T> grid) : IEnumerable<T>,
-    ICloneable, IDimensioned
+    ICloneable
 {
     private readonly Grid2D<T> _grid = grid;
 
