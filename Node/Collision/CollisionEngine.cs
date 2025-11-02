@@ -4,35 +4,49 @@ namespace SCENeo.Node.Collision;
 
 public sealed class CollisionEngine : IEngine
 {
+    private sealed class CollisionState
+    {
+        public readonly List<IListener>                  Listeners = [];
+        public readonly Dictionary<int, List<IReceiver>> Layers    = [];
+
+        public void AddReceiver(int layer, IReceiver receiver)
+        {
+            if (!Layers.TryGetValue(layer, out List<IReceiver>? receivers))
+            {
+                receivers = [];
+                Layers.Add(layer, receivers);
+            }
+
+            receivers.Add(receiver);
+        }
+    }
+
     public bool Enabled { get; set; } = true;
 
     public void Update(double _, IReadOnlyList<Node> nodes)
     {
-        var listeners  = LoadListeners(nodes);
-        var layers     = LoadReceivers(nodes);
+        FindCollisions(LoadCollisionState(nodes));
+    }
 
-        while (listeners.TryDequeue(out IListen? listener))
+    private static void FindCollisions(CollisionState collisionState)
+    {
+        foreach (IListener listener in collisionState.Listeners)
         {
-            FindCollisions(listener, layers);
-        }
-    }
-
-    private static void FindCollisions(IListen listener, Dictionary<int, List<IReceive>> layers)
-    {
-        foreach (int mask in listener.Masks.EnumerateFlags()) 
-        { 
-            if (!layers.TryGetValue(mask, out List<IReceive>? receivers))
+            foreach (int mask in listener.Masks.EnumerateFlags())
             {
-                continue;
-            }
+                if (!collisionState.Layers.TryGetValue(mask, out List<IReceiver>? receivers))
+                {
+                    continue;
+                }
 
-            FindCollisionsInLayer(listener, receivers);
+                FindCollisionsInLayer(listener, receivers);
+            }
         }
     }
 
-    private static void FindCollisionsInLayer(IListen listener, List<IReceive> receivers)
+    private static void FindCollisionsInLayer(IListener listener, List<IReceiver> receivers)
     {
-        foreach (IReceive receiver in receivers)
+        foreach (IReceiver receiver in receivers)
         {
             if (listener == receiver)
             {
@@ -47,46 +61,26 @@ public sealed class CollisionEngine : IEngine
         }
     }
 
-    private static Queue<IListen> LoadListeners(IReadOnlyList<Node> nodes)
+    private static CollisionState LoadCollisionState(IReadOnlyList<Node> nodes)
     {
-        var queue = new Queue<IListen>();
+        var state = new CollisionState();
 
         foreach (Node node in nodes)
         {
-            if (node is not IListen listener || listener.Masks == 0)
+            if (node is IListener listener && listener.Masks != 0)
             {
-                continue;
+                state.Listeners.Add(listener);
             }
 
-            queue.Enqueue(listener);
-        }
-
-        return queue;
-    }
-
-    private static Dictionary<int, List<IReceive>> LoadReceivers(IReadOnlyList<Node> nodes)
-    {
-        var layers = new Dictionary<int, List<IReceive>>();
-
-        foreach (Node node in nodes)
-        {
-            if (node is not IReceive receiver || receiver.Layers == 0)
+            if (node is IReceiver receiver)
             {
-                continue;
-            }
-
-            foreach (int layer in receiver.Layers.EnumerateFlags())
-            {
-                if (!layers.TryGetValue(layer, out var list))
+                foreach (int layer in receiver.Layers.EnumerateFlags())
                 {
-                    list          = [];
-                    layers[layer] = list;
+                    state.AddReceiver(layer, receiver);
                 }
-
-                list.Add(receiver);
             }
         }
 
-        return layers;
+        return state;
     }
 }

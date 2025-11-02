@@ -64,7 +64,7 @@ internal sealed class Player : KinematicNode2D
         Move(delta);
     }
 
-    private void OnCollisionReceive(IListen listener)
+    private void OnCollisionReceive(IListener listener)
     {
         //throw new Exception("collided");
     }

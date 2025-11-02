@@ -1,10 +1,10 @@
 ﻿namespace SCENeo.Node.Collision;
 
-internal class RayCast2D : Node2D, IListen
+internal class RayCast2D : Node2D, IListener
 {
     public ushort Masks { get; set; }
 
-    public Action<IReceive>? OnCollisionListen { get; set; }
+    public Action<IReceiver>? OnCollisionListen { get; set; }
 
     public Vec2 EndPosition { get; set; }
 
@@ -13,7 +13,7 @@ internal class RayCast2D : Node2D, IListen
         return GlobalPosition + EndPosition;
     }
 
-    public bool CollidesWith(IReceive other)
+    public bool CollidesWith(IReceiver other)
     {
         if (other is BoxCollider2D box)
         {

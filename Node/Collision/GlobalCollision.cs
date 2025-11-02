@@ -11,7 +11,7 @@ internal static class GlobalCollision
 
     public static bool Collides(CircleCollider2D circle1, CircleCollider2D circle2)
     {
-        return circle1.GlobalPosition.DistanceTo(circle2.GlobalPosition) < circle1.Radius + circle2.Radius; 
+        return circle1.GlobalPosition.DistanceTo(circle2.GlobalPosition) <= circle1.Radius + circle2.Radius; 
     }
 
     public static bool Collides(CircleCollider2D sphere, BoxCollider2D box)
@@ -48,13 +48,20 @@ internal static class GlobalCollision
         Rect2D lineArea = start.AreaBetween(end);
         Rect2D boxArea  = box.GlobalArea();
 
-        if (lineArea.Left == lineArea.Right)
+        if (!boxArea.Overlaps(lineArea))
         {
-            return lineArea.Top >= boxArea.Bottom && lineArea.Bottom <= boxArea.Top;
+            return false;
         }
 
-        if ( boxArea.Contains(lineArea)) return true;
-        if (!boxArea.Overlaps(lineArea)) return false;
+        if (lineArea.Left == lineArea.Right)
+        {
+            return true;
+        }
+
+        if (boxArea.Contains(lineArea))
+        {
+            return true;
+        }
 
         start.LineBetween(end, out float m, out float c);
 
@@ -74,13 +81,16 @@ internal static class GlobalCollision
         raycast.GlobalPosition.LineBetween(raycast.GlobalEnd(), out float l_m, out float l_c);
 
         circle.GlobalPosition.Deconstruct(out float c_a, out float c_b);
+
         float c_r = circle.Radius;
 
         float q_a = l_m.Squared() + 1;
         float q_b = (l_m * (l_c - c_b) - c_a) * 2;
         float q_c = (l_c - c_b).Squared() + c_a.Squared() - c_r.Squared();
 
-        return q_b.Squared() - (4 * q_a * q_c) >= 0;
+        float discriminant = q_b.Squared() - (4 * q_a * q_c);
+
+        return discriminant >= 0;
     }
     
     private static float YIntersectVertical(float m, float c, float x)

@@ -1,4 +1,6 @@
-﻿namespace SCENeo.Node.Collision;
+﻿using SCENeo.Utils;
+
+namespace SCENeo.Node.Collision;
 
 public sealed class CircleCollider2D : Collider2D
 {
@@ -33,10 +35,10 @@ public sealed class CircleCollider2D : Collider2D
 
     private float Descriminant(float m)
     {
-        return Radius * Radius - m * m;
+        return Radius.Squared() - m.Squared();
     }
 
-    public override bool CollidesWith(IReceive receiver)
+    public override bool CollidesWith(IReceiver receiver)
     {
         if (receiver is CircleCollider2D sphere)
         {

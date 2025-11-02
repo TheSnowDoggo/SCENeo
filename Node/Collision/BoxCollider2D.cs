@@ -9,7 +9,7 @@ public sealed class BoxCollider2D : Collider2D
         return Area + GlobalPosition;
     }
 
-    public override bool CollidesWith(IReceive receiver)
+    public override bool CollidesWith(IReceiver receiver)
     {
         if (receiver is BoxCollider2D box)
         {

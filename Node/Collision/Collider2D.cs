@@ -1,12 +1,12 @@
 ﻿namespace SCENeo.Node.Collision;
 
-public abstract class Collider2D : Node2D, IReceive, IListen
+public abstract class Collider2D : Node2D, IReceiver, IListener
 {
     public ushort Layers { get; set; }
     public ushort Masks { get; set; }
 
-    public Action<IReceive>? OnCollisionListen { get; set; }
-    public Action<IListen>? OnCollisionReceive { get; set; }
+    public Action<IReceiver>? OnCollisionListen { get; set; }
+    public Action<IListener>? OnCollisionReceive { get; set; }
 
-    public abstract bool CollidesWith(IReceive other);
+    public abstract bool CollidesWith(IReceiver other);
 }
