@@ -11,6 +11,16 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
     public Rect2DI(Vec2I dimensions) : this(Vec2I.Zero, dimensions) { }
     public Rect2DI(int width, int height) : this(0, 0, width, height) { }
 
+    public static Rect2DI Area(int x, int y, int width, int height)
+    {
+        return new Rect2DI(x, y, x + width, y + height);
+    }
+
+    public static Rect2DI Area(Vec2I position, Vec2I dimensions)
+    {
+        return new Rect2DI(position, position + dimensions);
+    }
+
     public static Rect2DI Vertical(int x, int y, int height)
     {
         return new Rect2DI(x, y, x + 1, y + height);

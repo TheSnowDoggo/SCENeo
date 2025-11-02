@@ -2,7 +2,7 @@
 
 public sealed class Camera2D : Node2D
 {
-    public int Channel;
+    public int Channel { get; set; }
 
     public Vec2I RenderPosition()
     {

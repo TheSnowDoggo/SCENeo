@@ -10,10 +10,6 @@ public class Node
 
     private string _name = string.Empty;
 
-    private bool _active = true;
-
-    private bool _globalActive = true;
-
     public Node(NodeTree? tree = null)
     {
         if (tree != null) _tree = tree;
@@ -45,21 +41,9 @@ public class Node
 
     public Node? Parent { get { return _parent; } }
 
-    public bool Active
-    {
-        get { return _active; }
-        set
-        {
-            _active = value;
+    public NodeTree? Tree { get { return _tree; } }
 
-            if (_globalActive != _active)
-            {
-                UpdateChildrenGlobalActive();
-            }
-        }
-    }
-
-    public bool GlobalActive { get { return _globalActive; } }
+    public bool Active { get; set; } = true;
 
     public Dictionary<string, Node>.ValueCollection Children { get { return _children.Values; } }
 
@@ -77,11 +61,6 @@ public class Node
 
         child._parent = this;
         child._tree   = _tree;
-
-        if (child._globalActive != _globalActive)
-        {
-            child.UpdateChildrenGlobalActive();
-        }
     }
 
     public void AddChildren(params Node[] children)
@@ -103,11 +82,6 @@ public class Node
 
         child._parent = null;
         child._tree   = null;
-
-        if (child._globalActive != child._active)
-        {
-            child.UpdateChildrenGlobalActive();
-        }
     }
 
     public Node GetChild(string name)
@@ -142,6 +116,11 @@ public class Node
         return (T)GetNode(path);
     }
 
+    public void QueueRemove()
+    {
+        _tree?.QueueRemove(this);
+    }
+
     public virtual void Start()
     {
     }
@@ -168,16 +147,6 @@ public class Node
 
                 stack.Push(child);
             }
-        }
-    }
-
-    private void UpdateChildrenGlobalActive()
-    {
-        _globalActive = Parent == null ? _active : Parent._globalActive && _active;
-
-        foreach (Node child in Children)
-        {
-            child.UpdateChildrenGlobalActive();
         }
     }
 }

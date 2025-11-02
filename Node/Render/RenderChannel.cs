@@ -4,11 +4,15 @@ namespace SCENeo.Node.Render;
 
 public sealed class RenderChannel : UIBaseImage
 {
-    public Pixel BasePixel;
-
     public RenderChannel() : base() { }
     public RenderChannel(int width, int height) : base(width, height) { }
     public RenderChannel(Vec2I dimensions) : base(dimensions) { }
+
+    #region Properties
+
+    public Pixel BasePixel { get; set; }
+
+    #endregion
 
     public void Clear()
     {

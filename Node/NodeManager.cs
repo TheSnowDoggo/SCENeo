@@ -37,5 +37,7 @@ public sealed class NodeManager
                 engine.Update(delta, active);
             }
         }
+
+        Tree.ClearRemoveQueue();
     }
 }
