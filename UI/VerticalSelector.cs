@@ -24,6 +24,8 @@ public sealed class VerticalSelector : UIBaseImage
         _options = new Option[dimensions.Y];
     }
 
+    #region Properties
+
     public Option this[int option]
     {
         get { return _options[option]; }
@@ -60,20 +62,7 @@ public sealed class VerticalSelector : UIBaseImage
         set { SCEUtils.ObserveSet(value, ref _selected, ref _update); }
     }
 
-    private void Line_OnUpdate(object? sender, EventArgs args)
-    {
-        _update = true;
-    }
-
-    private int TranslateY(int i)
-    {
-        return StackMode switch
-        {
-            StackMode.TopDown  => i,
-            StackMode.BottomUp => Height - i - 1,
-            _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}.")
-        };
-    }
+    #endregion
 
     public override void Resize(int width, int height)
     {
@@ -123,7 +112,7 @@ public sealed class VerticalSelector : UIBaseImage
 
         for (int i = 0; i < _options.Length; i++)
         {
-            if (_options[i] == null     ) continue;
+            if (_options[i] == null) continue;
             if (_options[i].Text == null) continue;
 
             int x = _options[i].Anchor.AnchorHorizontal(Width - _options[i].Text.Length);
@@ -133,5 +122,20 @@ public sealed class VerticalSelector : UIBaseImage
 
             _source.MapLine(_options[i].Text, x, y, colors);
         }
+    }
+
+    private void Line_OnUpdate(object? sender, EventArgs args)
+    {
+        _update = true;
+    }
+
+    private int TranslateY(int i)
+    {
+        return StackMode switch
+        {
+            StackMode.TopDown  => i,
+            StackMode.BottomUp => Height - i - 1,
+            _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}.")
+        };
     }
 }

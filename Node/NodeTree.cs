@@ -8,8 +8,4 @@ public sealed class NodeTree
     }
 
     public readonly Node Root;
-
-    public Action<Node>? OnNodeAdded { get; init; }
-
-    public Action<Node>? OnNodeRemoved { get; init; }
 }

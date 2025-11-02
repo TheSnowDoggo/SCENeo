@@ -21,6 +21,8 @@ public sealed class TextBoxUI : UIBaseImage
     public TextBoxUI(int width, int height) : base(width, height) { }
     public TextBoxUI(Vec2I dimensions) : base(dimensions) { }
 
+    #region Properties
+
     public Pixel BasePixel
     {
         get { return _basePixel; }
@@ -56,6 +58,8 @@ public sealed class TextBoxUI : UIBaseImage
         get { return _textOverflow; }
         set { SCEUtils.ObserveSet(value, ref _textOverflow, ref _update); }
     }
+
+    #endregion
 
     private static bool IsNewline(char c)
     {

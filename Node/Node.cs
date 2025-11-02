@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace SCENeo.Node;
+﻿namespace SCENeo.Node;
 
 public class Node
 {
@@ -84,8 +82,6 @@ public class Node
         {
             child.UpdateChildrenGlobalActive();
         }
-
-        _tree?.OnNodeAdded?.Invoke(child);
     }
 
     public void AddChildren(params Node[] children)
@@ -112,8 +108,6 @@ public class Node
         {
             child.UpdateChildrenGlobalActive();
         }
-
-        _tree?.OnNodeRemoved?.Invoke(child);
     }
 
     public Node GetChild(string name)
@@ -170,10 +164,9 @@ public class Node
 
             foreach (Node child in node.Children)
             {
-                if (child.Active)
-                {
-                    stack.Push(child);
-                }
+                if (!child.Active) continue;
+
+                stack.Push(child);
             }
         }
     }

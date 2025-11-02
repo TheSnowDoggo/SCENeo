@@ -26,9 +26,9 @@ public sealed class Viewport : UIBaseImage
     public Viewport(int width, int height) : base(width, height) { }
     public Viewport(Vec2I dimensions) : base(dimensions) { }
 
-    public readonly List<IRenderable> Renderables = [];
+    public List<IRenderable> Renderables { get; init; } = [];
 
-    public Pixel BasePixel = new(SCEColor.Black);
+    public Pixel BasePixel { get; set; } = new(SCEColor.Black);
 
     protected override void Update()
     {
@@ -38,10 +38,7 @@ public sealed class Viewport : UIBaseImage
 
         foreach (IRenderable renderable in Renderables)
         {
-            if (!renderable.Enabled)
-            {
-                continue;
-            }
+            if (!renderable.Enabled) continue;
 
             sorted.Add(renderable);
         }

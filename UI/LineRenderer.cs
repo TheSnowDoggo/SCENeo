@@ -52,21 +52,6 @@ public sealed class LineRenderer : UIBaseImage
         set { SCEUtils.ObserveSet(value, ref _stackMode, ref _update); }
     }
 
-    private void Line_OnUpdate(object? sender, EventArgs args)
-    {
-        _update = true;
-    }
-
-    private int TranslateY(int i)
-    {
-        return StackMode switch
-        {
-            StackMode.TopDown  => i,
-            StackMode.BottomUp => Height - i - 1,
-            _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}.")
-        };
-    }
-
     public override void Resize(int width, int height)
     {
         base.Resize(width, height);
@@ -93,7 +78,7 @@ public sealed class LineRenderer : UIBaseImage
 
         for (int i = 0; i < _lines.Length; i++)
         {
-            if (_lines[i] == null     ) continue;
+            if (_lines[i] == null) continue;
             if (_lines[i].Text == null) continue;
 
             int x = _lines[i].Anchor.AnchorHorizontal(Width - _lines[i].Text.Length);
@@ -101,5 +86,20 @@ public sealed class LineRenderer : UIBaseImage
 
             _source.MapLine(_lines[i].Text, x, y, _lines[i].Colors);
         }
+    }
+
+    private void Line_OnUpdate(object? sender, EventArgs args)
+    {
+        _update = true;
+    }
+
+    private int TranslateY(int i)
+    {
+        return StackMode switch
+        {
+            StackMode.TopDown  => i,
+            StackMode.BottomUp => Height - i - 1,
+            _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}.")
+        };
     }
 }

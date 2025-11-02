@@ -44,13 +44,13 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
 
         Rect2DI trim = area.Trim(difference, Dimensions + difference);
 
-        Vec2I newPos = position + trim.Start;
+        position += trim.Start;
 
-        for (int y = trim.Top, curY = newPos.Y; y < trim.Bottom; y++, curY++)
+        for (int viewY = trim.Top, thisY = position.Y; viewY < trim.Bottom; viewY++, thisY++)
         {
-            for (int x = trim.Left, curX = newPos.X; x < trim.Right; x++, curX++)
+            for (int viewX = trim.Left, thisX = position.X; viewX < trim.Right; viewX++, thisX++)
             {
-                this[curX, curY] = view[x, y];
+                this[thisX, thisY] = view[viewX, viewY];
             }
         }
     }

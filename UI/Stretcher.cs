@@ -14,9 +14,15 @@ public sealed class Stretcher : UIModifier<IRenderable>
 
     private readonly Image _buffer = new Image();
 
+    private bool _update = false;
+
     private int _scaleWidth;
 
+    private Scaling _textScaling = Scaling.None;
+
     public Stretcher(IRenderable source) : base(source) { }
+
+    #region Properties
 
     public int ScaleWidth
     {
@@ -32,13 +38,32 @@ public sealed class Stretcher : UIModifier<IRenderable>
         }
     }
 
-    public Scaling TextScaling { get; set; } = Scaling.None;
+    public Scaling TextScaling
+    {
+        get { return _textScaling; }
+        set { SCEUtils.ObserveSet(value, ref _textScaling, ref _update); }
+    }
 
     public bool Bake { get; set; } = false;
 
     public bool IsBaked { get; set; } = false;
 
     public override int Width { get { return _source.Width * ScaleWidth; } }
+
+    #endregion
+
+    public override Grid2DView<Pixel> Render()
+    {
+        if (!Bake || !IsBaked || _update)
+        {
+            Update();
+
+            IsBaked = true;
+            _update = false;
+        }
+
+        return _buffer;
+    }
 
     private void Update()
     {
@@ -75,16 +100,5 @@ public sealed class Stretcher : UIModifier<IRenderable>
                 }
             }
         }
-    }
-
-    public override Grid2DView<Pixel> Render()
-    {
-        if (!Bake || !IsBaked)
-        {
-            Update();
-            IsBaked = true;
-        }
-
-        return _buffer;
     }
 }

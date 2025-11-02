@@ -15,13 +15,13 @@ public class Image : Grid2D<Pixel>
 
         Rect2DI trim = area.Trim(difference, Dimensions + difference);
 
-        Vec2I newPos = position + trim.Start;
+        position += trim.Start;
 
-        for (int y = trim.Top, curY = newPos.Y; y < trim.Bottom; y++, curY++)
+        for (int viewY = trim.Top, thisY = position.Y; viewY < trim.Bottom; viewY++, thisY++)
         {
-            for (int x = trim.Left, curX = newPos.X; x < trim.Right; x++, curX++)
+            for (int viewX = trim.Left, thisX = position.X; viewX < trim.Right; viewX++, thisX++)
             {
-                this[curX, curY] = this[curX, curY].Merge(view[x, y]);
+                this[thisX, thisY] = this[thisX, thisY].Merge(view[viewX, viewY]);
             }
         }
     }

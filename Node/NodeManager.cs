@@ -6,11 +6,7 @@ public sealed class NodeManager
 
     public NodeManager()
     {
-        Tree = new()
-        {
-            OnNodeAdded   = OnNodeAdded,
-            OnNodeRemoved = OnNodeRemoved,
-        };
+        Tree = new NodeTree();
     }
 
     public List<IEngine> Engines { get; init; } = [];
@@ -41,15 +37,5 @@ public sealed class NodeManager
                 engine.Update(delta, active);
             }
         }
-    }
-
-    private void OnNodeAdded(Node node)
-    {
-        return;
-    }
-
-    private void OnNodeRemoved(Node node)
-    {
-        return;
     }
 }
