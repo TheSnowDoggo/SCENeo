@@ -116,11 +116,6 @@ public class Node
         return (T)GetNode(path);
     }
 
-    public void QueueRemove()
-    {
-        _tree?.QueueRemove(this);
-    }
-
     public virtual void Start()
     {
     }
