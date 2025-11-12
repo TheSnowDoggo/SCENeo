@@ -15,8 +15,6 @@ internal sealed class ManagerUI
 
     private readonly VerticalSelector _selector;
 
-    private readonly ProgressBar _progressBar;
-
     public ManagerUI()
     {
         _updater = new Updater()
@@ -40,6 +38,7 @@ internal sealed class ManagerUI
             BasePixel   = new Pixel(SCEColor.Black, SCEColor.White),
             TextFgColor = SCEColor.Transparent,
             TextBgColor = SCEColor.Transparent,
+            Enabled     = false,
         };
 
         _selector = new VerticalSelector(20, 16)
@@ -48,24 +47,18 @@ internal sealed class ManagerUI
             Anchor    = Anchor.Right,
         };
 
-        _progressBar = new ProgressBar(50, 1)
-        {
-            Max    = 100,
-            Mode   = ProgressBar.FlowMode.LeftToRight,
-            Offset = new Vec2I(0, 1),
-        };
-
         for (int i = 0; i < 16; i++)
         {
             SCEColor color = (SCEColor)i;
 
             _selector[i] = new Option()
             {
-                Text = color.ToString().PadRight(_selector.Width),
+                Text             = color.ToString().PadRight(_selector.Width),
+                UnselectedColors = new ColorInfo(SCEColor.White, SCEColor.DarkGray),
             };
         }
 
-        _viewport.Renderables.AddEvery(_textBox, _selector, _progressBar);
+        _viewport.Renderables.AddEvery(_textBox, _selector);
     }
 
     public void Run()
@@ -75,31 +68,24 @@ internal sealed class ManagerUI
 
     private void Update(double delta)
     {
-        _textBox.Text = $"FPS: {_updater.FPS}";
-
-        if (Console.KeyAvailable)
-        {
-            OnInput(Console.ReadKey(true));
-        }
-
-        _progressBar.Value += delta * 30;
-
         _display.Update();
+
+        OnInput(Console.ReadKey(true));
     }
 
     private void OnInput(ConsoleKeyInfo cki)
     {
         switch (cki.Key)
         {
-            case ConsoleKey.UpArrow:
-                _selector.WrapMove(-1);
-                break;
-            case ConsoleKey.DownArrow:
-                _selector.WrapMove(+1);
-                break;
-            case ConsoleKey.Enter:
-                _viewport.BasePixel = new Pixel((SCEColor)_selector.Selected);
-                break;
+        case ConsoleKey.UpArrow:
+            _selector.WrapMove(-1);
+            break;
+        case ConsoleKey.DownArrow:
+            _selector.WrapMove(+1);
+            break;
+        case ConsoleKey.Enter:
+            _viewport.BasePixel = new Pixel((SCEColor)_selector.Selected);
+            break;
         }
     }
 }
