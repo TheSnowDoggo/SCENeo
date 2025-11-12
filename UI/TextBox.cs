@@ -3,7 +3,7 @@ using SCENeo.Utils;
 
 namespace SCENeo.UI;
 
-public sealed class TextBoxUI : UIBaseImage
+public sealed class TextBox : UIBaseImage
 {
     private bool _update = false;
 
@@ -17,9 +17,9 @@ public sealed class TextBoxUI : UIBaseImage
 
     private bool _textOverflow = false;
 
-    public TextBoxUI() : base() { }
-    public TextBoxUI(int width, int height) : base(width, height) { }
-    public TextBoxUI(Vec2I dimensions) : base(dimensions) { }
+    public TextBox() : base() { }
+    public TextBox(int width, int height) : base(width, height) { }
+    public TextBox(Vec2I dimensions) : base(dimensions) { }
 
     #region Properties
 

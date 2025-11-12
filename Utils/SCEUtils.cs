@@ -2,6 +2,8 @@
 
 internal static class SCEUtils
 {
+    #region UI
+
     public static void ObserveSet<T>(T value, ref T property, ref bool update)
     {
         if (!EqualityComparer<T>.Default.Equals(value, property))
@@ -21,10 +23,18 @@ internal static class SCEUtils
         return new Vec2I(Console.WindowWidth, Console.WindowHeight);
     }
 
+    #endregion
+
+    #region Collections
+
     public static void AddEvery<T>(this List<T> list, params T[] items)
     {
         list.AddRange(items);
     }
+
+    #endregion
+
+    #region Math
 
     public static void MinMax(float a, float b, out float min, out float max)
     {
@@ -50,21 +60,13 @@ internal static class SCEUtils
         return value * value;
     }
 
-    public static bool InRange<T>(this IReadOnlyList<T> list, int index)
-    {
-        return index >= 0 && index < list.Count;
-    }
-
-    public static T TryGetOrDefault<T>(this IReadOnlyList<T> list, int index, T defaultValue)
-    {
-        return index >= 0 && index < list.Count ? list[index] : defaultValue;
-    }
-
     public static int Mod(int a, int b)
     {
         int mod = a % b;
         return a >= 0 ? mod : mod + b;
     }
+
+    #endregion
 
     #region Collision
 

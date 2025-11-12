@@ -14,6 +14,8 @@ public sealed class Option
 
     public event EventHandler? OnUpdate;
 
+    #region Properties
+
     public string Text
     {
         get { return _text; }
@@ -39,6 +41,8 @@ public sealed class Option
     }
 
     public Action? OnChoose { get; set; }
+
+    #endregion
 
     private void Update<T>(T value, ref T field)
     {

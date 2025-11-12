@@ -18,7 +18,7 @@ internal sealed class Manager
 
     private readonly Display<Viewport> _display;
 
-    private readonly TextBoxUI _fpsUI;
+    private readonly TextBox _fpsUI;
 
     public Manager()
     {
@@ -54,7 +54,7 @@ internal sealed class Manager
             FilterMode = null, 
         };
 
-        _fpsUI = new TextBoxUI(20, 2)
+        _fpsUI = new TextBox(20, 2)
         {
             Text   = "FPS: None",
             Anchor = Anchor.Right,

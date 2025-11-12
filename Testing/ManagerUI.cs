@@ -11,9 +11,11 @@ internal sealed class ManagerUI
 
     private readonly Display<Viewport> _display;
 
-    private readonly TextBoxUI _textBox;
+    private readonly TextBox _textBox;
 
     private readonly VerticalSelector _selector;
+
+    private readonly ProgressBar _progressBar;
 
     public ManagerUI()
     {
@@ -33,7 +35,7 @@ internal sealed class ManagerUI
             AutoResizing = true,
         };
 
-        _textBox = new TextBoxUI(20, 1)
+        _textBox = new TextBox(30, 1)
         {
             BasePixel   = new Pixel(SCEColor.Black, SCEColor.White),
             TextFgColor = SCEColor.Transparent,
@@ -46,6 +48,13 @@ internal sealed class ManagerUI
             Anchor    = Anchor.Right,
         };
 
+        _progressBar = new ProgressBar(50, 1)
+        {
+            Max    = 100,
+            Mode   = ProgressBar.FlowMode.LeftToRight,
+            Offset = new Vec2I(0, 1),
+        };
+
         for (int i = 0; i < 16; i++)
         {
             SCEColor color = (SCEColor)i;
@@ -56,7 +65,7 @@ internal sealed class ManagerUI
             };
         }
 
-        _viewport.Renderables.AddEvery(_textBox, _selector);
+        _viewport.Renderables.AddEvery(_textBox, _selector, _progressBar);
     }
 
     public void Run()
@@ -72,6 +81,8 @@ internal sealed class ManagerUI
         {
             OnInput(Console.ReadKey(true));
         }
+
+        _progressBar.Value += delta * 30;
 
         _display.Update();
     }

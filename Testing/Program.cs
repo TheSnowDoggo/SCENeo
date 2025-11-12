@@ -6,7 +6,7 @@ internal static class Program
     {
         Console.CursorVisible = false;
 
-        var manager = new Manager();
+        var manager = new ManagerUI();
 
         manager.Run();
     }
