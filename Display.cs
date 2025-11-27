@@ -2,14 +2,11 @@
 
 namespace SCENeo;
 
-internal sealed class Display<T>(T source)
-    where T : IRenderable, IResizeable
+public sealed class Display
 {
-    public readonly T Source = source;
+    public IRenderable Source { get; set; } = default!;
 
     public Vec2I Position = Vec2I.Zero;
-
-    public bool AutoResizing = false;
 
     public Action<Vec2I>? OnResize = null;
 
@@ -22,13 +19,12 @@ internal sealed class Display<T>(T source)
 
     private void AutoResize()
     {
-        if (!AutoResizing) return;
-
         Vec2I winDimensions = SCEUtils.WindowDimensions();
 
-        if (winDimensions == Source.Dimensions()) return;
-
-        Source.Resize(winDimensions);
+        if (winDimensions == Source.Dimensions())
+        {
+            return;
+        }
 
         OnResize?.Invoke(winDimensions);
     }

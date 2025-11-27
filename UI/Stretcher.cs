@@ -67,7 +67,7 @@ public sealed class Stretcher : UIModifier<IRenderable>
 
     private void Update()
     {
-        Grid2DView<Pixel> view = _source.Render();
+        IView<Pixel> view = _source.Render();
 
         if (_buffer.Dimensions != this.Dimensions())
         {

@@ -2,18 +2,13 @@
 
 namespace SCENeo;
 
-public sealed class Grid2DView<T>(Grid2D<T> grid) : IEnumerable<T>,
-    ICloneable
+public sealed class Grid2DView<T>(Grid2D<T> grid) : IView<T>, ICloneable
 {
     private readonly Grid2D<T> _grid = grid;
 
     public int Width { get { return _grid.Width; } }
 
     public int Height { get { return _grid.Height; } }
-
-    public int Size { get { return _grid.Size; } }
-
-    public Vec2I Dimensions {  get { return _grid.Dimensions; } }
 
     public T this[int x, int y] { get { return _grid[x, y]; } }
 

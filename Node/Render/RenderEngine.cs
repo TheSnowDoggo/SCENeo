@@ -40,7 +40,7 @@ public sealed class RenderEngine : IEngine
 
         foreach (RenderInput input in renderState.Inputs)
         {
-            Grid2DView<Pixel>? view = null;
+            IView<Pixel>? view = null;
 
             foreach (RenderOutput output in renderState.Outputs)
             {

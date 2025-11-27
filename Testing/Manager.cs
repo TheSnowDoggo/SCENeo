@@ -16,7 +16,7 @@ internal sealed class Manager
 
     private readonly Viewport _viewport;
 
-    private readonly Display<Viewport> _display;
+    private readonly Display _display;
 
     private readonly TextBox _fpsUI;
 
@@ -32,10 +32,10 @@ internal sealed class Manager
             BasePixel = new Pixel(SCEColor.DarkGray),
         };
 
-        _display = new Display<Viewport>(_viewport)
+        _display = new Display()
         {
-            AutoResizing = true,
-            OnResize     = Display_OnResize,
+            Source   = _viewport,
+            OnResize = Display_OnResize,
         };
 
         var rc1 = new RenderChannel()
@@ -124,8 +124,9 @@ internal sealed class Manager
         _fpsUI.Text = $"FPS: {_updater.FPS}\n{_nm.Tree.Root.GetNode<Node2D>("Enemy").GlobalPosition}";
     }
 
-    private void Display_OnResize(Vec2I newDimensions)
+    private void Display_OnResize(Vec2I newSize)
     {
-        _re.Channels[1].Resize(newDimensions);
+        _viewport.Resize(newSize);
+        _re.Channels[1].Resize(newSize);
     }
 }

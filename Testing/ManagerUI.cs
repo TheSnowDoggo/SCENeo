@@ -9,7 +9,7 @@ internal sealed class ManagerUI
 
     private readonly Viewport _viewport;
 
-    private readonly Display<Viewport> _display;
+    private readonly Display _display;
 
     private readonly TextBox _textBox;
 
@@ -28,9 +28,10 @@ internal sealed class ManagerUI
             BasePixel = new Pixel(SCEColor.DarkCyan),
         };
 
-        _display = new Display<Viewport>(_viewport)
+        _display = new Display()
         {
-            AutoResizing = true,
+            Source   = _viewport,
+            OnResize = Display_OnResize,
         };
 
         _textBox = new TextBox(30, 1)
@@ -71,6 +72,11 @@ internal sealed class ManagerUI
         _display.Update();
 
         OnInput(Console.ReadKey(true));
+    }
+
+    private void Display_OnResize(Vec2I newSize)
+    {
+        _viewport.Resize(newSize);
     }
 
     private void OnInput(ConsoleKeyInfo cki)

@@ -6,6 +6,7 @@ public sealed class DisplayMap : Image, IRenderable
     public DisplayMap() : base() { }
     public DisplayMap(int width, int height) : base(width, height) { }
     public DisplayMap(Vec2I dimensions) : base(dimensions) { }
+    public DisplayMap(Image image) : base(image.Data) { }
 
     public bool Enabled { get; set; } = true;
 
@@ -15,8 +16,8 @@ public sealed class DisplayMap : Image, IRenderable
 
     public Anchor Anchor { get; set; } = Anchor.None;
 
-    public Grid2DView<Pixel> Render()
+    public IView<Pixel> Render()
     {
-        return this;
+        return (Grid2DView<Pixel>)this;
     }
 }

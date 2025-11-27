@@ -18,5 +18,5 @@ public abstract class UIBase<T>(T source) : IRenderable, IResizeable
         _source.Resize(width, height);
     }
          
-    public abstract Grid2DView<Pixel> Render();
+    public abstract IView<Pixel> Render();
 }

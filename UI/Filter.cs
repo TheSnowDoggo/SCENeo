@@ -13,19 +13,21 @@ public sealed class Filter : UIModifier<IRenderable>
 
     public Func<Pixel, Pixel>? FilterMode = null;
 
-    public override Grid2DView<Pixel> Render()
+    public override IView<Pixel> Render()
     {
-        Grid2DView<Pixel> view = _source.Render();
+        IView<Pixel> view = _source.Render();
 
         if (FilterMode == null) return view;
 
-        if (_buffer.Dimensions != view.Dimensions)
+        Vec2I dimensions = view.Dimensions();
+
+        if (_buffer.Dimensions != dimensions)
         {
-            _buffer.CleanResize(view.Dimensions);
+            _buffer.CleanResize(dimensions);
         }
 
         _buffer.Fill((x, y) => FilterMode.Invoke(view[x, y]));
 
-        return _buffer;
+        return (Grid2DView<Pixel>)_buffer;
     }
 }

@@ -13,5 +13,5 @@ public abstract class UIModifier<T>(T source) : IRenderable
     public int ZOffset { get { return _source.ZOffset; } }
     public Anchor Anchor { get { return _source.Anchor; } }
 
-    public abstract Grid2DView<Pixel> Render();
+    public abstract IView<Pixel> Render();
 }

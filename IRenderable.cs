@@ -10,5 +10,5 @@ public interface IRenderable : IDimensioned
 
     public Anchor Anchor { get; }
 
-    Grid2DView<Pixel> Render();
+    IView<Pixel> Render();
 }

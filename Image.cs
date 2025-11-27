@@ -1,4 +1,7 @@
-﻿namespace SCENeo;
+﻿using SCENeo.UI;
+using SCENeo.Utils;
+
+namespace SCENeo;
 
 public class Image : Grid2D<Pixel>
 {
@@ -7,9 +10,23 @@ public class Image : Grid2D<Pixel>
     public Image(int width, int height) : base(width, height) { }
     public Image(Vec2I dimensions) : base(dimensions) { }
 
+    public static Image Plain(int width, int height, Pixel pixel)
+    {
+        var image = new Image(width, height);
+
+        image.Fill(pixel);
+
+        return image;
+    }
+
+    public static Image Plain(Vec2I dimensions, Pixel pixel)
+    {
+        return Plain(dimensions.X, dimensions.Y, pixel);
+    }
+
     #region MergeMap
 
-    public void MergeMap(Grid2DView<Pixel> view, Vec2I position, Rect2DI area)
+    public void MergeMap(IView<Pixel> view, Vec2I position, Rect2DI area)
     {
         Vec2I difference = area.Start - position;
 
@@ -26,19 +43,39 @@ public class Image : Grid2D<Pixel>
         }
     }
 
-    public void MergeMap(Grid2DView<Pixel> view, Rect2DI area)
+    public void MergeMap(Grid2DView<Pixel> view, Vec2I position, Rect2DI area)
+    {
+        MergeMap((IView<Pixel>)view, position, area);
+    }
+
+    public void MergeMap(IView<Pixel> view, Rect2DI area)
     {
         MergeMap(view, Vec2I.Zero, area);
     }
 
-    public void MergeMap(Grid2DView<Pixel> view, Vec2I position)
+    public void MergeMap(Grid2DView<Pixel> view, Rect2DI area)
+    {
+        MergeMap((IView<Pixel>)view, area);
+    }
+
+    public void MergeMap(IView<Pixel> view, Vec2I position)
     {
         MergeMap(view, position, view.Area());
     }
 
-    public void MergeMap(Grid2DView<Pixel> view)
+    public void MergeMap(Grid2DView<Pixel> view, Vec2I position)
+    {
+        MergeMap((IView<Pixel>)view, position);
+    }
+
+    public void MergeMap(IView<Pixel> view)
     {
         MergeMap(view, Vec2I.Zero);
+    }
+
+    public void MergeMap(Grid2DView<Pixel> view)
+    {
+        MergeMap((IView<Pixel>)view);
     }
 
     #endregion

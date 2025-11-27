@@ -1,4 +1,6 @@
-﻿namespace SCENeo.Testing;
+﻿using SCENeo.Utils;
+
+namespace SCENeo.Testing;
 
 internal static class Program
 {
@@ -6,7 +8,7 @@ internal static class Program
     {
         Console.CursorVisible = false;
 
-        var manager = new ManagerUI();
+        var manager = new ManagerUI2();
 
         manager.Run();
     }

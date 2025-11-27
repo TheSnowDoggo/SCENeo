@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Collections;
+using SCENeo.Utils;
 
 namespace SCENeo;
 
@@ -20,7 +21,7 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
 
     public int Size { get { return Data.Length; } }
 
-    public Vec2I Dimensions { get { return new(Width, Height); } }
+    public Vec2I Dimensions { get { return new Vec2I(Width, Height); } }
 
     public T this[int x, int y]
     {
@@ -34,11 +35,11 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
         set => this[pos.X, pos.Y] = value;
     }
 
-    public static implicit operator Grid2DView<T>(Grid2D<T> grid) => new(grid);
+    public static implicit operator Grid2DView<T>(Grid2D<T> grid) => new Grid2DView<T>(grid);
 
     #region Map
 
-    public void Map(Grid2DView<T> view, Vec2I position, Rect2DI area)
+    public void Map(IView<T> view, Vec2I position, Rect2DI area)
     {
         Vec2I difference = area.Start - position;
 
@@ -55,19 +56,39 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
         }
     }
 
-    public void Map(Grid2DView<T> view, Rect2DI area)
+    public void Map(Grid2DView<T> view, Vec2I position, Rect2DI area)
+    {
+        Map((IView<T>)view, position, area);
+    }
+
+    public void Map(IView<T> view, Rect2DI area)
     {
         Map(view, Vec2I.Zero, area);
     }
 
-    public void Map(Grid2DView<T> view, Vec2I position)
+    public void Map(Grid2DView<T> view, Rect2DI area)
+    {
+        Map((IView<T>)view, area);
+    }
+
+    public void Map(IView<T> view, Vec2I position)
     {
         Map(view, position, view.Area());
     }
 
-    public void Map(Grid2DView<T> view)
+    public void Map(Grid2DView<T> view, Vec2I position)
+    {
+        Map((IView<T>)view, position);
+    }
+
+    public void Map(IView<T> view)
     {
         Map(view, Vec2I.Zero);
+    }
+
+    public void Map(Grid2DView<T> view)
+    {
+        Map((IView<T>)view);
     }
 
     #endregion
@@ -124,8 +145,8 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
     {
         var newData = new T[width, height];
 
-        int minWidth  = Math.Min(width, Width );
-        int minHeight = Math.Min(width, Height);
+        int minWidth  = Math.Min(width, Width);
+        int minHeight = Math.Min(height, Height);
 
         for (int y = 0; y < minHeight; y++)
         {
@@ -144,6 +165,11 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
     }
 
     #endregion
+
+    public Grid2DView<T> AsView()
+    {
+        return new Grid2DView<T>(this);
+    }
 
     public Rect2DI Area()
     {
@@ -186,7 +212,10 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
 
     public IEnumerator<T> GetEnumerator()
     {
-        return (IEnumerator<T>) Data.GetEnumerator();
+        foreach (T item in Data)
+        {
+            yield return item;
+        }
     }
 
     IEnumerator IEnumerable.GetEnumerator()

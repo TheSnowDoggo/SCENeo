@@ -22,9 +22,9 @@ public static class BufferUtils
         return charInfo;
     }
 
-    public static CharInfo[] ToCharInfoBuffer(Grid2DView<Pixel> grid)
+    public static CharInfo[] ToCharInfoBuffer(IView<Pixel> grid)
     {
-        var buffer = new CharInfo[grid.Size];
+        var buffer = new CharInfo[grid.Size()];
 
         int i = 0;
         for (int y = 0; y < grid.Height; y++)
@@ -38,7 +38,7 @@ public static class BufferUtils
         return buffer;
     }
 
-    public static SmallRect WriteGrid(Grid2DView<Pixel> grid, Vec2I position)
+    public static SmallRect WriteGrid(IView<Pixel> grid, Vec2I position)
     {
         CharInfo[] buf = ToCharInfoBuffer(grid);
         Coord size     = new Coord((short)grid.Width, (short)grid.Height);
@@ -50,7 +50,7 @@ public static class BufferUtils
         return rect;
     }
 
-    public static SmallRect WriteGrid(Grid2DView<Pixel> grid)
+    public static SmallRect WriteGrid(IView<Pixel> grid)
     {
         return WriteGrid(grid, Vec2I.Zero);
     }

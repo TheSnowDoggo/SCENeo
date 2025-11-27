@@ -16,7 +16,7 @@ public sealed class Sprite2D : Node2D, IRenderable
 
     public Anchor Anchor { get { return GetSource().Anchor; } }
 
-    public Grid2DView<Pixel> Render()
+    public IView<Pixel> Render()
     {
         return GetSource().Render();
     }

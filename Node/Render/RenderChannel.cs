@@ -19,7 +19,7 @@ public sealed class RenderChannel : UIBaseImage
         _source.Fill(BasePixel);
     }
 
-    public void Load(Grid2DView<Pixel> view, Vec2I position)
+    public void Load(IView<Pixel> view, Vec2I position)
     {
         _source.MergeMap(view, position);
     }

@@ -1,6 +1,6 @@
 ﻿namespace SCENeo.Utils;
 
-internal static class SCEUtils
+public static class SCEUtils
 {
     #region UI
 
@@ -129,6 +129,11 @@ internal static class SCEUtils
     public static Vec2I Dimensions(this IDimensioned dimensioned)
     {
         return new Vec2I(dimensioned.Width, dimensioned.Height);
+    }
+
+    public static Rect2DI Area(this IDimensioned dimensioned)
+    {
+        return new Rect2DI(dimensioned.Width, dimensioned.Height);
     }
 
     #endregion
