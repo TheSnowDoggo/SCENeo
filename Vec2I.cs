@@ -50,6 +50,10 @@ public struct Vec2I(int x, int y) : IEquatable<Vec2I>
         return new Vec2I(Y, X);
     }
 
+    #endregion
+
+    #region Rotate
+
     public readonly Vec2I Rotate90C()
     {
         return new Vec2I(Y, -X);
@@ -64,6 +68,10 @@ public struct Vec2I(int x, int y) : IEquatable<Vec2I>
     {
         return new Vec2I(-X, -Y);
     }
+
+    #endregion
+
+    #region Utility
 
     public readonly void Deconstruct(out int x, out int y)
     {

@@ -7,20 +7,9 @@ public struct Rect2D(float left, float top, float right, float bottom) : IEquata
     public float Right  = right;
     public float Bottom = bottom;
 
-    public Rect2D(Vec2 start, Vec2 end)
-        : this(start.X, start.Y, end.X, end.Y)
-    {
-    }
-
-    public Rect2D(Vec2 dimensions)
-        : this(Vec2.Zero, dimensions)
-    {
-    }
-
-    public Rect2D(float width, float height)
-        : this(0, 0, width, height)
-    {
-    }
+    public Rect2D(Vec2 start, Vec2 end) : this(start.X, start.Y, end.X, end.Y) { }
+    public Rect2D(Vec2 dimensions) : this(Vec2.Zero, dimensions) { }
+    public Rect2D(float width, float height) : this(0, 0, width, height) { }
 
     #region Operators
 
