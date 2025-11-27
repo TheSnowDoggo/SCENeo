@@ -30,7 +30,7 @@ internal sealed class Player : KinematicNode2D
 
         for (int y = 0; y < dpMap.Height; y++)
         {
-            dpMap.MapLine("hello", 0, y, new ColorInfo(SCEColor.White, SCEColor.Transparent));
+            dpMap.MapLine("hello", 0, y, SCEColor.White, SCEColor.Transparent);
         }
 
         var sprite = new Sprite2D()

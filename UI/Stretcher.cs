@@ -83,7 +83,7 @@ public sealed class Stretcher : UIModifier<IRenderable>
                     case Scaling.None:
                         _buffer[x * ScaleWidth, y] = view[x, y];
                         for (int i = 1; i < ScaleWidth; i++)
-                            _buffer[x * ScaleWidth + i, y] = new Pixel(view[x, y].Colors);
+                            _buffer[x * ScaleWidth + i, y] = new Pixel(view[x, y].FgColor, view[x, y].BgColor);
                         break;
                     case Scaling.Stretch:
                         for (int i = 0; i < ScaleWidth; i++)
@@ -95,7 +95,7 @@ public sealed class Stretcher : UIModifier<IRenderable>
                         break;
                     case Scaling.Hide:
                         for (int i = 0; i < ScaleWidth; i++)
-                            _buffer[x * ScaleWidth + i, y] = new Pixel(view[x, y].Colors);
+                            _buffer[x * ScaleWidth + i, y] = new Pixel(view[x, y].FgColor, view[x, y].BgColor);
                         break;
                 }
             }

@@ -34,29 +34,12 @@ internal sealed class FreeCamera2D : Camera2D
 
     private double Speed()
     {
-        return Input.KeyPressed(Key.Shift) ? SprintSpeed : WalkSpeed;
+        return WalkSpeed;
     }
 
     private static Vec2 MoveVector()
     {
         Vec2 moveVec = Vec2.Zero;
-
-        if (Input.KeyPressed(Key.W))
-        {
-            moveVec += Vec2.Up;
-        }
-        if (Input.KeyPressed(Key.S))
-        {
-            moveVec += Vec2.Down;
-        }
-        if (Input.KeyPressed(Key.A))
-        {
-            moveVec += Vec2.Left;
-        }
-        if (Input.KeyPressed(Key.D))
-        {
-            moveVec += Vec2.Right;
-        }
 
         return moveVec;
     }

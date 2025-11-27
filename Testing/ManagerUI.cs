@@ -31,6 +31,7 @@ internal sealed class ManagerUI
         _display = new Display()
         {
             Source   = _viewport,
+            Output   = ConsoleOutput.Instance,
             OnResize = Display_OnResize,
         };
 
@@ -44,8 +45,12 @@ internal sealed class ManagerUI
 
         _selector = new VerticalSelector(20, 16)
         {
-            BasePixel = Pixel.Transparent,
+            BasePixel = Pixel.Null,
             Anchor    = Anchor.Right,
+        };
+
+        var dp = new DisplayMap(SIFUtils.Deserialize(""))
+        {
         };
 
         for (int i = 0; i < 16; i++)
@@ -54,12 +59,11 @@ internal sealed class ManagerUI
 
             _selector[i] = new Option()
             {
-                Text             = color.ToString().PadRight(_selector.Width),
-                UnselectedColors = new ColorInfo(SCEColor.White, SCEColor.DarkGray),
+                Text = color.ToString().PadRight(_selector.Width),
             };
         }
 
-        _viewport.Renderables.AddEvery(_textBox, _selector);
+        _viewport.Renderables.AddEvery(_textBox, _selector, dp);
     }
 
     public void Run()

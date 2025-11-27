@@ -31,6 +31,7 @@ internal sealed class ManagerUI2
         _display = new Display()
         {
             Source   = _viewport,
+            Output   = ConsoleOutput.Instance,
             OnResize = Display_OnResize,
         };
 

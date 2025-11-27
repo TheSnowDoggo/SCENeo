@@ -3,10 +3,10 @@
 public sealed class DisplayMap : Image, IRenderable
 {
     public DisplayMap(Pixel[,] data)  : base(data) { }
+    public DisplayMap(Grid2D<Pixel> grid) : base(grid) { }
     public DisplayMap() : base() { }
     public DisplayMap(int width, int height) : base(width, height) { }
     public DisplayMap(Vec2I dimensions) : base(dimensions) { }
-    public DisplayMap(Image image) : base(image.Data) { }
 
     public bool Enabled { get; set; } = true;
 

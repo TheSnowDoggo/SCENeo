@@ -1,4 +1,5 @@
-﻿using SCENeo.Utils;
+﻿using Microsoft.VisualBasic.FileIO;
+using SCENeo.Utils;
 
 namespace SCENeo.UI;
 
@@ -112,15 +113,20 @@ public sealed class VerticalSelector : UIBaseImage
 
         for (int i = 0; i < _options.Length; i++)
         {
-            if (_options[i] == null) continue;
-            if (_options[i].Text == null) continue;
+            Option? option = _options[i];
 
-            int x = _options[i].Anchor.AnchorHorizontal(Width - _options[i].Text.Length);
+            if (option == null) continue;
+            if (option.Text == null) continue;
+
+            int x = option.Anchor.AnchorHorizontal(Width - option.Text.Length);
             int y = TranslateY(i);
 
-            ColorInfo colors = i == _selected ? _options[i].SelectedColors : _options[i].UnselectedColors;
+            bool selected = i == _selected;
 
-            _source.MapLine(_options[i].Text, x, y, colors);
+            SCEColor fgColor = selected ? option.SelectedFgColor : option.UnselectedFgColor;
+            SCEColor bgColor = selected ? option.SelectedBgColor : option.UnselectedBgColor;
+
+            _source.MapLine(option.Text, x, y, fgColor, bgColor);
         }
     }
 

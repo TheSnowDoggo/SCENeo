@@ -11,7 +11,9 @@ public sealed class TextBox : UIBaseImage
 
     private string _text = string.Empty;
 
-    private ColorInfo _textColorInfo = new(SCEColor.Gray, SCEColor.Black);
+    private SCEColor _textFgColor = SCEColor.Gray;
+
+    private SCEColor _textBgColor = SCEColor.Black;
 
     private Anchor _textAnchor = Anchor.None;
 
@@ -37,14 +39,14 @@ public sealed class TextBox : UIBaseImage
 
     public SCEColor TextFgColor
     {
-        get { return _textColorInfo.ForegroundColor; }
-        set { SCEUtils.ObserveSet(value, ref _textColorInfo.ForegroundColor, ref _update); }
+        get { return _textFgColor; }
+        set { SCEUtils.ObserveSet(value, ref _textFgColor, ref _update); }
     }
 
     public SCEColor TextBgColor
     {
-        get { return _textColorInfo.BackgroundColor; }
-        set { SCEUtils.ObserveSet(value, ref _textColorInfo.BackgroundColor, ref _update); }
+        get { return _textBgColor; }
+        set { SCEUtils.ObserveSet(value, ref _textBgColor, ref _update); }
     }
 
     public Anchor TextAnchor
@@ -53,7 +55,7 @@ public sealed class TextBox : UIBaseImage
         set { SCEUtils.ObserveSet(value, ref _textAnchor, ref _update); }
     }
 
-    public bool TextOverflow
+    public bool TextWrapping
     {
         get { return _textOverflow; }
         set { SCEUtils.ObserveSet(value, ref _textOverflow, ref _update); }
@@ -81,7 +83,7 @@ public sealed class TextBox : UIBaseImage
                 sb.Append(s[i]);
             }
 
-            if (newLine || (TextOverflow && sb.Length == Width && (i == s.Length - 1 || !IsNewline(s[i + 1]))))
+            if (newLine || (TextWrapping && sb.Length == Width && (i == s.Length - 1 || !IsNewline(s[i + 1]))))
             {
                 list.Add(sb.ToString());
                 sb.Clear();
@@ -115,7 +117,7 @@ public sealed class TextBox : UIBaseImage
         {
             int x = TextAnchor.AnchorHorizontal(Width - lines[i].Length);
 
-            _source.MapLine(lines[i], x, y, _textColorInfo);
+            _source.MapLine(lines[i], x, y, _textFgColor, _textBgColor);
         }
     }
 }

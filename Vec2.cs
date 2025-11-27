@@ -36,6 +36,12 @@ public struct Vec2(float x, float y) : IEquatable<Vec2>
     public static Vec2 operator /(Vec2 v1, Vec2 v2)    => new(v1.X / v2.X, v1.Y / v2.Y);
     public static Vec2 operator /(Vec2 v1, float num ) => new(v1.X / num , v1.Y / num );
 
+    public static bool operator <(Vec2 v1, Vec2 v2) => v1.X < v2.X && v1.Y < v2.Y;
+    public static bool operator >(Vec2 v1, Vec2 v2) => v1.X > v2.X && v1.Y > v2.Y;
+
+    public static bool operator <=(Vec2 v1, Vec2 v2) => v1.X <= v2.X && v1.Y <= v2.Y;
+    public static bool operator >=(Vec2 v1, Vec2 v2) => v1.X >= v2.X && v1.Y >= v2.Y;
+
     #endregion
 
     #region Maths

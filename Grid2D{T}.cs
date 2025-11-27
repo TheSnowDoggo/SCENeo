@@ -10,6 +10,7 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
     public Grid2D() : this(new T[0, 0]) { }
     public Grid2D(int width, int height) : this(new T[width, height]) { }
     public Grid2D(Vec2I dimensions) : this(dimensions.X, dimensions.Y) { }
+    public Grid2D(Grid2D<T> grid) : this(grid.Data) { }
 
     public T[,] Data = data;
 
@@ -143,7 +144,7 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
     {
         var newData = new T[width, height];
 
-        int minWidth  = Math.Min(width, Width);
+        int minWidth  = Math.Min(width , Width );
         int minHeight = Math.Min(height, Height);
 
         for (int y = 0; y < minHeight; y++)

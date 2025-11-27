@@ -17,6 +17,7 @@ public enum Key
     
     Clear      = 0x0C,
     Return     = 0x0D,
+    Enter      = 0x0D,
 
     Shift      = 0x10,
     Control    = 0x11,

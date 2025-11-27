@@ -8,10 +8,4 @@
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="SCEBufferAPI">
-      <HintPath>lib\SCEBufferAPI.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

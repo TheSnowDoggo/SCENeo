@@ -51,17 +51,40 @@ public static class SIFUtils
             {
                 Pixel pixel = view[x, y];
 
-                fgBuilder.Append(SifCodes.GetTKey(pixel.Colors.ForegroundColor));
-                bgBuilder.Append(SifCodes.GetTKey(pixel.Colors.BackgroundColor));
+                fgBuilder.Append(SifCodes.GetTKey(pixel.FgColor));
+                bgBuilder.Append(SifCodes.GetTKey(pixel.BgColor));
                 charBuilder.Append(pixel.Element >= ' ' ? pixel.Element : ' ');
             }
         }
 
-        string fgStr   = RunLengthEncode(fgBuilder.ToString());
-        string bgStr   = RunLengthEncode(bgBuilder.ToString());
-        string charStr = RunLengthEncode(charBuilder.ToString());
+        string fgStr = fgBuilder.ToString();
+        fgStr = Same(fgStr) ? fgStr[0].ToString() : RunLengthEncode(fgStr);
 
-        return $"{Signature}[{view.Width},{view.Height}]{fgStr}${bgStr}${charStr}";
+        string bgStr   = bgBuilder.ToString();
+        bgStr = Same(bgStr) ? bgStr[0].ToString() : RunLengthEncode(bgStr);
+
+        string charStr = charBuilder.ToString();
+        charStr = Same(charStr) ? charStr[0].ToString() : RunLengthEncode(charStr);
+
+        return $"{Signature}[{view.Width},{view.Height}]{fgStr}${bgStr}${charStr}$";
+    }
+
+    private static bool Same(string s)
+    {
+        if (s == string.Empty)
+        {
+            return false;
+        }
+
+        for (int i = 1; i < s.Length; i++)
+        {
+            if (s[i - 1] != s[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static Grid2D<Pixel> Deserialize(string sif)
@@ -128,25 +151,48 @@ public static class SIFUtils
             throw new InvalidDataException("Could not find background end delimiter $.");
         }
 
+        if (sif[^1] != '$')
+        {
+            throw new InvalidDataException("Could not find end delimiter $.");
+        }
+
         int size = width * height;
+
+        SCEColor? fgColorDef = null;
 
         string fgStr = RunLengthDecode(sif[(close + 1)..fgEnd]);
 
-        if (fgStr.Length != size)
+        if (fgStr.Length == 1)
+        {
+            fgColorDef = GetColor(fgStr[0]);
+        }
+        else if (fgStr.Length != size)
         {
             throw new InvalidDataException("Foreground data missing full range.");
         }
 
+        SCEColor? bgColorDef = null;
+
         string bgStr = RunLengthDecode(sif[(fgEnd + 1)..bgEnd]);
 
-        if (bgStr.Length != size)
+        if (bgStr.Length == 1)
+        {
+            bgColorDef = GetColor(bgStr[0]);
+        }
+        else if (bgStr.Length != size)
         {
             throw new InvalidDataException("Background data missing full range.");
         }
 
-        string charStr = RunLengthDecode(sif[(bgEnd + 1)..]);
+        char charDef = '\0';
 
-        if (charStr.Length != size)
+        string charStr = RunLengthDecode(sif[(bgEnd + 1)..^1]);
+
+        if (charStr.Length == 1)
+        {
+            charDef = charStr[0];
+        }
+        else if (charStr.Length != size)
         {
             throw new InvalidDataException("Character data missing full range.");
         }
@@ -159,23 +205,26 @@ public static class SIFUtils
         {
             for (int x = 0; x < width; x++)
             {
-                if (!SifCodes.TryGetUKey(fgStr[i], out SCEColor fg))
-                {
-                    throw new InvalidDataException($"Unrecognised foreground color code {fgStr[i]}.");
-                }
+                char c = charDef != '\0' ? charDef : charStr[i];
+                SCEColor fg = fgColorDef ?? GetColor(fgStr[i]);
+                SCEColor bg = bgColorDef ?? GetColor(bgStr[i]);
 
-                if (!SifCodes.TryGetUKey(bgStr[i], out SCEColor bg))
-                {
-                    throw new InvalidDataException($"Unrecognised background color code {fgStr[i]}.");
-                }
-
-                grid[x, y] = new Pixel(charStr[i], fg, bg);
+                grid[x, y] = new Pixel(c, fg, bg);
 
                 i++;
             }
         }
 
         return grid;
+    }
+
+    private static SCEColor GetColor(char code)
+    {
+        if (!SifCodes.TryGetUKey(code, out SCEColor color))
+        {
+            throw new InvalidDataException($"Unrecognised color code {code}.");
+        }
+        return color;
     }
 
     private static string RunLengthEncode(string str)
@@ -234,6 +283,11 @@ public static class SIFUtils
 
         for (int i = 0; i < str.Length; i++)
         {
+            if (char.IsControl(str[i]) && str[i] != ' ')
+            {
+                continue;
+            }
+
             if (str[i] != Delimiter || i >= str.Length - 2)
             {
                 sb.Append(str[i]);

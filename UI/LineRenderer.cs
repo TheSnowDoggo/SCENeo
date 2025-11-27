@@ -78,13 +78,15 @@ public sealed class LineRenderer : UIBaseImage
 
         for (int i = 0; i < _lines.Length; i++)
         {
-            if (_lines[i] == null) continue;
-            if (_lines[i].Text == null) continue;
+            Line line = _lines[i];
 
-            int x = _lines[i].Anchor.AnchorHorizontal(Width - _lines[i].Text.Length);
+            if (line == null) continue;
+            if (line.Text == null) continue;
+
+            int x = line.Anchor.AnchorHorizontal(Width - line.Text.Length);
             int y = TranslateY(i);
 
-            _source.MapLine(_lines[i].Text, x, y, _lines[i].Colors);
+            _source.MapLine(line.Text, x, y, line.fgColor, line.bgColor);
         }
     }
 

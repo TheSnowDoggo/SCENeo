@@ -6,26 +6,28 @@ public sealed class Display
 {
     public IRenderable Source { get; set; } = default!;
 
+    public IOutputSource? Output { get; set; } = null;
+
     public Vec2I Position = Vec2I.Zero;
 
     public Action<Vec2I>? OnResize = null;
 
     public void Update()
     {
-        AutoResize();
-
-        BufferUtils.WriteGrid(Source.Render(), Position);
-    }
-
-    private void AutoResize()
-    {
-        Vec2I winDimensions = SCEUtils.WindowDimensions();
-
-        if (winDimensions == Source.Dimensions())
+        if (Output == null)
         {
-            return;
+            throw new NullReferenceException("No output source set.");
         }
 
-        OnResize?.Invoke(winDimensions);
+        Vec2I winDimensions = SCEUtils.ConsoleWindowSize();
+
+        if (winDimensions != Source.Dimensions())
+        {
+            OnResize?.Invoke(winDimensions);
+        }
+
+        IView<Pixel> view = Source.Render();
+
+        Output.Update(view);
     }
 }

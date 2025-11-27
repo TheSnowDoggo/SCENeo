@@ -4,9 +4,11 @@ public sealed class Option
 {
     private string _text = string.Empty;
 
-    private ColorInfo _selectedColors = new ColorInfo(SCEColor.White, SCEColor.Black);
+    private SCEColor _selectedFgColor = SCEColor.Black;
+    private SCEColor _selectedBgColor = SCEColor.White;
 
-    private ColorInfo _unselectedColors = new ColorInfo(SCEColor.Black, SCEColor.White);
+    private SCEColor _unselectedFgColor = SCEColor.White;
+    private SCEColor _unselectedBgColor = SCEColor.Black;
 
     private Anchor _anchor = Anchor.None;
 
@@ -22,16 +24,28 @@ public sealed class Option
         set { Update(value, ref _text); }
     }
 
-    public ColorInfo SelectedColors
+    public SCEColor SelectedFgColor
     {
-        get { return _selectedColors; }
-        set { Update(value, ref _selectedColors); }
+        get { return _selectedFgColor; }
+        set { Update(value, ref _selectedFgColor); }
     }
 
-    public ColorInfo UnselectedColors
+    public SCEColor SelectedBgColor
     {
-        get { return _unselectedColors; }
-        set { Update(value, ref _unselectedColors); }
+        get { return _selectedBgColor; }
+        set { Update(value, ref _selectedBgColor); }
+    }
+
+    public SCEColor UnselectedFgColor
+    {
+        get { return _unselectedFgColor; }
+        set { Update(value, ref _unselectedFgColor); }
+    }
+
+    public SCEColor UnselectedBgColor
+    {
+        get { return _unselectedBgColor; }
+        set { Update(value, ref _unselectedBgColor); }
     }
 
     public Anchor Anchor

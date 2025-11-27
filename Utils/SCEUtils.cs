@@ -18,7 +18,7 @@ public static class SCEUtils
         resizeable.Resize(dimensions.X, dimensions.Y);
     }
 
-    public static Vec2I WindowDimensions()
+    public static Vec2I ConsoleWindowSize()
     {
         return new Vec2I(Console.WindowWidth, Console.WindowHeight);
     }
@@ -136,6 +136,16 @@ public static class SCEUtils
         return new Rect2DI(dimensioned.Width, dimensioned.Height);
     }
 
+    public static bool InRange(this IDimensioned dimensioned, int x, int y)
+    {
+        return x >= 0 && y >= 0 && x < dimensioned.Width && y < dimensioned.Height;
+    }
+
+    public static bool InRange(this IDimensioned dimensioned, Vec2I pos)
+    {
+        return dimensioned.InRange(pos.X, pos.Y);
+    }
+
     #endregion
 
     #region Anchor
@@ -203,6 +213,11 @@ public static class SCEUtils
     public static bool IsLight(this SCEColor color)
     {
         return color is SCEColor.White or SCEColor.Gray or SCEColor.Yellow or SCEColor.Cyan;
+    }
+
+    public static SCEColor Contrast(this SCEColor color)
+    {
+        return IsLight(color) ? SCEColor.Black : SCEColor.White;
     }
 
     public static SCEColor NextColor(this Random random, bool includeTransparent = false)

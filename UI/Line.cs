@@ -4,7 +4,9 @@ public class Line
 {
     private string _text = string.Empty;
 
-    private ColorInfo _colors = new ColorInfo(SCEColor.Transparent, SCEColor.Transparent);
+    private SCEColor _fgColor = SCEColor.Gray;
+
+    private SCEColor _bgColor = SCEColor.Black;
 
     private Anchor _anchor = Anchor.None;
 
@@ -18,22 +20,16 @@ public class Line
         set { Update(value, ref _text); }
     }
 
-    public SCEColor ForegroundColor
+    public SCEColor fgColor
     {
-        get { return _colors.ForegroundColor; }
-        set { Update(value, ref _colors.ForegroundColor); }
+        get { return _fgColor; }
+        set { Update(value, ref _fgColor); }
     }
 
-    public SCEColor BackgroundColor
+    public SCEColor bgColor
     {
-        get { return _colors.BackgroundColor; }
-        set { Update(value, ref _colors.BackgroundColor); }
-    }
-
-    public ColorInfo Colors 
-    { 
-        get { return _colors; }
-        set { Update(value, ref _colors); }
+        get { return _bgColor; }
+        set { Update(value, ref _bgColor); }
     }
 
     public Anchor Anchor

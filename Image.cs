@@ -6,6 +6,7 @@ namespace SCENeo;
 public class Image : Grid2D<Pixel>
 {
     public Image(Pixel[,] data) : base(data) { }
+    public Image(Grid2D<Pixel> data) : base(data) { }
     public Image() : base() { }
     public Image(int width, int height) : base(width, height) { }
     public Image(Vec2I dimensions) : base(dimensions) { }
@@ -80,7 +81,7 @@ public class Image : Grid2D<Pixel>
 
     #endregion
 
-    public bool MapLine(string line, int x, int y, ColorInfo colors)
+    public bool MapLine(string line, int x, int y, SCEColor fgColor, SCEColor bgColor)
     {
         if (y < 0 || y >= Height)
         {
@@ -105,9 +106,14 @@ public class Image : Grid2D<Pixel>
 
         for (int curX = startX; curX < endX; curX++)
         {
-            this[curX, y] = this[curX, y].Merge(new Pixel(line[i++], colors));
+            this[curX, y] = this[curX, y].Merge(new Pixel(line[i++], fgColor, bgColor));
         }
 
         return true;
+    }
+
+    public bool MapLine(string line, Vec2I pos, SCEColor fgColor, SCEColor bgColor)
+    {
+        return MapLine(line, pos.X, pos.Y, fgColor, bgColor);
     }
 }

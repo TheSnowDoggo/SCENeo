@@ -6,13 +6,13 @@ public static class FilterPresets
 {
     public static Pixel BlackAndWhite(Pixel pixel)
     {
-        return pixel.Colors.BackgroundColor.IsLight() ? new Pixel(pixel.Element, SCEColor.Black, SCEColor.White) 
+        return pixel.BgColor.IsLight() ? new Pixel(pixel.Element, SCEColor.Black, SCEColor.White) 
             : new Pixel(pixel.Element, SCEColor.White, SCEColor.Black);
     }
 
     public static Pixel Grayscale(Pixel pixel)
     {
-        return pixel.Colors.BackgroundColor switch
+        return pixel.BgColor switch
         {
             SCEColor.Black       or
             SCEColor.Transparent
