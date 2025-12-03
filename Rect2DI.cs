@@ -148,6 +148,21 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
 
     #endregion
 
+    #region Enumerate
+
+    public IEnumerable<Vec2I> Enumerate()
+    {
+        for (int y = Top; y < Bottom; y++)
+        {
+            for (int x = Left; x < Right; x++)
+            {
+                yield return new Vec2I(x, y);
+            }
+        }
+    }
+
+    #endregion
+
     public readonly override string ToString()
     {
         return $"[{Start}, {End}]";

@@ -35,7 +35,14 @@ public sealed class Viewport : UIBaseImage, IResizeable
         _source.Resize(width, height);
     }
 
-    protected override void Update()
+    public override IView<Pixel> Render()
+    {
+        Update();
+
+        return _source.AsView();
+    }
+
+    private void Update()
     {
         _source.Fill(BasePixel);
 

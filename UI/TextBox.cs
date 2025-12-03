@@ -69,9 +69,20 @@ public sealed class TextBox : UIBaseImage, IResizeable
         _update = true;
     }
 
+    public override IView<Pixel> Render()
+    {
+        if (_update)
+        {
+            Update();
+            _update = false;
+        }
+
+        return _source.AsView();
+    }
+
     private static bool IsNewline(char c)
     {
-        return c is '\n' or '\f' or '\t';
+        return c is '\n' or '\f';
     }
 
     private List<string> SplitLines(string s)
@@ -104,12 +115,8 @@ public sealed class TextBox : UIBaseImage, IResizeable
         return list;
     }
 
-    protected override void Update()
+    private void Update()
     {
-        if (!_update) return;
-
-        _update = false;
-
         _source.Fill(BasePixel);
 
         var lines = SplitLines(Text);

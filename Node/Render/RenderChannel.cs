@@ -28,4 +28,9 @@ public sealed class RenderChannel : UIBaseImage, IResizeable
     {
         _source.MergeMap(view, position);
     }
+
+    public override IView<Pixel> Render()
+    {
+        return _source.AsView();
+    }
 }

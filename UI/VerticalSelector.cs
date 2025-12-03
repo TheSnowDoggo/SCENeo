@@ -103,12 +103,19 @@ public sealed class VerticalSelector : UIBaseImage, IResizeable
         Selected = Math.Clamp(Selected + move, 0, Height - 1);
     }
 
-    protected override void Update()
+    public override IView<Pixel> Render()
     {
-        if (!_update) return;
+        if (_update)
+        {
+            Update();
+            _update = false;
+        }
 
-        _update = false;
+        return _source.AsView();
+    }
 
+    private void Update()
+    {
         _source.Fill(BasePixel);
 
         for (int i = 0; i < _options.Length; i++)

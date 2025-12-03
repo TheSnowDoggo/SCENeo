@@ -68,20 +68,34 @@ public sealed class LineRenderer : UIBaseImage, IResizeable
         Array.Resize(ref _lines, height);
     }
 
-    protected override void Update()
+    public override IView<Pixel> Render()
     {
-        if (!_update) return;
+        if (_update)
+        {
+            Update();
+            _update = false;
+        }
 
-        _update = false;
+        return _source.AsView();
+    }
 
+    private void Update()
+    {
         _source.Fill(BasePixel);
 
         for (int i = 0; i < _lines.Length; i++)
         {
             Line line = _lines[i];
 
-            if (line == null) continue;
-            if (line.Text == null) continue;
+            if (line == null)
+            {
+                continue;
+            }
+
+            if (line.Text == null)
+            {
+                continue;
+            }
 
             int x = line.Anchor.AnchorHorizontal(Width - line.Text.Length);
             int y = TranslateY(i);

@@ -72,20 +72,6 @@ public sealed class ProgressBar : UIBaseImage, IResizeable
         set { SCEUtils.ObserveSet(value, ref _backPixel, ref _update); }
     }
 
-    public int Fill
-    {
-        get
-        {
-            int end = FillEnd;
-            return Math.Clamp((int)Math.Round(Value.Unlerp(Min, Max).Lerp(0, end)), 0, end);
-        }
-    }
-
-    public int FillEnd
-    {
-        get { return Horizontal ? Width : Height; }
-    }
-
     public bool Horizontal
     {
         get { return Mode is FlowMode.LeftToRight or FlowMode.RightToLeft; }
@@ -93,23 +79,41 @@ public sealed class ProgressBar : UIBaseImage, IResizeable
 
     #endregion
 
+    public int Fill()
+    {
+        int end = FillEnd();
+
+        return Math.Clamp((int)Math.Round(Value.Unlerp(Min, Max).Lerp(0, end)), 0, end);
+    }
+
+    public int FillEnd()
+    {
+        return Horizontal ? Width : Height;
+    }
+
     public void Resize(int width, int height)
     {
         _source.Resize(width, height);
         _update = true;
     }
 
-    protected override void Update()
+    public override IView<Pixel> Render()
     {
-        if (!_update && !_valueUpdate)
+        if (_update || _valueUpdate)
         {
-            return;
+            Update();
         }
 
-        int fill = Fill;
+        return _source.AsView();
+    }
+
+    private void Update()
+    {
+        int fill = Fill();
 
         if (!_update && _valueUpdate && fill == _lastFill)
         {
+            _valueUpdate = false;
             return;
         }
 
@@ -118,20 +122,20 @@ public sealed class ProgressBar : UIBaseImage, IResizeable
         switch (Mode)
         {
         case FlowMode.LeftToRight:
-            _source.Fill(FillPixel, new Rect2DI(0   , 0, fill , Height));
-            _source.Fill(BackPixel, new Rect2DI(fill, 0, Width, Height));
+            _source.Fill(FillPixel, 0, 0, fill, Height);
+            _source.Fill(BackPixel, fill, 0, Width, Height);
             break;
         case FlowMode.TopToBottom:
-            _source.Fill(FillPixel, new Rect2DI(0, 0   , Width, fill  ));
-            _source.Fill(BackPixel, new Rect2DI(0, fill, Width, Height));
+            _source.Fill(FillPixel, 0, 0, Width, fill);
+            _source.Fill(BackPixel, 0, fill, Width, Height);
             break;
         case FlowMode.RightToLeft:
-            _source.Fill(BackPixel, new Rect2DI(0           , 0, Width - fill, Height));
-            _source.Fill(FillPixel, new Rect2DI(Width - fill, 0, Width       , Height));
+            _source.Fill(BackPixel, 0, 0, Width - fill, Height);
+            _source.Fill(FillPixel, Width - fill, 0, Width, Height);
             break;
         case FlowMode.BottomToTop:
-            _source.Fill(BackPixel, new Rect2DI(0,             0, Width, Height - fill));
-            _source.Fill(FillPixel, new Rect2DI(0, Height - fill, Width, Height       ));
+            _source.Fill(BackPixel, 0, 0, Width, Height - fill);
+            _source.Fill(FillPixel, 0, Height - fill, Width, Height);
             break;
         }
 

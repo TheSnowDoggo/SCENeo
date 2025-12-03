@@ -36,6 +36,8 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
 
     public static implicit operator Grid2DView<T>(Grid2D<T> grid) => new Grid2DView<T>(grid);
 
+    public static Grid2D<T> Empty { get; } = new Grid2D<T>();
+
     #region Map
 
     public void Map(IView<T> view, Vec2I position, Rect2DI area)
@@ -94,46 +96,67 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
 
     #region Fill
 
+    public void Fill(T item, int left, int top, int right, int bottom)
+    {
+        for (int y = top; y < bottom; y++)
+        {
+            for (int x = left; x < right; x++)
+            {
+                this[x, y] = item;
+            }
+        }
+    }
+
     public void Fill(T item, Rect2DI area)
     {
-        for (int y = area.Start.Y; y < area.End.Y; y++)
-            for (int x = area.Start.X; x < area.End.X; x++)
-                this[x, y] = item;
+        Fill(item, area.Left, area.Top, area.Right, area.Bottom);
     }
 
     public void Fill(T item)
     {
-        for (int y = 0; y < Height; y++)
-            for (int x = 0; x < Width; x++)
-                this[x, y] = item;
+        Fill(item, 0, 0, Width, Height);
+    }
+
+    public void Fill(Func<int, int, T> item, int left, int top, int right, int bottom)
+    {
+        for (int y = top; y < bottom; y++)
+        {
+            for (int x = left; x < right; x++)
+            {
+                this[x, y] = item.Invoke(x, y);
+            }
+        }
     }
 
     public void Fill(Func<int, int, T> item, Rect2DI area)
     {
-        for (int y = area.Start.Y; y < area.End.Y; y++)
-            for (int x = area.Start.X; x < area.End.X; x++)
-                this[x, y] = item.Invoke(x, y);
+        Fill(item, area.Left, area.Top, area.Right, area.Bottom);
     }
 
     public void Fill(Func<int, int, T> item)
     {
-        for (int y = 0; y < Height; y++)
-            for (int x = 0; x < Width; x++)
-                this[x, y] = item.Invoke(x, y);
+        Fill(item, 0, 0, Width, Height);
+    }
+
+    public void Fill(Func<T> item, int left, int top, int right, int bottom)
+    {
+        for (int y = top; y < bottom; y++)
+        {
+            for (int x = left; x < right; x++)
+            {
+                this[x, y] = item.Invoke();
+            }
+        }
     }
 
     public void Fill(Func<T> item, Rect2DI area)
     {
-        for (int y = area.Start.Y; y < area.End.Y; y++)
-            for (int x = area.Start.X; x < area.End.X; x++)
-                this[x, y] = item.Invoke();
+        Fill(item, area.Left, area.Top, area.Right, area.Bottom);
     }
 
     public void Fill(Func<T> item)
     {
-        for (int y = 0; y < Height; y++)
-            for (int x = 0; x < Width; x++)
-                this[x, y] = item.Invoke();
+        Fill(item, 0, 0, Width, Height);
     }
 
     #endregion

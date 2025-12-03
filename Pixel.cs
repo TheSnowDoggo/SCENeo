@@ -58,7 +58,7 @@ public readonly struct Pixel
     public static Pixel Red => new Pixel(SCEColor.Red);
     public static Pixel Magenta => new Pixel(SCEColor.Magenta);
     public static Pixel Yellow => new Pixel(SCEColor.Yellow);
-    public static Pixel White => new Pixel(SCEColor.Red);
+    public static Pixel White => new Pixel(SCEColor.White);
 
     #endregion
 
