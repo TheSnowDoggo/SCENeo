@@ -2,7 +2,7 @@
 
 namespace SCENeo.Node.Render;
 
-public sealed class RenderChannel : UIBaseImage
+public sealed class RenderChannel : UIBaseImage, IResizeable
 {
     public RenderChannel() : base() { }
     public RenderChannel(int width, int height) : base(width, height) { }
@@ -13,6 +13,11 @@ public sealed class RenderChannel : UIBaseImage
     public Pixel BasePixel { get; set; }
 
     #endregion
+
+    public void Resize(int width, int height)
+    {
+        _source.Resize(width, height);
+    }
 
     public void Clear()
     {

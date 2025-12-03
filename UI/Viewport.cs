@@ -2,7 +2,7 @@
 
 namespace SCENeo.UI;
 
-public sealed class Viewport : UIBaseImage
+public sealed class Viewport : UIBaseImage, IResizeable
 {
     private sealed class Comparer : IComparer<IRenderable?>
     {
@@ -29,6 +29,11 @@ public sealed class Viewport : UIBaseImage
     public List<IRenderable> Renderables { get; init; } = [];
 
     public Pixel BasePixel { get; set; } = new(SCEColor.Black);
+
+    public void Resize(int width, int height)
+    {
+        _source.Resize(width, height);
+    }
 
     protected override void Update()
     {

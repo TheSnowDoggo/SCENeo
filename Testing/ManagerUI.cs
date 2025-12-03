@@ -49,10 +49,6 @@ internal sealed class ManagerUI
             Anchor    = Anchor.Right,
         };
 
-        var dp = new DisplayMap(SIFUtils.Deserialize(""))
-        {
-        };
-
         for (int i = 0; i < 16; i++)
         {
             SCEColor color = (SCEColor)i;
@@ -63,7 +59,7 @@ internal sealed class ManagerUI
             };
         }
 
-        _viewport.Renderables.AddEvery(_textBox, _selector, dp);
+        _viewport.Renderables.AddEvery(_textBox, _selector);
     }
 
     public void Run()

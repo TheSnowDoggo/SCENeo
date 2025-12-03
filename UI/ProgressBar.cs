@@ -2,7 +2,7 @@
 
 namespace SCENeo.UI;
 
-public sealed class ProgressBar : UIBaseImage
+public sealed class ProgressBar : UIBaseImage, IResizeable
 {
     public enum FlowMode
     {
@@ -92,6 +92,12 @@ public sealed class ProgressBar : UIBaseImage
     }
 
     #endregion
+
+    public void Resize(int width, int height)
+    {
+        _source.Resize(width, height);
+        _update = true;
+    }
 
     protected override void Update()
     {

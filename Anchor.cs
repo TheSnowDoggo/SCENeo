@@ -1,5 +1,6 @@
 ﻿namespace SCENeo;
 
+[Flags]
 public enum Anchor
 {
     None   = 0,

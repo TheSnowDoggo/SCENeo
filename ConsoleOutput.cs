@@ -2,7 +2,7 @@
 
 namespace SCENeo;
 
-internal sealed class ConsoleOutput : IOutputSource
+public sealed class ConsoleOutput : IOutputSource
 {
     private static Lazy<ConsoleOutput> Lazy = new(() => new ConsoleOutput());
 

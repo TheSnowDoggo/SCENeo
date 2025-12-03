@@ -3,7 +3,7 @@ using SCENeo.Utils;
 
 namespace SCENeo.UI;
 
-public sealed class TextBox : UIBaseImage
+public sealed class TextBox : UIBaseImage, IResizeable
 {
     private bool _update = false;
 
@@ -62,6 +62,12 @@ public sealed class TextBox : UIBaseImage
     }
 
     #endregion
+    
+    public void Resize(int width, int height)
+    {
+        _source.Resize(width, height);
+        _update = true;
+    }
 
     private static bool IsNewline(char c)
     {

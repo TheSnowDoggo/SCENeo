@@ -1,7 +1,7 @@
 ﻿namespace SCENeo.UI;
 
-public abstract class UIBase<T>(T source) : IRenderable, IResizeable
-    where T : IDimensioned, IResizeable
+public abstract class UIBase<T>(T source) : IRenderable
+    where T : IDimensioned
 {
     protected readonly T _source = source;
 
@@ -12,11 +12,6 @@ public abstract class UIBase<T>(T source) : IRenderable, IResizeable
     public Vec2I Offset { get; set; } = Vec2I.Zero;
     public int ZOffset { get; set; } = 0;
     public Anchor Anchor { get; set; } = Anchor.None;
-
-    public virtual void Resize(int width, int height)
-    {
-        _source.Resize(width, height);
-    }
          
     public abstract IView<Pixel> Render();
 }

@@ -2,7 +2,7 @@
 
 namespace SCENeo.UI;
 
-public sealed class LineRenderer : UIBaseImage
+public sealed class LineRenderer : UIBaseImage, IResizeable
 {
     private bool _update = false;
 
@@ -52,9 +52,9 @@ public sealed class LineRenderer : UIBaseImage
         set { SCEUtils.ObserveSet(value, ref _stackMode, ref _update); }
     }
 
-    public override void Resize(int width, int height)
+    public void Resize(int width, int height)
     {
-        base.Resize(width, height);
+        _source.Resize(width, height);
 
         _update = true;
 

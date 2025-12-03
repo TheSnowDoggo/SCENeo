@@ -3,7 +3,7 @@ using SCENeo.Utils;
 
 namespace SCENeo.UI;
 
-public sealed class VerticalSelector : UIBaseImage
+public sealed class VerticalSelector : UIBaseImage, IResizeable
 {
     private bool _update = false;
 
@@ -65,9 +65,9 @@ public sealed class VerticalSelector : UIBaseImage
 
     #endregion
 
-    public override void Resize(int width, int height)
+    public void Resize(int width, int height)
     {
-        base.Resize(width, height);
+        _source.Resize(width, height);
 
         _update = true;
 
