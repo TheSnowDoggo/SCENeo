@@ -2,6 +2,33 @@
 
 public static class SCEUtils
 {
+    #region String
+
+    public static int IndexOf(this string str, Predicate<char> predicate, int start)
+    {
+        if (start < 0)
+        {
+            throw new ArgumentException("Start index must not be negative.");
+        }
+
+        for (int i = start; i < str.Length; i++)
+        {
+            if (predicate.Invoke(str[i]))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public static int IndexOf(this string str, Predicate<char> predicate)
+    {
+        return IndexOf(str, predicate, 0);
+    }
+
+    #endregion
+
     #region UI
 
     public static void ObserveSet<T>(T value, ref T property, ref bool update)

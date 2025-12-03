@@ -241,35 +241,55 @@ public static class SIFUtils
 
         for (int i = 1; i < str.Length; i++)
         {
-            if (str[i] == last && count < 98)
+            if (str[i] == last)
             {
                 count++;
                 continue;
             }
 
-            if (count < 4)
-            {
-                sb.Append(last, count);
-            }
-            else
-            {
-                sb.Append($"{Delimiter}{(char)(' ' + (count - 4))}{last}");
-            }
+            AppendEncode(sb, last, count);
 
             last  = str[i];
             count = 1;
         }
 
-        if (count < 4)
-        {
-            sb.Append(last, count);
-        }
-        else
-        {
-            sb.Append($"{Delimiter}{(char)(' ' + (count - 4))}{last}");
-        }
+        AppendEncode(sb, last, count);
 
         return sb.ToString();
+    }
+
+    private static void AppendSingle(StringBuilder sb, char c)
+    {
+        if (c == Delimiter)
+        {
+            sb.Append(Delimiter, 2);
+            return;
+        }
+
+        if (!char.IsDigit(c))
+        {
+            sb.Append(c);
+            return;
+        }
+
+        sb.Append($"{Delimiter}{c}{Delimiter}");
+    }
+
+    private static void AppendEncode(StringBuilder sb, char c, int count)
+    {
+        if (count == 1)
+        {
+            AppendSingle(sb, c);
+            return;
+        } 
+
+        if (!char.IsDigit(c) && c != Delimiter)
+        {
+            sb.Append($"{count}{c}");
+            return;
+        }
+
+        sb.Append($"{count}{Delimiter}{c}");
     }
 
     private static string RunLengthDecode(string str)
@@ -279,26 +299,65 @@ public static class SIFUtils
             return string.Empty;
         }
 
+        bool delimited = false;
+
         var sb = new StringBuilder();
 
         for (int i = 0; i < str.Length; i++)
         {
-            if (char.IsControl(str[i]) && str[i] != ' ')
+            if (str[i] < ' ')
             {
                 continue;
             }
 
-            if (str[i] != Delimiter || i >= str.Length - 2)
+            if (str[i] == Delimiter)
+            {
+                if (delimited && i < str.Length - 1 && str[i + 1] == Delimiter)
+                {
+                    sb.Append(Delimiter);
+                }
+
+                delimited = !delimited;
+                continue;
+            }
+
+            if (delimited || !char.IsDigit(str[i]))
             {
                 sb.Append(str[i]);
                 continue;
             }
 
-            int count = str[i + 1] - ' ' + 4;
+            int end = str.IndexOf(c => !char.IsDigit(c), i + 1);
 
-            sb.Append(str[i + 2], count);
+            if (end == -1)
+            {
+                throw new InvalidDataException("Run count missing associated character.");
+            }
 
-            i += 2;
+            string countStr = str[i..end];
+
+            if (!int.TryParse(countStr, out int count) || count < 0)
+            {
+                throw new InvalidDataException($"Count {countStr} was invalid.");
+            }
+
+            char c = str[end];
+
+            if (c == Delimiter)
+            {
+                if (i == str.Length - 1)
+                {
+                    throw new InvalidDataException("Delimiter must be followed by a character.");
+                }
+
+                end++;
+
+                c = str[end];
+            }
+
+            sb.Append(c, count);
+
+            i = end;
         }
 
         return sb.ToString();
