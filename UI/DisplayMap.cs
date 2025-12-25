@@ -12,7 +12,7 @@ public sealed class DisplayMap : Image, IRenderable
 
     public Vec2I Offset { get; set; } = Vec2I.Zero;
 
-    public int ZOffset { get; set; } = 0;
+    public int ZIndex { get; set; } = 0;
 
     public Anchor Anchor { get; set; } = Anchor.None;
 

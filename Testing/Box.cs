@@ -36,6 +36,6 @@ internal sealed class Box : Node2D
             Masks = SCEUtils.CreateFlags(0),
         };
 
-        AddChildren(sprite, collider);
+        AddChildren([sprite, collider]);
     }
 }

@@ -50,8 +50,8 @@ internal sealed class Player : KinematicNode2D
             Layers = SCEUtils.CreateFlags(0),
             OnCollisionReceive = OnCollisionReceive,
         };
-        
-        AddChildren(camera, sprite, collider);
+
+        AddChildren([camera, sprite, collider]);
     }
 
     public override void Start()

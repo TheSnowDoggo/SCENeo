@@ -8,7 +8,10 @@ public class Node2D : Node
 
     public Vec2 Position
     {
-        get { return _position; }
+        get 
+        { 
+            return _position; 
+        }
         set
         {
             if (value == _position)
@@ -24,7 +27,10 @@ public class Node2D : Node
 
     public Vec2 GlobalPosition
     {
-        get { return _globalPosition; }
+        get
+        { 
+            return _globalPosition; 
+        }
         set
         {
             if (_globalPosition == value)

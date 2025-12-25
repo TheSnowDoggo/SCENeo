@@ -41,7 +41,7 @@ internal sealed class VirtualPlane : IRenderable
 
     public bool Enabled { get; set; } = true;
     public Vec2I Offset { get; set; }
-    public int ZOffset { get; set; }
+    public int ZIndex { get; set; }
     public Anchor Anchor { get; set; }
 
     public IView<Pixel> Render()

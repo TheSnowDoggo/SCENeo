@@ -105,7 +105,7 @@ internal sealed class Manager
             MaxVelocity = 10,
         };
 
-        _nm.Tree.Root.AddChildren(enemy, player, box, camera);
+        _nm.Tree.Root.AddChildren([enemy, player, box, camera]);
     }
 
     public void Run()

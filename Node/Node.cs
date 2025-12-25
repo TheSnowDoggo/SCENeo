@@ -12,7 +12,10 @@ public class Node
 
     public Node(NodeTree? tree = null)
     {
-        if (tree != null) _tree = tree;
+        if (tree != null)
+        {
+            _tree = tree;
+        }
     }
 
     public string Name
@@ -63,7 +66,7 @@ public class Node
         child._tree   = _tree;
     }
 
-    public void AddChildren(params Node[] children)
+    public void AddChildren(IEnumerable<Node> children)
     {
         foreach (Node child in children)
         {
@@ -126,7 +129,10 @@ public class Node
 
     public IEnumerable<Node> ActiveDescendents()
     {
-        if (!Active) yield break;
+        if (!Active)
+        {
+            yield break;
+        }
 
         var stack = new Stack<Node>();
 

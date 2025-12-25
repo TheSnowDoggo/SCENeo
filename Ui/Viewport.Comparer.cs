@@ -17,7 +17,7 @@ public sealed partial class Viewport
                 throw new NullReferenceException("Renderable was null.");
             }
 
-            return x.ZOffset.CompareTo(y.ZOffset);
+            return x.ZIndex.CompareTo(y.ZIndex);
         }
     }
 }

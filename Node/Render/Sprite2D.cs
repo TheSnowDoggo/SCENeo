@@ -12,7 +12,7 @@ public sealed class Sprite2D : Node2D, IRenderable
 
     public Vec2I Offset { get { return (Vec2I)GlobalPosition.Round() * new Vec2I(2, 1) + GetSource().Offset; } }
 
-    public int ZOffset { get { return GetSource().ZOffset; } }
+    public int ZIndex { get { return GetSource().ZIndex; } }
 
     public Anchor Anchor { get { return GetSource().Anchor; } }
 

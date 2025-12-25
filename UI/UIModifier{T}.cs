@@ -10,7 +10,7 @@ public abstract class UiModifier<T>(T source) : IRenderable
 
     public bool Enabled { get { return _source.Enabled; } }
     public Vec2I Offset { get { return _source.Offset; } }
-    public int ZOffset { get { return _source.ZOffset; } }
+    public int ZIndex { get { return _source.ZIndex; } }
     public Anchor Anchor { get { return _source.Anchor; } }
 
     public abstract IView<Pixel> Render();

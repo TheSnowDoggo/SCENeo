@@ -85,7 +85,7 @@ internal sealed class ManagerUI2
             Source = floorVp,
         };
 
-        _nodeManager.Tree.Root.AddChildren(ball, floor);
+        _nodeManager.Tree.Root.AddChildren([ball, floor]);
 
         _updater = new Updater()
         {
