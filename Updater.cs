@@ -8,7 +8,7 @@ public sealed class Updater
 
     private bool _active = false;
 
-    private int _fps = 0;
+    private double _fps = 0;
 
     private int _frameCap = -1;
 
@@ -28,7 +28,7 @@ public sealed class Updater
 
     public double RealDelta { get { return _realDelta; } }
 
-    public int FPS { get { return _fps; } }
+    public double FPS { get { return _fps; } }
 
     public int FrameCap
     {
@@ -61,13 +61,14 @@ public sealed class Updater
             while (deltaTimer.Elapsed.TotalSeconds < _minimumDelta) { }
 
             _delta = deltaTimer.Elapsed.TotalSeconds;
+
             deltaTimer.Restart();
 
             frameCount++;
 
             if (fpsTimer.Elapsed.TotalSeconds >= FPSUpdateRate)
             {
-                _fps = frameCount;
+                _fps = frameCount / fpsTimer.Elapsed.TotalMilliseconds;
 
                 frameCount = 0;
 
