@@ -1,6 +1,4 @@
-﻿using SCENeo.Utils;
-
-namespace SCENeo;
+﻿namespace SCENeo;
 
 public struct ColorInfo(SCEColor fgColor, SCEColor bgColor)
     : IEquatable<ColorInfo>

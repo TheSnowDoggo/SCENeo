@@ -1,7 +1,6 @@
 ﻿using SCENeo.Node;
 using SCENeo.Node.Render;
-using SCENeo.UI;
-using SCENeo.Utils;
+using SCENeo.Ui;
 
 namespace SCENeo.Testing;
 
@@ -35,8 +34,10 @@ internal sealed class ManagerUI2
             OnResize = Display_OnResize,
         };
 
-        _textBox = new TextBox(20, 1)
+        _textBox = new TextBox()
         {
+            Width  = 20,
+            Height = 1,
             TextFgColor = SCEColor.White,
         };
 
@@ -92,7 +93,7 @@ internal sealed class ManagerUI2
             OnUpdate = Update,
         };
 
-        _viewport.Renderables.AddEvery(_textBox, _renderChannel);
+        _viewport.Renderables.AddRange([_textBox, _renderChannel]);
     }
 
     public void Run()
@@ -111,9 +112,12 @@ internal sealed class ManagerUI2
         _display.Update();
     }
 
-    private void Display_OnResize(Vec2I dimensions)
+    private void Display_OnResize(int width, int height)
     {
-        _viewport.Resize(dimensions);
-        _renderChannel.Resize(dimensions);
+        _viewport.Width  = width;
+        _viewport.Height = height;
+
+        _renderChannel.Width  = width;
+        _renderChannel.Height = height;
     }
 }

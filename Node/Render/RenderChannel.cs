@@ -1,36 +1,42 @@
-﻿using SCENeo.UI;
+﻿using SCENeo.Ui;
 
 namespace SCENeo.Node.Render;
 
-public sealed class RenderChannel : UIBaseImage, IResizeable
+public sealed class RenderChannel : IRenderable
 {
-    public RenderChannel() : base() { }
-    public RenderChannel(int width, int height) : base(width, height) { }
-    public RenderChannel(Vec2I dimensions) : base(dimensions) { }
+    private readonly Image _buffer = new Image();
 
-    #region Properties
+    public RenderChannel()
+    {
+    }
+
+    public bool Enabled { get; set; } = true;
+    public Vec2I Offset { get; set; }
+    public int ZOffset { get; set; }
+    public Anchor Anchor { get; set; }
+
+    public int Width { get; set; }
+    public int Height { get; set; }
 
     public Pixel BasePixel { get; set; }
 
-    #endregion
-
-    public void Resize(int width, int height)
+    public void Initialize()
     {
-        _source.Resize(width, height);
-    }
+        if (Width != _buffer.Width || Height != _buffer.Height)
+        {
+            _buffer.CleanResize(Width, Height);
+        }
 
-    public void Clear()
-    {
-        _source.Fill(BasePixel);
+        _buffer.Fill(BasePixel);
     }
 
     public void Load(IView<Pixel> view, Vec2I position)
     {
-        _source.MergeMap(view, position);
+        _buffer.MergeMap(view, position);
     }
 
-    public override IView<Pixel> Render()
+    public IView<Pixel> Render()
     {
-        return _source.AsView();
+        return _buffer.AsView();
     }
 }

@@ -1,6 +1,6 @@
 ﻿using SCENeo.Node.Boid;
 using SCENeo.Node.Render;
-using SCENeo.UI;
+using SCENeo.Ui;
 
 namespace SCENeo.Testing;
 
@@ -20,10 +20,11 @@ internal sealed class Enemy : SteeredNode2D
         var sprite = new Sprite2D()
         {
             Name = "Sprite2D",
-            Source = new Stretcher(dpMap)
+            Source = new Stretcher()
             {
+                Source     = dpMap,
                 ScaleWidth = 2,
-                Bake = true,
+                Bake       = true,
             },
         };
 

@@ -1,55 +1,101 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using SCENeo.Utils;
+﻿namespace SCENeo.Ui;
 
-namespace SCENeo.UI;
-
-public sealed class VerticalSelector : UIBaseImage, IResizeable
+public sealed class VerticalSelector : IRenderable
 {
+    private readonly Image _buffer = new Image();
+
     private bool _update = false;
 
     private Option[] _options = [];
 
-    private Pixel _basePixel = new Pixel(SCEColor.Gray, SCEColor.Black);
-
-    private StackMode _stackMode = StackMode.TopDown;
-
     private int _selected = 0;
 
-    public VerticalSelector() : base() { }
-    public VerticalSelector(int width, int height) : base(width, height)
+    public VerticalSelector()
     {
-        _options = new Option[height];
     }
-    public VerticalSelector(Vec2I dimensions) : base(dimensions)
-    {
-        _options = new Option[dimensions.Y];
-    }
-
-    #region Properties
 
     public Option this[int option]
     {
-        get { return _options[option]; }
+        get
+        {
+            return _options[option];
+        }
         set
         {
+            if (value == _options[option])
+            {
+                return;
+            }
+
             if (_options[option] != null)
             {
                 _options[option].OnUpdate -= Line_OnUpdate;
             }
 
-            _options[option] = value;
+            if (value != null)
+            {
+                value.OnUpdate += Line_OnUpdate;
+            }
 
-            _options[option].OnUpdate += Line_OnUpdate;
+            _options[option] = value!;
 
             _update = true;
         }
     }
+
+    public bool Enabled { get; set; } = true;
+    public Vec2I Offset { get; set; }
+    public int ZOffset { get; set; }
+    public Anchor Anchor { get; set; }
+
+    private int _width;
+
+    public int Width
+    {
+        get { return _width; }
+        set { SCEUtils.ObserveSet(value, ref _width, ref _update); }
+    }
+
+    private int _height;
+
+    public int Height
+    {
+        get
+        {
+            return _height;
+        }
+        set
+        {
+            if (value == _height)
+            {
+                return;
+            }
+
+            _height = value;
+
+            for (int i = _height; i < _options.Length; i++)
+            {
+                if (_options[i] != null)
+                {
+                    _options[i].OnUpdate -= Line_OnUpdate;
+                }
+            }
+
+            Array.Resize(ref _options, _height);
+
+            _update = true;
+        }
+    }
+
+    private Pixel _basePixel = new Pixel(SCEColor.Gray, SCEColor.Black);
 
     public Pixel BasePixel
     {
         get { return _basePixel; }
         set { SCEUtils.ObserveSet(value, ref _basePixel, ref _update); }
     }
+
+    private StackMode _stackMode = StackMode.TopDown;
 
     public StackMode StackMode
     {
@@ -61,24 +107,6 @@ public sealed class VerticalSelector : UIBaseImage, IResizeable
     {
         get { return _selected; }
         set { SCEUtils.ObserveSet(value, ref _selected, ref _update); }
-    }
-
-    #endregion
-
-    public void Resize(int width, int height)
-    {
-        _source.Resize(width, height);
-
-        _update = true;
-
-        for (int i = height; i < _options.Length; i++)
-        {
-            if (_options[i] == null) continue;
-
-            _options[i].OnUpdate -= Line_OnUpdate;
-        }
-
-        Array.Resize(ref _options, height);
     }
 
     public bool Select()
@@ -95,7 +123,7 @@ public sealed class VerticalSelector : UIBaseImage, IResizeable
 
     public void WrapMove(int move)
     {
-        Selected = SCEUtils.Mod(Selected + move, Height);
+        Selected = SCEMath.Mod(Selected + move, Height);
     }
 
     public void LimitMove(int move)
@@ -103,20 +131,24 @@ public sealed class VerticalSelector : UIBaseImage, IResizeable
         Selected = Math.Clamp(Selected + move, 0, Height - 1);
     }
 
-    public override IView<Pixel> Render()
+    public IView<Pixel> Render()
     {
         if (_update)
         {
             Update();
-            _update = false;
         }
 
-        return _source.AsView();
+        return _buffer.AsView();
     }
 
     private void Update()
     {
-        _source.Fill(BasePixel);
+        if (_buffer.Width != Width || _buffer.Height != Height)
+        {
+            _buffer.CleanResize(Width, Height);
+        }
+
+        _buffer.Fill(BasePixel);
 
         for (int i = 0; i < _options.Length; i++)
         {
@@ -133,8 +165,10 @@ public sealed class VerticalSelector : UIBaseImage, IResizeable
             SCEColor fgColor = selected ? option.SelectedFgColor : option.UnselectedFgColor;
             SCEColor bgColor = selected ? option.SelectedBgColor : option.UnselectedBgColor;
 
-            _source.MapLine(option.Text, x, y, fgColor, bgColor);
+            _buffer.MapLine(option.Text, x, y, fgColor, bgColor);
         }
+
+        _update = false;
     }
 
     private void Line_OnUpdate(object? sender, EventArgs args)

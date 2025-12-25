@@ -1,8 +1,6 @@
-﻿using SCENeo.Utils;
+﻿namespace SCENeo.Ui;
 
-namespace SCENeo.UI;
-
-public sealed class ProgressBar : UIBaseImage, IResizeable
+public sealed class ProgressBar : IRenderable
 {
     public enum FlowMode
     {
@@ -12,29 +10,40 @@ public sealed class ProgressBar : UIBaseImage, IResizeable
         BottomToTop,
     }
 
+    private readonly Image _buffer = new Image();
+
     private bool _update = false;
 
     private bool _valueUpdate = false;
 
-    private FlowMode _mode = FlowMode.LeftToRight;
-
-    private double _min   = 0;
-
-    private double _max   = 0;
-
-    private double _value = 0;
-
-    private Pixel _fillPixel = new Pixel(SCEColor.Green);
-
-    private Pixel _backPixel = new Pixel(SCEColor.DarkGray);
-
     private int _lastFill = -1;
 
-    public ProgressBar() : base() { }
-    public ProgressBar(int width, int height) : base(width, height) { }
-    public ProgressBar(Vec2I dimensions) : base(dimensions) { }
+    public ProgressBar()
+    {
+    }
 
-    #region Properties
+    public bool Enabled { get; set; } = true;
+    public Vec2I Offset { get; set; }
+    public int ZOffset { get; set; }
+    public Anchor Anchor { get; set; }
+
+    private int _width;
+
+    public int Width
+    {
+        get { return _width; }
+        set { SCEUtils.ObserveSet(value, ref _width, ref _update); }
+    }
+
+    private int _height;
+
+    public int Height
+    {
+        get { return _height; }
+        set { SCEUtils.ObserveSet(value, ref _height, ref _update); }
+    }
+
+    private FlowMode _mode = FlowMode.LeftToRight;
 
     public FlowMode Mode
     {
@@ -42,11 +51,15 @@ public sealed class ProgressBar : UIBaseImage, IResizeable
         set { SCEUtils.ObserveSet(value, ref _mode, ref _update); }
     }
 
+    private double _min = 0;
+
     public double Min
     {
         get { return _min; }
         set { SCEUtils.ObserveSet(value, ref _min, ref _valueUpdate); }
     }
+
+    private double _max = 0;
 
     public double Max
     {
@@ -54,17 +67,23 @@ public sealed class ProgressBar : UIBaseImage, IResizeable
         set { SCEUtils.ObserveSet(value, ref _max, ref _valueUpdate); }
     }
 
+    private double _value = 0;
+
     public double Value
     {
         get { return _value; }
         set { SCEUtils.ObserveSet(value, ref _value, ref _valueUpdate); }
     }
 
+    private Pixel _fillPixel = new Pixel(SCEColor.Green);
+
     public Pixel FillPixel
     {
         get { return _fillPixel; }
         set { SCEUtils.ObserveSet(value, ref _fillPixel, ref _update); }
     }
+
+    private Pixel _backPixel = new Pixel(SCEColor.DarkGray);
 
     public Pixel BackPixel
     {
@@ -76,8 +95,6 @@ public sealed class ProgressBar : UIBaseImage, IResizeable
     {
         get { return Mode is FlowMode.LeftToRight or FlowMode.RightToLeft; }
     }
-
-    #endregion
 
     public int Fill()
     {
@@ -91,20 +108,14 @@ public sealed class ProgressBar : UIBaseImage, IResizeable
         return Horizontal ? Width : Height;
     }
 
-    public void Resize(int width, int height)
-    {
-        _source.Resize(width, height);
-        _update = true;
-    }
-
-    public override IView<Pixel> Render()
+    public IView<Pixel> Render()
     {
         if (_update || _valueUpdate)
         {
             Update();
         }
 
-        return _source.AsView();
+        return _buffer.AsView();
     }
 
     private void Update()
@@ -119,23 +130,28 @@ public sealed class ProgressBar : UIBaseImage, IResizeable
 
         _lastFill = fill;
 
+        if (_buffer.Width != Width || _buffer.Height != Height)
+        {
+            _buffer.CleanResize(Width, Height);
+        }
+
         switch (Mode)
         {
         case FlowMode.LeftToRight:
-            _source.Fill(FillPixel, 0, 0, fill, Height);
-            _source.Fill(BackPixel, fill, 0, Width, Height);
+            _buffer.Fill(FillPixel, 0, 0, fill, Height);
+            _buffer.Fill(BackPixel, fill, 0, Width, Height);
             break;
         case FlowMode.TopToBottom:
-            _source.Fill(FillPixel, 0, 0, Width, fill);
-            _source.Fill(BackPixel, 0, fill, Width, Height);
+            _buffer.Fill(FillPixel, 0, 0, Width, fill);
+            _buffer.Fill(BackPixel, 0, fill, Width, Height);
             break;
         case FlowMode.RightToLeft:
-            _source.Fill(BackPixel, 0, 0, Width - fill, Height);
-            _source.Fill(FillPixel, Width - fill, 0, Width, Height);
+            _buffer.Fill(BackPixel, 0, 0, Width - fill, Height);
+            _buffer.Fill(FillPixel, Width - fill, 0, Width, Height);
             break;
         case FlowMode.BottomToTop:
-            _source.Fill(BackPixel, 0, 0, Width, Height - fill);
-            _source.Fill(FillPixel, 0, Height - fill, Width, Height);
+            _buffer.Fill(BackPixel, 0, 0, Width, Height - fill);
+            _buffer.Fill(FillPixel, 0, Height - fill, Width, Height);
             break;
         }
 

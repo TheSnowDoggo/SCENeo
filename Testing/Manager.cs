@@ -1,6 +1,5 @@
 ﻿using SCENeo.Node;
-using SCENeo.UI;
-using SCENeo.Utils;
+using SCENeo.Ui;
 using SCENeo.Node.Render;
 using SCENeo.Node.Collision;
 
@@ -44,8 +43,10 @@ internal sealed class Manager
             BasePixel = new Pixel(SCEColor.DarkCyan),
         };
 
-        var rc2 = new RenderChannel(40, 15)
+        var rc2 = new RenderChannel()
         {
+            Width  = 40,
+            Height = 15,
             BasePixel = new Pixel(SCEColor.Cyan),
             //Anchor    = Anchor.Right | Anchor.Bottom,
         };
@@ -55,13 +56,15 @@ internal sealed class Manager
             FilterMode = null, 
         };
 
-        _fpsUI = new TextBox(20, 2)
+        _fpsUI = new TextBox()
         {
+            Width  = 20,
+            Height = 2,
             Text   = "FPS: None",
             Anchor = Anchor.Right,
         };
 
-        _viewport.Renderables.AddEvery(rc1, rc2Filter, _fpsUI);
+        _viewport.Renderables.AddRange([rc1, rc2Filter, _fpsUI]);
 
         _re = new RenderEngine()
         {
@@ -86,7 +89,7 @@ internal sealed class Manager
         var player = new Player()
         {
             Name     = "Player",
-            Rotation = SCEUtils.DegToRad(10.0f),
+            Rotation = SCEMath.DegToRad(10.0f),
         };
 
         var box = new Box()
@@ -125,9 +128,12 @@ internal sealed class Manager
         _fpsUI.Text = $"FPS: {_updater.FPS}\n{_nm.Tree.Root.GetNode<Node2D>("Enemy").GlobalPosition}";
     }
 
-    private void Display_OnResize(Vec2I newSize)
+    private void Display_OnResize(int width, int height)
     {
-        _viewport.Resize(newSize);
-        _re.Channels[1].Resize(newSize);
+        _viewport.Width  = width;
+        _viewport.Height = height;
+
+        _re.Channels[1].Width = width;
+        _re.Channels[1].Width = height;
     }
 }

@@ -1,8 +1,6 @@
-﻿using SCENeo.Utils;
+﻿namespace SCENeo.Ui;
 
-namespace SCENeo.UI;
-
-public sealed class Stretcher : UIBaseImage
+public sealed class Stretcher : IRenderable
 {
     public enum Scaling
     {
@@ -12,21 +10,22 @@ public sealed class Stretcher : UIBaseImage
         Hide,
     }
 
+    private readonly Image _buffer = new Image();
+
     private bool _update = false;
 
     private int _scaleWidth;
 
     private Scaling _textScaling = Scaling.None;
 
-    public Stretcher() : base() { }
-
-    public Stretcher(IRenderable source) 
-        : base(source.Width, source.Height)
+    public Stretcher()
     {
-        Source = source;
     }
 
-    #region Properties
+    public bool Enabled { get; set; } = true;
+    public Vec2I Offset { get; set; }
+    public int ZOffset { get; set; }
+    public Anchor Anchor { get; set; }
 
     public IRenderable? Source { get; set; }
 
@@ -54,21 +53,18 @@ public sealed class Stretcher : UIBaseImage
 
     public bool IsBaked { get; set; } = false;
 
-    public override int Width { get { return Source == null ? 0 : Source.Width * ScaleWidth; } }
+    public int Width { get { return Source == null ? 0 : Source.Width * ScaleWidth; } }
 
-    #endregion
+    public int Height { get { return Source == null ? 0 : Source.Height; } }
 
-    public override Grid2DView<Pixel> Render()
+    public IView<Pixel> Render()
     {
         if (!Bake || !IsBaked || _update)
         {
             Update();
-
-            IsBaked = true;
-            _update = false;
         }
 
-        return _source;
+        return _buffer.AsView();
     }
 
     private void Update()
@@ -78,12 +74,12 @@ public sealed class Stretcher : UIBaseImage
             throw new NullReferenceException("Source was null.");
         }
 
-        IView<Pixel> view = Source.Render();
-
-        if (_source.Dimensions != this.Dimensions())
+        if (_buffer.Width != Width || _buffer.Height != Height)
         {
-            _source.CleanResize(Width, view.Height);
+            _buffer.CleanResize(Width, Height);
         }
+
+        IView<Pixel> view = Source.Render();
 
         for (int y = 0; y < view.Height; y++)
         {
@@ -92,6 +88,9 @@ public sealed class Stretcher : UIBaseImage
                 BufferLoad(view, x, y);
             }
         }
+
+        IsBaked = true;
+        _update = false;
     }
 
     private void BufferLoad(IView<Pixel> view, int x, int y)
@@ -99,21 +98,29 @@ public sealed class Stretcher : UIBaseImage
         switch (TextScaling)
         {
         case Scaling.None:
-            _source[x * ScaleWidth, y] = view[x, y];
+            _buffer[x * ScaleWidth, y] = view[x, y];
             for (int i = 1; i < ScaleWidth; i++)
-                _source[x * ScaleWidth + i, y] = new Pixel(view[x, y].FgColor, view[x, y].BgColor);
+            {
+                _buffer[x * ScaleWidth + i, y] = new Pixel(view[x, y].FgColor, view[x, y].BgColor);
+            }
             break;
         case Scaling.Stretch:
             for (int i = 0; i < ScaleWidth; i++)
-                _source[x * ScaleWidth + i, y] = view[x, y];
+            {
+                _buffer[x * ScaleWidth + i, y] = view[x, y];
+            }
             break;
         case Scaling.Slide:
             for (int i = 0; i < ScaleWidth; i++)
-                _source[x + view.Width * i, y] = view[x, y];
+            {
+                _buffer[x + view.Width * i, y] = view[x, y];
+            }
             break;
         case Scaling.Hide:
             for (int i = 0; i < ScaleWidth; i++)
-                _source[x * ScaleWidth + i, y] = new Pixel(view[x, y].FgColor, view[x, y].BgColor);
+            {
+                _buffer[x * ScaleWidth + i, y] = new Pixel(view[x, y].FgColor, view[x, y].BgColor);
+            }
             break;
         }
     }

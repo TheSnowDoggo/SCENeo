@@ -1,11 +1,10 @@
 ﻿using System.Text;
 using System.Collections;
-using SCENeo.Utils;
 
 namespace SCENeo;
 
 public class Grid2D<T>(T[,] data) : IEnumerable<T>,
-    ICloneable, IDimensioned, IResizeable
+    ICloneable, IDimensioned
 {
     public Grid2D() : this(new T[0, 0]) { }
     public Grid2D(int width, int height) : this(new T[width, height]) { }
@@ -18,9 +17,9 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
 
     public int Height { get { return Data.GetLength(1); } }
 
-    public int Size { get { return Data.Length; } }
+    public int Length { get { return Data.Length; } }
 
-    public Vec2I Dimensions { get { return new Vec2I(Width, Height); } }
+    public Vec2I Size { get { return new Vec2I(Width, Height); } }
 
     public T this[int x, int y]
     {
@@ -44,7 +43,7 @@ public class Grid2D<T>(T[,] data) : IEnumerable<T>,
     {
         Vec2I difference = area.Start - position;
 
-        Rect2DI trim = area.Trim(difference, Dimensions + difference);
+        Rect2DI trim = area.Trim(difference, Size + difference);
 
         position += trim.Start;
 

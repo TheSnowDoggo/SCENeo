@@ -1,6 +1,4 @@
-﻿using SCENeo.Utils;
-
-namespace SCENeo.Node.Render;
+﻿namespace SCENeo.Node.Render;
 
 public sealed class RenderEngine : IEngine
 {
@@ -8,12 +6,32 @@ public sealed class RenderEngine : IEngine
     {
         public readonly IRenderable Renderable = renderable;
         public readonly Rect2DI     RenderArea = renderArea;
+
+        public static RenderInput Create(IRenderable renderable)
+        {
+            Vec2I dimensions = renderable.Size();
+
+            Vec2I anchorOffset = renderable.Anchor.AnchorDimension(dimensions) - dimensions;
+
+            Vec2I renderPosition = renderable.Offset + anchorOffset;
+
+            Rect2DI renderArea = Rect2DI.Area(renderPosition, dimensions);
+
+            return new RenderInput(renderable, renderArea);
+        }
     }
 
     private sealed class RenderOutput(RenderChannel channel, Rect2DI renderArea)
     {
         public readonly RenderChannel Channel    = channel;
         public readonly Rect2DI       RenderArea = renderArea;
+
+        public static RenderOutput Create(RenderChannel renderChannel, Vec2I renderPosition)
+        {
+            Rect2DI renderArea = Rect2DI.Area(renderPosition, renderChannel.Size());
+
+            return new RenderOutput(renderChannel, renderArea);
+        }
     }
 
     private sealed class RenderState
@@ -35,7 +53,7 @@ public sealed class RenderEngine : IEngine
     {
         foreach (RenderOutput output in renderState.Outputs)
         {
-            output.Channel.Clear();
+            output.Channel.Initialize();
         }
 
         foreach (RenderInput input in renderState.Inputs)
@@ -61,28 +79,6 @@ public sealed class RenderEngine : IEngine
         }
     }
 
-    private static RenderInput CreateInput(IRenderable renderable)
-    {
-        Vec2I dimensions = renderable.Dimensions();
-
-        Vec2I anchorOffset = renderable.Anchor.AnchorDimension(dimensions) - dimensions;
-
-        Vec2I renderPosition = renderable.Offset + anchorOffset;
-
-        Rect2DI renderArea = Rect2DI.Area(renderPosition, dimensions);
-
-        return new RenderInput(renderable, renderArea);
-    }
-
-    private RenderOutput CreateOutput(Camera2D camera)
-    {
-        RenderChannel renderChannel = Channels[camera.Channel];
-
-        Rect2DI renderArea = Rect2DI.Area(camera.RenderPosition(), renderChannel.Dimensions());
-
-        return new RenderOutput(renderChannel, renderArea);
-    }
-
     private RenderState LoadRenderState(IReadOnlyList<Node> nodes)
     {
         var state = new RenderState();
@@ -93,12 +89,13 @@ public sealed class RenderEngine : IEngine
         {
             if (node is IRenderable renderable && renderable.Enabled)
             {
-                state.Inputs.Add(CreateInput(renderable));
+                state.Inputs.Add(RenderInput.Create(renderable));
             }
 
-            if (node is Camera2D camera && Channels.ContainsKey(camera.Channel) && channels.Add(camera.Channel))
+            if (node is Camera2D camera && Channels.TryGetValue(camera.Channel, out RenderChannel? renderChannel) 
+                && channels.Add(camera.Channel))
             {
-                state.Outputs.Add(CreateOutput(camera));
+                state.Outputs.Add(RenderOutput.Create(renderChannel, camera.RenderPosition()));
             }
         }
 

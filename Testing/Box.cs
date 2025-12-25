@@ -1,8 +1,7 @@
 ﻿using SCENeo.Node;
 using SCENeo.Node.Collision;
 using SCENeo.Node.Render;
-using SCENeo.UI;
-using SCENeo.Utils;
+using SCENeo.Ui;
 
 namespace SCENeo.Testing;
 
@@ -22,8 +21,9 @@ internal sealed class Box : Node2D
         var sprite = new Sprite2D()
         {
             Name     = "Sprite2D",
-            Source   = new Stretcher(dpMap)
+            Source   = new Stretcher()
             {
+                Source      = dpMap,
                 ScaleWidth  = 2,
                 TextScaling = Stretcher.Scaling.Stretch,
                 Bake        = true,
@@ -32,7 +32,7 @@ internal sealed class Box : Node2D
 
         var collider = new BoxCollider2D()
         {
-            Area  = new Rect2D(dpMap.Dimensions),
+            Area  = new Rect2D(dpMap.Size),
             Masks = SCEUtils.CreateFlags(0),
         };
 

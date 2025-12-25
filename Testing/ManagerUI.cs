@@ -1,9 +1,8 @@
-﻿using SCENeo.UI;
-using SCENeo.Utils;
+﻿using SCENeo.Ui;
 
 namespace SCENeo.Testing;
 
-internal sealed class ManagerUI
+internal sealed class ManagerUi
 {
     private readonly Updater _updater;
 
@@ -15,7 +14,7 @@ internal sealed class ManagerUI
 
     private readonly VerticalSelector _selector;
 
-    public ManagerUI()
+    public ManagerUi()
     {
         _updater = new Updater()
         {
@@ -35,16 +34,20 @@ internal sealed class ManagerUI
             OnResize = Display_OnResize,
         };
 
-        _textBox = new TextBox(30, 1)
+        _textBox = new TextBox()
         {
+            Width       = 30,
+            Height      = 1,
             BasePixel   = new Pixel(SCEColor.Black, SCEColor.White),
             TextFgColor = SCEColor.Transparent,
             TextBgColor = SCEColor.Transparent,
             Enabled     = false,
         };
 
-        _selector = new VerticalSelector(20, 16)
+        _selector = new VerticalSelector()
         {
+            Width     = 20,
+            Height    = 16,
             BasePixel = Pixel.Null,
             Anchor    = Anchor.Right,
         };
@@ -59,7 +62,7 @@ internal sealed class ManagerUI
             };
         }
 
-        _viewport.Renderables.AddEvery(_textBox, _selector);
+        _viewport.Renderables.AddRange([_textBox, _selector]);
     }
 
     public void Run()
@@ -74,9 +77,10 @@ internal sealed class ManagerUI
         OnInput(Console.ReadKey(true));
     }
 
-    private void Display_OnResize(Vec2I newSize)
+    private void Display_OnResize(int width, int height)
     {
-        _viewport.Resize(newSize);
+        _viewport.Width  = width;
+        _viewport.Height = height;
     }
 
     private void OnInput(ConsoleKeyInfo cki)

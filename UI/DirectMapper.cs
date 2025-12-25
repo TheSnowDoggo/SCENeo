@@ -1,25 +1,24 @@
-using SCENeo.Utils;
+namespace SCENeo.Ui;
 
-namespace SCENeo.UI;
-
-public sealed class DirectMapper<T> : UIBaseImage
+public sealed class DirectMapper<T> : IRenderable
 {
+    private readonly Image _buffer = new Image();
+
     private bool _update = false;
+
+    public DirectMapper()
+    {
+    }
+
+    public bool Enabled { get; set; } = true;
+    public Vec2I Offset { get; set; }
+    public int ZOffset { get; set; }
+    public Anchor Anchor { get; set; }
+
+    public IView<T>? Source { get; set; }
 
     private Func<T, Pixel>? _translation;
 
-    public DirectMapper() : base() { }
-    
-    public DirectMapper(IView<T> source)
-        : base(source.Width, source.Height)
-    {
-        Source = source;
-    }
-
-    #region Properties
-
-    public IView<T>? Source { get; set; }
-    
     public Func<T, Pixel>? Translation
     {
         get { return _translation; }
@@ -30,19 +29,15 @@ public sealed class DirectMapper<T> : UIBaseImage
 
     public bool IsBaked { get; set; } = false;
 
-    public override int Width { get { return Source?.Width ?? 0; } }
+    public int Width { get { return Source?.Width ?? 0; } }
 
-    public override int Height { get { return Source?.Height ?? 0; } }
+    public int Height { get { return Source?.Height ?? 0; } }
 
-    #endregion
-
-    public override Grid2DView<Pixel> Render()
+    public IView<Pixel> Render()
     {
-        Vec2I expected = GetSource().Dimensions();
-        
-        if (_source.Dimensions() != expected)
+        if (_buffer.Width != Width || _buffer.Height != Height)
         {
-            _source.CleanResize(expected.X, expected.Y);
+            _buffer.CleanResize(Width, Height);
             IsBaked = false;
         }
         
@@ -59,7 +54,7 @@ public sealed class DirectMapper<T> : UIBaseImage
             _update = false;
         }
         
-        return _source;
+        return _buffer.AsView();
     }
 
     private void Update()
@@ -69,12 +64,7 @@ public sealed class DirectMapper<T> : UIBaseImage
             throw new NullReferenceException("Translation unit is null.");
         }
 
-        if (Source == null)
-        {
-            throw new NullReferenceException("Source is null.");
-        }
-        
-        _source.Fill((x, y) => Translation.Invoke(Source[x, y]));
+        _buffer.Fill((x, y) => Translation.Invoke(GetSource()[x, y]));
     }
     
     private IView<T> GetSource()

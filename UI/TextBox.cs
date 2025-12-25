@@ -1,29 +1,39 @@
 ﻿using System.Text;
-using SCENeo.Utils;
 
-namespace SCENeo.UI;
+namespace SCENeo.Ui;
 
-public sealed class TextBox : UIBaseImage, IResizeable
+public sealed class TextBox : IRenderable
 {
+    private readonly Image _buffer = new Image();
+
     private bool _update = false;
 
+    public TextBox()
+    {
+    }
+
+    public bool Enabled { get; set; } = true;
+    public Vec2I Offset { get; set; }
+    public int ZOffset { get; set; }
+    public Anchor Anchor { get; set; }
+
+    private int _width;
+
+    public int Width
+    {
+        get { return _width; }
+        set { SCEUtils.ObserveSet(value, ref _width, ref _update); }
+    }
+
+    private int _height;
+
+    public int Height
+    {
+        get { return _height; }
+        set { SCEUtils.ObserveSet(value, ref _height, ref _update); }
+    }
+
     private Pixel _basePixel;
-
-    private string _text = string.Empty;
-
-    private SCEColor _textFgColor = SCEColor.Gray;
-
-    private SCEColor _textBgColor = SCEColor.Black;
-
-    private Anchor _textAnchor = Anchor.None;
-
-    private bool _textOverflow = false;
-
-    public TextBox() : base() { }
-    public TextBox(int width, int height) : base(width, height) { }
-    public TextBox(Vec2I dimensions) : base(dimensions) { }
-
-    #region Properties
 
     public Pixel BasePixel
     {
@@ -31,11 +41,15 @@ public sealed class TextBox : UIBaseImage, IResizeable
         set { SCEUtils.ObserveSet(value, ref _basePixel, ref _update); }
     }
 
+    private string _text = string.Empty;
+
     public string Text
     {
         get { return _text; }
         set { SCEUtils.ObserveSet(value, ref _text, ref _update); }
     }
+
+    private SCEColor _textFgColor = SCEColor.Gray;
 
     public SCEColor TextFgColor
     {
@@ -43,11 +57,15 @@ public sealed class TextBox : UIBaseImage, IResizeable
         set { SCEUtils.ObserveSet(value, ref _textFgColor, ref _update); }
     }
 
+    private SCEColor _textBgColor = SCEColor.Black;
+
     public SCEColor TextBgColor
     {
         get { return _textBgColor; }
         set { SCEUtils.ObserveSet(value, ref _textBgColor, ref _update); }
     }
+
+    private Anchor _textAnchor = Anchor.None;
 
     public Anchor TextAnchor
     {
@@ -55,29 +73,22 @@ public sealed class TextBox : UIBaseImage, IResizeable
         set { SCEUtils.ObserveSet(value, ref _textAnchor, ref _update); }
     }
 
+    private bool _textWrapping = false;
+
     public bool TextWrapping
     {
-        get { return _textOverflow; }
-        set { SCEUtils.ObserveSet(value, ref _textOverflow, ref _update); }
+        get { return _textWrapping; }
+        set { SCEUtils.ObserveSet(value, ref _textWrapping, ref _update); }
     }
 
-    #endregion
-    
-    public void Resize(int width, int height)
-    {
-        _source.Resize(width, height);
-        _update = true;
-    }
-
-    public override IView<Pixel> Render()
+    public IView<Pixel> Render()
     {
         if (_update)
         {
             Update();
-            _update = false;
         }
 
-        return _source.AsView();
+        return _buffer.AsView();
     }
 
     private static bool IsNewline(char c)
@@ -117,7 +128,12 @@ public sealed class TextBox : UIBaseImage, IResizeable
 
     private void Update()
     {
-        _source.Fill(BasePixel);
+        if (Width != _buffer.Width || Height != _buffer.Height)
+        {
+            _buffer.CleanResize(Width, Height);
+        }
+
+        _buffer.Fill(BasePixel);
 
         var lines = SplitLines(Text);
 
@@ -130,7 +146,9 @@ public sealed class TextBox : UIBaseImage, IResizeable
         {
             int x = TextAnchor.AnchorHorizontal(Width - lines[i].Length);
 
-            _source.MapLine(lines[i], x, y, _textFgColor, _textBgColor);
+            _buffer.MapLine(lines[i], x, y, _textFgColor, _textBgColor);
         }
+
+        _update = false;
     }
 }

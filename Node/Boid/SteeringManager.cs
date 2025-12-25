@@ -1,6 +1,4 @@
-﻿using SCENeo.Utils;
-
-namespace SCENeo.Node.Boid;
+﻿namespace SCENeo.Node.Boid;
 
 internal sealed class SteeringManager(IBoid host)
 {

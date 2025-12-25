@@ -1,6 +1,4 @@
-﻿using SCENeo.Utils;
-
-namespace SCENeo.UI;
+﻿namespace SCENeo.Ui;
 
 public static class FilterPresets
 {

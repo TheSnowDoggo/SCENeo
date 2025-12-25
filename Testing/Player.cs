@@ -1,8 +1,7 @@
-﻿using SCENeo.UI;
+﻿using SCENeo.Ui;
 using SCENeo.Node;
 using SCENeo.Node.Render;
 using SCENeo.Node.Collision;
-using SCENeo.Utils;
 
 namespace SCENeo.Testing;
 
@@ -36,8 +35,9 @@ internal sealed class Player : KinematicNode2D
         var sprite = new Sprite2D()
         {
             Name   = "Sprite2D",
-            Source = new Stretcher(dpMap)
+            Source = new Stretcher()
             {
+                Source      = dpMap,
                 ScaleWidth  = 2,
                 TextScaling = Stretcher.Scaling.Slide,
                 Bake        = true,

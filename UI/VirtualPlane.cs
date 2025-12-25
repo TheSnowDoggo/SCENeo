@@ -1,4 +1,4 @@
-﻿namespace SCENeo.UI;
+﻿namespace SCENeo.Ui;
 
 /// <summary>
 /// Represents a virtual grid of identical pixels.
@@ -6,7 +6,7 @@
 /// <remarks>
 /// Good for creating large planes with low memory usage.
 /// </remarks>
-internal sealed class VirtualPlane : IResizeable, IRenderable
+internal sealed class VirtualPlane : IRenderable
 {
     private readonly PlainView2D<Pixel> _pv = [];
 
@@ -43,12 +43,6 @@ internal sealed class VirtualPlane : IResizeable, IRenderable
     public Vec2I Offset { get; set; }
     public int ZOffset { get; set; }
     public Anchor Anchor { get; set; }
-
-    public void Resize(int width, int height)
-    {
-        _pv.Width  = width;
-        _pv.Height = height;
-    }
 
     public IView<Pixel> Render()
     {

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace SCENeo.Utils;
+namespace SCENeo;
 
 public static class SIFUtils
 {

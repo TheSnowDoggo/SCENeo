@@ -1,4 +1,4 @@
-﻿namespace SCENeo.UI;
+﻿namespace SCENeo.Ui;
 
 public sealed class DisplayMap : Image, IRenderable
 {

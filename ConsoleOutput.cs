@@ -1,6 +1,4 @@
-﻿using SCENeo.Utils;
-
-namespace SCENeo;
+﻿namespace SCENeo;
 
 public sealed class ConsoleOutput : IOutputSource
 {
@@ -15,13 +13,14 @@ public sealed class ConsoleOutput : IOutputSource
         get {  return Lazy.Value; }
     }
 
+    public int Width { get { return Console.WindowWidth; } }
+    public int Height { get { return Console.WindowHeight; } }
+
     public void Update(IView<Pixel> view)
     {
-        Vec2I winSize = SCEUtils.ConsoleWindowSize();
-
-        if (winSize != _buffer.Dimensions)
+        if (Width != _buffer.Width || Height != _buffer.Height)
         {
-            _buffer.Resize(winSize);
+            _buffer.Resize(Width, Height);
         }
 
         int width  = Math.Min(_buffer.Width , view.Width );

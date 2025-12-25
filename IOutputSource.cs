@@ -3,4 +3,7 @@
 public interface IOutputSource
 {
     void Update(IView<Pixel> view);
+
+    int Width { get; }
+    int Height { get; }
 }

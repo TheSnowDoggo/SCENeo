@@ -1,8 +1,6 @@
-﻿using SCENeo.Utils;
+﻿namespace SCENeo.Ui;
 
-namespace SCENeo.UI;
-
-public sealed class Filter : UIModifier<IRenderable>
+public sealed class Filter : UiModifier<IRenderable>
 {
     private readonly Image _buffer;
 
@@ -19,9 +17,9 @@ public sealed class Filter : UIModifier<IRenderable>
 
         if (FilterMode == null) return view;
 
-        Vec2I dimensions = view.Dimensions();
+        Vec2I dimensions = view.Size();
 
-        if (_buffer.Dimensions != dimensions)
+        if (_buffer.Size != dimensions)
         {
             _buffer.CleanResize(dimensions);
         }

@@ -1,29 +1,23 @@
-﻿using SCENeo.Utils;
-
-namespace SCENeo;
+﻿namespace SCENeo;
 
 public sealed class Display
 {
     public IRenderable Source { get; set; } = default!;
 
-    public IOutputSource? Output { get; set; } = null;
+    public IOutputSource Output { get; set; } = null!;
 
     public Vec2I Position = Vec2I.Zero;
 
-    public Action<Vec2I>? OnResize = null;
+    public Action<int, int>? OnResize = null;
 
     public void Update()
     {
-        if (Output == null)
-        {
-            throw new NullReferenceException("No output source set.");
-        }
+        int width  = Output.Width;
+        int height = Output.Height;
 
-        Vec2I winDimensions = SCEUtils.ConsoleWindowSize();
-
-        if (winDimensions != Source.Dimensions())
+        if (width != Source.Width || height != Source.Height)
         {
-            OnResize?.Invoke(winDimensions);
+            OnResize?.Invoke(width, height);
         }
 
         IView<Pixel> view = Source.Render();

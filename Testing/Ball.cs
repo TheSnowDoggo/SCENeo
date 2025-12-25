@@ -1,6 +1,6 @@
 ﻿using SCENeo.Node;
 using SCENeo.Node.Render;
-using SCENeo.UI;
+using SCENeo.Ui;
 
 namespace SCENeo.Testing;
 

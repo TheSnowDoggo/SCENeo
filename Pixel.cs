@@ -1,6 +1,4 @@
-﻿using SCENeo.Utils;
-
-namespace SCENeo;
+﻿namespace SCENeo;
 
 public readonly struct Pixel
     : IEquatable<Pixel>
@@ -33,14 +31,11 @@ public readonly struct Pixel
     public SCEColor BgColor { get; init; }
 
     public static bool operator ==(Pixel p1, Pixel p2) => p1.Equals(p2);
-
     public static bool operator !=(Pixel p1, Pixel p2) => !p1.Equals(p2);
 
-    public static Pixel Empty { get { return new Pixel(); } }
-
-    public static Pixel Null { get { return new Pixel('\0', SCEColor.Transparent, SCEColor.Transparent); } }
-
     #region Presets
+
+    public static Pixel Null => new Pixel('\0', SCEColor.Transparent, SCEColor.Transparent);
 
     public static Pixel Transparent => new Pixel(SCEColor.Transparent);
     public static Pixel Black => new Pixel(SCEColor.Black);

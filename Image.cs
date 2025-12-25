@@ -1,7 +1,4 @@
-﻿using SCENeo.UI;
-using SCENeo.Utils;
-
-namespace SCENeo;
+﻿namespace SCENeo;
 
 public class Image : Grid2D<Pixel>
 {
@@ -31,7 +28,7 @@ public class Image : Grid2D<Pixel>
     {
         Vec2I difference = area.Start - position;
 
-        Rect2DI trim = area.Trim(difference, Dimensions + difference);
+        Rect2DI trim = area.Trim(difference, Size + difference);
 
         position += trim.Start;
 

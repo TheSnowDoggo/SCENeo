@@ -1,6 +1,4 @@
-﻿using SCENeo.Utils;
-
-namespace SCENeo.Node.Collision;
+﻿namespace SCENeo.Node.Collision;
 
 internal static class GlobalCollision
 {

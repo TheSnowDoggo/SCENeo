@@ -1,22 +1,12 @@
-﻿namespace SCENeo.UI;
+﻿namespace SCENeo.Ui;
 
 public sealed class Option
 {
-    private string _text = string.Empty;
-
-    private SCEColor _selectedFgColor = SCEColor.Black;
-    private SCEColor _selectedBgColor = SCEColor.White;
-
-    private SCEColor _unselectedFgColor = SCEColor.White;
-    private SCEColor _unselectedBgColor = SCEColor.Black;
-
-    private Anchor _anchor = Anchor.None;
-
     public Option() { }
 
     public event EventHandler? OnUpdate;
 
-    #region Properties
+    private string _text = string.Empty;
 
     public string Text
     {
@@ -24,11 +14,15 @@ public sealed class Option
         set { Update(value, ref _text); }
     }
 
+    private SCEColor _selectedFgColor = SCEColor.Black;
+
     public SCEColor SelectedFgColor
     {
         get { return _selectedFgColor; }
         set { Update(value, ref _selectedFgColor); }
     }
+
+    private SCEColor _selectedBgColor = SCEColor.White;
 
     public SCEColor SelectedBgColor
     {
@@ -36,17 +30,23 @@ public sealed class Option
         set { Update(value, ref _selectedBgColor); }
     }
 
+    private SCEColor _unselectedFgColor = SCEColor.White;
+
     public SCEColor UnselectedFgColor
     {
         get { return _unselectedFgColor; }
         set { Update(value, ref _unselectedFgColor); }
     }
 
+    private SCEColor _unselectedBgColor = SCEColor.Black;
+
     public SCEColor UnselectedBgColor
     {
         get { return _unselectedBgColor; }
         set { Update(value, ref _unselectedBgColor); }
     }
+
+    private Anchor _anchor = Anchor.None;
 
     public Anchor Anchor
     {
@@ -56,11 +56,12 @@ public sealed class Option
 
     public Action? OnChoose { get; set; }
 
-    #endregion
-
     private void Update<T>(T value, ref T field)
     {
-        if (EqualityComparer<T>.Default.Equals(value, field)) return;
+        if (EqualityComparer<T>.Default.Equals(value, field))
+        {
+            return;
+        }
 
         field = value;
 
