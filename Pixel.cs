@@ -10,14 +10,6 @@ public readonly struct Pixel
         BgColor = bgColor;
     }
 
-    public Pixel(char element, ColorInfo colors)
-        : this(element, colors.FgColor, colors.BgColor)
-    { }
-
-    public Pixel(ColorInfo colors)
-        : this(' ', colors)
-    { }
-
     public Pixel(SCEColor fgColor, SCEColor bgColor)
         : this(' ', fgColor, bgColor)
     { }
