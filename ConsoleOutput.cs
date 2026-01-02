@@ -1,5 +1,8 @@
 ﻿namespace SCENeo;
 
+/// <summary>
+/// A class for basic platform-independent console rendering source.
+/// </summary>
 public sealed class ConsoleOutput : IOutputSource
 {
     private static Lazy<ConsoleOutput> Lazy = new(() => new ConsoleOutput());
@@ -8,6 +11,9 @@ public sealed class ConsoleOutput : IOutputSource
 
     private ConsoleOutput() { }
 
+    /// <summary>
+    /// Returns the singleton instance.
+    /// </summary>
     public static ConsoleOutput Instance
     {
         get {  return Lazy.Value; }
