@@ -2,7 +2,10 @@
 
 namespace SCENeo.Ui;
 
-public sealed class TextBox : IRenderable
+/// <summary>
+/// A UI control representing a text label.
+/// </summary>
+public sealed class TextLabel : IRenderable
 {
     public enum Wrapping
     {
@@ -15,7 +18,7 @@ public sealed class TextBox : IRenderable
 
     private bool _update = false;
 
-    public TextBox()
+    public TextLabel()
     {
     }
 

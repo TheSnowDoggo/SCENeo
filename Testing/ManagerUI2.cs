@@ -10,7 +10,7 @@ internal sealed class ManagerUI2
 
     private readonly Display _display;
 
-    private readonly TextBox _textBox;
+    private readonly TextLabel _textBox;
 
     private readonly NodeManager _nodeManager;
 
@@ -22,7 +22,7 @@ internal sealed class ManagerUI2
 
     public ManagerUI2()
     {
-        _textBox = new TextBox()
+        _textBox = new TextLabel()
         {
             Width  = 20,
             Height = 1,

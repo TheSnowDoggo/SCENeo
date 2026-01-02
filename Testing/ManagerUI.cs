@@ -10,7 +10,7 @@ internal sealed class ManagerUi
 
     private readonly Display _display;
 
-    private readonly TextBox _textBox;
+    private readonly TextLabel _textBox;
 
     private readonly VerticalSelector _selector;
 
@@ -22,7 +22,7 @@ internal sealed class ManagerUi
             FrameCap = Updater.Uncapped,
         };
 
-        _textBox = new TextBox()
+        _textBox = new TextLabel()
         {
             Width       = 30,
             Height      = 1,

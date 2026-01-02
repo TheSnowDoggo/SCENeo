@@ -17,7 +17,7 @@ internal sealed class Manager
 
     private readonly Display _display;
 
-    private readonly TextBox _fpsUI;
+    private readonly TextLabel _fpsUI;
 
     public Manager()
     {
@@ -45,7 +45,7 @@ internal sealed class Manager
             FilterMode = null, 
         };
 
-        _fpsUI = new TextBox()
+        _fpsUI = new TextLabel()
         {
             Width  = 20,
             Height = 2,
