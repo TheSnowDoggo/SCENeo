@@ -3,44 +3,23 @@
 /// <summary>
 /// A struct representing a 2D single-precision floating-point vector.
 /// </summary>
-/// <param name="x">The x-component.</param>
-/// <param name="y">The y-component.</param>
-public struct Vec2(float x, float y) : IEquatable<Vec2>
+public partial struct Vec2 : IEquatable<Vec2>
 {
     /// <summary>
     /// The x-component of this vector.
     /// </summary>
-    public float X = x;
+    public float X;
 
     /// <summary>
     /// The y-component of this vector.
     /// </summary>
-    public float Y = y;
+    public float Y;
 
-    /// <summary>
-    /// Gets the vector equivalent to Vec2(0, 0).
-    /// </summary>
-    public static Vec2 Zero => new(0f, 0f);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2(0, -1).
-    /// </summary>
-    public static Vec2 Up => new(0f, -1f);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2(0, 1).
-    /// </summary>
-    public static Vec2 Down => new(0f, +1f);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2(-1, 0).
-    /// </summary>
-    public static Vec2 Left => new(-1f, 0f);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2(1, 0).
-    /// </summary>
-    public static Vec2 Right => new(+1f, 0f);
+    public Vec2(float x, float y)
+    {
+        X = x;
+        Y = y;
+    }
 
     public static explicit operator Vec2I(Vec2 v) => new((int)v.X, (int)v.Y);
 

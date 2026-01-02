@@ -1,8 +1,14 @@
 ﻿namespace SCENeo;
 
-public readonly struct Pixel
+/// <summary>
+/// A readonly struct representing a single pixel.
+/// </summary>
+public readonly partial struct Pixel
     : IEquatable<Pixel>
 {
+    public const char ElementTransparent = '\0';
+    public const char ElementOpaque = ' ';
+
     public Pixel(char element, SCEColor fgColor, SCEColor bgColor)
     {
         Element = element;
@@ -12,43 +18,40 @@ public readonly struct Pixel
 
     public Pixel(SCEColor fgColor, SCEColor bgColor)
         : this(' ', fgColor, bgColor)
-    { }
+    { 
+    }
 
     public Pixel(SCEColor bgColor)
-        : this(' ', SCEColor.Black, bgColor)
-    { }
+        : this(ElementOpaque, SCEColor.Black, bgColor)
+    {
+    }
 
+    /// <summary>
+    /// Gets or initializes the character element of this pixel.
+    /// </summary>
     public char Element { get; init; }
+
+    /// <summary>
+    /// Gets or initializes the foreground color of this pixel.
+    /// </summary>
     public SCEColor FgColor { get; init; }
+
+    /// <summary>
+    /// Gets or initializes the background color of this pixel.
+    /// </summary>
     public SCEColor BgColor { get; init; }
 
     public static bool operator ==(Pixel p1, Pixel p2) => p1.Equals(p2);
     public static bool operator !=(Pixel p1, Pixel p2) => !p1.Equals(p2);
 
-    #region Presets
-
-    public static Pixel Null => new Pixel('\0', SCEColor.Transparent, SCEColor.Transparent);
-
-    public static Pixel Transparent => new Pixel(SCEColor.Transparent);
-    public static Pixel Black => new Pixel(SCEColor.Black);
-    public static Pixel DarkBlue => new Pixel(SCEColor.DarkBlue);
-    public static Pixel DarkGreen => new Pixel(SCEColor.DarkGreen);
-    public static Pixel DarkCyan => new Pixel(SCEColor.DarkCyan);
-    public static Pixel DarkRed => new Pixel(SCEColor.DarkRed);
-    public static Pixel DarkMagenta => new Pixel(SCEColor.DarkMagenta);
-    public static Pixel DarkYellow => new Pixel(SCEColor.DarkYellow);
-    public static Pixel Gray => new Pixel(SCEColor.Gray);
-    public static Pixel DarkGray => new Pixel(SCEColor.DarkGray);
-    public static Pixel Blue => new Pixel(SCEColor.Blue);
-    public static Pixel Green => new Pixel(SCEColor.Green);
-    public static Pixel Cyan => new Pixel(SCEColor.Cyan);
-    public static Pixel Red => new Pixel(SCEColor.Red);
-    public static Pixel Magenta => new Pixel(SCEColor.Magenta);
-    public static Pixel Yellow => new Pixel(SCEColor.Yellow);
-    public static Pixel White => new Pixel(SCEColor.White);
-
-    #endregion
-
+    /// <summary>
+    /// Merges this pixel with the other pixel.
+    /// </summary>
+    /// <remarks>
+    /// Used for pixel transparency.
+    /// </remarks>
+    /// <param name="other">Represents the pixel to be mapped on top of this pixel.</param>
+    /// <returns>The merged pixel.</returns>
     public readonly Pixel Merge(Pixel other)
     {
         return new Pixel()
@@ -59,6 +62,12 @@ public readonly struct Pixel
         };
     }
 
+    /// <summary>
+    /// Deconstructs this pixel.
+    /// </summary>
+    /// <param name="element">The character element.</param>
+    /// <param name="fgColor">The foreground color.</param>
+    /// <param name="bgColor">The background color.</param>
     public void Deconstruct(out char element, out SCEColor fgColor, out SCEColor bgColor)
     {
         element = Element;

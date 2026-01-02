@@ -60,8 +60,8 @@ public static class SIFUtils
             {
                 Pixel pixel = image[x, y];
 
-                fgBuilder.Append(SifCodes.GetTKey(pixel.FgColor));
-                bgBuilder.Append(SifCodes.GetTKey(pixel.BgColor));
+                fgBuilder.Append(SifCodes.GetKey1(pixel.FgColor));
+                bgBuilder.Append(SifCodes.GetKey1(pixel.BgColor));
                 charBuilder.Append(pixel.Element >= ' ' ? pixel.Element : ' ');
             }
         }
@@ -234,7 +234,7 @@ public static class SIFUtils
 
     private static SCEColor GetColor(char code)
     {
-        if (!SifCodes.TryGetUKey(code, out SCEColor color))
+        if (!SifCodes.TryGetKey2(code, out SCEColor color))
         {
             throw new InvalidDataException($"Unrecognised color code {code}.");
         }

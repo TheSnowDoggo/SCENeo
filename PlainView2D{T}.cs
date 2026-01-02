@@ -2,6 +2,10 @@
 
 namespace SCENeo;
 
+/// <summary>
+/// A class representing a resizeable view of a single value.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public sealed class PlainView2D<T> : IView<T>
 {
     public T Value { get; set; } = default!;

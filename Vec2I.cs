@@ -5,62 +5,23 @@
 /// </summary>
 /// <param name="x">The x-component.</param>
 /// <param name="y">The y-component.</param>
-public struct Vec2I(int x, int y) : IEquatable<Vec2I>
+public partial struct Vec2I : IEquatable<Vec2I>
 {
     /// <summary>
     /// The x-component of this vector.
     /// </summary>
-    public int X = x;
+    public int X;
 
     /// <summary>
     /// The x-component of this vector.
     /// </summary>
-    public int Y = y;
+    public int Y;
 
-    /// <summary>
-    /// Gets the vector equivalent to Vec2I(0, 0).
-    /// </summary>
-    public static Vec2I Zero => new(0, 0);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2I(0, -1).
-    /// </summary>
-    public static Vec2I Up => new(0, -1);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2I(0, 1).
-    /// </summary>
-    public static Vec2I Down => new(0, +1);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2I(-1, 0).
-    /// </summary>
-    public static Vec2I Left => new(-1, 0);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2I(+1, 0).
-    /// </summary>
-    public static Vec2I Right => new(+1, 0);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2I(-1, -1).
-    /// </summary>
-    public static Vec2I UpLeft => new(-1, -1);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2I(1, -1).
-    /// </summary>
-    public static Vec2I UpRight => new(+1, -1);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2I(-1, 1).
-    /// </summary>
-    public static Vec2I DownLeft => new(-1, +1);
-
-    /// <summary>
-    /// Gets the vector equivalent to Vec2I(1, 1).
-    /// </summary>
-    public static Vec2I DownRight => new(+1, +1);
+    public Vec2I(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
 
     public static implicit operator Vec2(Vec2I v) => new(v.X, v.Y);
 

@@ -14,7 +14,7 @@ public static class ColorUtils
 
     public static char Merge(this char current, char top)
     {
-        return top == '\0' ? current : top;
+        return top == Pixel.ElementTransparent ? current : top;
     }
 
     public static bool IsLight(this SCEColor color)
