@@ -179,12 +179,20 @@ public sealed partial class VerticalSelector : UiBase, IRenderable
                 continue;
             }
 
-            int x = option.Anchor.AnchorHorizontal(Width - option.Text.Length);
+            
 
             bool selected = index == _selected;
 
             SCEColor fgColor = selected ? option.SelectedFgColor : option.UnselectedFgColor;
             SCEColor bgColor = selected ? option.SelectedBgColor : option.UnselectedBgColor;
+
+            if (option.FitToLength)
+            {
+                _buffer.MapLine(option.Text.FitToLength(Width, option.Anchor), 0, y, fgColor, bgColor);
+                continue;
+            }
+
+            int x = option.Anchor.AnchorHorizontal(Width - option.Text.Length);
 
             _buffer.MapLine(option.Text, x, y, fgColor, bgColor);
         }

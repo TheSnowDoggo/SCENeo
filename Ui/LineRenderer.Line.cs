@@ -62,6 +62,17 @@ public sealed partial class LineRenderer
             set { Update(value, ref _anchor); }
         }
 
+        private bool _fitToLength;
+
+        /// <summary>
+        /// Gets or sets whether the text should be fit to length.
+        /// </summary>
+        public bool FitToLength
+        {
+            get { return _fitToLength; }
+            set { Update(value, ref _fitToLength); }
+        }
+
         public Line FromText(string text)
         {
             return new Line()
@@ -70,6 +81,7 @@ public sealed partial class LineRenderer
                 FgColor = FgColor,
                 BgColor = BgColor,
                 Anchor = Anchor,
+                FitToLength = FitToLength,
             };
         }
 

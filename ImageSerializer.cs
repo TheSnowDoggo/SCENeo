@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace SCENeo;
+﻿namespace SCENeo;
 
 public static class ImageSerializer
 {

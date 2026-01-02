@@ -81,6 +81,17 @@ public sealed partial class VerticalSelector
             set { Update(value, ref _anchor); }
         }
 
+        private bool _fitToLength;
+
+        /// <summary>
+        /// Gets or sets whether the text should be fit to length.
+        /// </summary>
+        public bool FitToLength
+        {
+            get { return _fitToLength; }
+            set { Update(value, ref _fitToLength); }
+        }
+
         /// <summary>
         /// Action invoked when the option is chosen.
         /// </summary>
@@ -96,6 +107,7 @@ public sealed partial class VerticalSelector
                 UnselectedFgColor = UnselectedFgColor,
                 UnselectedBgColor = UnselectedBgColor,
                 Anchor = Anchor,
+                FitToLength = FitToLength,
                 OnChoose = OnChoose,
             };
         }

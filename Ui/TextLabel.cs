@@ -99,7 +99,7 @@ public sealed class TextLabel : UiBase, IRenderable
         set { SCEUtils.ObserveSet(value, ref _textAnchor, ref _update); }
     }
 
-    private Wrapping _textWrapping = Wrapping.None;
+    private Wrapping _textWrapping;
 
     /// <summary>
     /// Gets or sets the text wrapping mode.
@@ -108,6 +108,17 @@ public sealed class TextLabel : UiBase, IRenderable
     {
         get { return _textWrapping; }
         set { SCEUtils.ObserveSet(value, ref _textWrapping, ref _update); }
+    }
+
+    private bool _fitToLength;
+
+    /// <summary>
+    /// Gets or sets whether text should be fit to length on each line.
+    /// </summary>
+    public bool FitToLength
+    {
+        get { return _fitToLength; }
+        set { SCEUtils.ObserveSet(value, ref _fitToLength, ref _update); }
     }
 
     public IView<Pixel> Render()
@@ -138,6 +149,12 @@ public sealed class TextLabel : UiBase, IRenderable
 
         for (int y = startY, i = startY - top; y < endY; y++, i++)
         {
+            if (FitToLength)
+            {
+                _buffer.MapLine(Text.FitToLength(Width, TextAnchor), 0, y, _textFgColor, _textBgColor);
+                continue;
+            }
+
             int x = TextAnchor.AnchorHorizontal(Width - lines[i].Length);
 
             _buffer.MapLine(lines[i], x, y, _textFgColor, _textBgColor);

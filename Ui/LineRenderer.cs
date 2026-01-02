@@ -130,6 +130,13 @@ public sealed partial class LineRenderer : UiBase, IRenderable
                 continue;
             }
 
+            if (line.FitToLength)
+            {
+                _buffer.MapLine(line.Text.FitToLength(Width, line.Anchor), 0, y, line.FgColor, line.BgColor);
+
+                continue;
+            }
+
             int x = line.Anchor.AnchorHorizontal(Width - line.Text.Length);
 
             _buffer.MapLine(line.Text, x, y, line.FgColor, line.BgColor);
