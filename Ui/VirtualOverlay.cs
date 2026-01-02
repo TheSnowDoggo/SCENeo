@@ -2,7 +2,7 @@
 
 namespace SCENeo.Ui;
 
-public sealed class SmartOverlay : UiModifier<IRenderable>, IRenderable
+public sealed class VirtualOverlay : UiModifier<IRenderable>, IRenderable
 {
     private sealed class OverlayView : IView<Pixel>
     {
