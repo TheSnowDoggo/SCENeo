@@ -171,21 +171,11 @@ public sealed class TextBox : IRenderable
                 continue;
             }
 
-            if (!newLine && lineBuilder.Length + wordBuilder.Length < Width)
+            if (newLine || lineBuilder.Length + wordBuilder.Length >= Width)
             {
-                lineBuilder.Append(wordBuilder);
-                wordBuilder.Clear();
-
-                if (lineBuilder.Length < Width)
-                {
-                    lineBuilder.Append(' ');
-                }
-
-                continue;
+                list.Add(lineBuilder.ToString());
+                lineBuilder.Clear();
             }
-
-            list.Add(lineBuilder.ToString());
-            lineBuilder.Clear();
 
             lineBuilder.Append(wordBuilder);
             wordBuilder.Clear();
