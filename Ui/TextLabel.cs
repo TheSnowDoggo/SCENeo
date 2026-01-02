@@ -5,7 +5,7 @@ namespace SCENeo.Ui;
 /// <summary>
 /// A UI control representing a text label.
 /// </summary>
-public sealed class TextLabel : IRenderable
+public sealed class TextLabel : UiBase, IRenderable
 {
     public enum Wrapping
     {
@@ -21,14 +21,12 @@ public sealed class TextLabel : IRenderable
     public TextLabel()
     {
     }
-
-    public bool Visible { get; set; } = true;
-    public Vec2I Offset { get; set; }
-    public int ZIndex { get; set; }
-    public Anchor Anchor { get; set; }
-
+    
     private int _width;
 
+    /// <summary>
+    /// Gets or sets the width.
+    /// </summary>
     public int Width
     {
         get { return _width; }
@@ -37,6 +35,9 @@ public sealed class TextLabel : IRenderable
 
     private int _height;
 
+    /// <summary>
+    /// Gets or sets the height.
+    /// </summary>
     public int Height
     {
         get { return _height; }
@@ -45,6 +46,9 @@ public sealed class TextLabel : IRenderable
 
     private Pixel _basePixel;
 
+    /// <summary>
+    /// Gets or sets the base pixel.
+    /// </summary>
     public Pixel BasePixel
     {
         get { return _basePixel; }
@@ -53,6 +57,9 @@ public sealed class TextLabel : IRenderable
 
     private string _text = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the text.
+    /// </summary>
     public string Text
     {
         get { return _text; }
@@ -61,6 +68,9 @@ public sealed class TextLabel : IRenderable
 
     private SCEColor _textFgColor = SCEColor.Gray;
 
+    /// <summary>
+    /// Gets or sets the text foreground color.
+    /// </summary>
     public SCEColor TextFgColor
     {
         get { return _textFgColor; }
@@ -69,6 +79,9 @@ public sealed class TextLabel : IRenderable
 
     private SCEColor _textBgColor = SCEColor.Black;
 
+    /// <summary>
+    /// Gets or sets the text background color.
+    /// </summary>
     public SCEColor TextBgColor
     {
         get { return _textBgColor; }
@@ -77,6 +90,9 @@ public sealed class TextLabel : IRenderable
 
     private Anchor _textAnchor = Anchor.None;
 
+    /// <summary>
+    /// Gets or sets the text anchor alignment.
+    /// </summary>
     public Anchor TextAnchor
     {
         get { return _textAnchor; }
@@ -85,6 +101,9 @@ public sealed class TextLabel : IRenderable
 
     private Wrapping _textWrapping = Wrapping.None;
 
+    /// <summary>
+    /// Gets or sets the text wrapping mode.
+    /// </summary>
     public Wrapping TextWrapping
     {
         get { return _textWrapping; }
@@ -171,7 +190,11 @@ public sealed class TextLabel : IRenderable
             if (Text[i] != ' ' && !newLine)
             {
                 wordBuilder.Append(Text[i]);
-                continue;
+                
+                if (i != Text.Length - 1)
+                {
+                    continue;
+                }
             }
 
             if (newLine || lineBuilder.Length + wordBuilder.Length >= Width)

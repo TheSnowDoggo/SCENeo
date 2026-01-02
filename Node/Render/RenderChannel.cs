@@ -12,7 +12,7 @@ public sealed class RenderChannel : IRenderable
 
     public bool Visible { get; set; } = true;
     public Vec2I Offset { get; set; }
-    public int ZIndex { get; set; }
+    public int Layer { get; set; }
     public Anchor Anchor { get; set; }
 
     public int Width { get; set; }

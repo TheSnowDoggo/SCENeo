@@ -1,6 +1,6 @@
 ﻿namespace SCENeo.Ui;
 
-public sealed class Stretcher : IRenderable
+public sealed class Stretcher : UiBase, IRenderable
 {
     public enum Scaling
     {
@@ -21,11 +21,6 @@ public sealed class Stretcher : IRenderable
     public Stretcher()
     {
     }
-
-    public bool Visible { get; set; } = true;
-    public Vec2I Offset { get; set; }
-    public int ZIndex { get; set; }
-    public Anchor Anchor { get; set; }
 
     public IRenderable? Source { get; set; }
 

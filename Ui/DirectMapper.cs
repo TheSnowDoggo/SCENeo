@@ -1,6 +1,6 @@
 namespace SCENeo.Ui;
 
-public sealed class DirectMapper<T> : IRenderable
+public sealed class DirectMapper<T> : UiBase, IRenderable
 {
     private readonly Image _buffer = new Image();
 
@@ -9,11 +9,6 @@ public sealed class DirectMapper<T> : IRenderable
     public DirectMapper()
     {
     }
-
-    public bool Visible { get; set; } = true;
-    public Vec2I Offset { get; set; }
-    public int ZIndex { get; set; }
-    public Anchor Anchor { get; set; }
 
     public IView<T>? Source { get; set; }
 

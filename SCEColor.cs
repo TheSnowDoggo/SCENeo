@@ -8,7 +8,6 @@
 /// </remarks>
 public enum SCEColor
 {
-    Transparent = -1,
     Black       = 0,
     DarkBlue    = 1,
     DarkGreen   = 2,
@@ -25,4 +24,5 @@ public enum SCEColor
     Magenta     = 13,
     Yellow      = 14,
     White       = 15,
+    Transparent = 16,
 }

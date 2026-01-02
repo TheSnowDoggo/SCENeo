@@ -1,53 +1,50 @@
 ﻿namespace SCENeo.Ui;
 
-public sealed class LineRenderer : IRenderable
+/// <summary>
+/// A UI control representing a vertical set of lines.
+/// </summary>
+public sealed partial class LineRenderer : UiBase, IRenderable
 {
     private readonly Image _buffer = new Image();
 
     private bool _update = false;
 
-    private Line[] _lines = [];
+    private UpdateCollection<Line> _lines = [];
 
     public LineRenderer()
     {
     }
 
-    public Line this[int line]
+    public UpdateCollection<Line> Lines
     {
-        get 
-        {
-            return _lines[line];
-        }
+        get { return _lines; }
         set
         {
-            if (_lines[line] == value)
+            if (value == _lines)
             {
                 return;
             }
 
-            if (_lines[line] != null)
+            if (_lines != null)
             {
-                _lines[line].OnUpdate -= Line_OnUpdate;
+                _lines.OnUpdate -= Lines_OnUpdate;
             }
 
             if (value != null)
             {
-                value.OnUpdate += Line_OnUpdate;
+                value.OnUpdate += Lines_OnUpdate;
             }
 
-            _lines[line] = value!;
-
+            _lines = value!;
             _update = true;
         }
     }
 
-    public bool Visible { get; set; } = true;
-    public Vec2I Offset { get; set; }
-    public int ZIndex { get; set; }
-    public Anchor Anchor { get; set; }
-
     private int _width;
 
+    /// <summary>
+    /// Gets or sets the width.
+    /// </summary>
     public int Width
     {
         get { return _width; }
@@ -56,34 +53,20 @@ public sealed class LineRenderer : IRenderable
 
     private int _height;
 
+    /// <summary>
+    /// Gets or sets the height.
+    /// </summary>
     public int Height
     {
         get { return _height; }
-        set
-        {
-            if (value == _height)
-            {
-                return;
-            }
-
-            _height = value;
-
-            for (int i = _height; i < _lines.Length; i++)
-            {
-                if (_lines[i] != null)
-                {
-                    _lines[i].OnUpdate -= Line_OnUpdate;
-                }
-            }
-
-            Array.Resize(ref _lines, _height);
-
-            _update = true;
-        }
+        set { SCEUtils.ObserveSet(value, ref _height, ref _update); }
     }
 
     private Pixel _basePixel = new Pixel(SCEColor.Gray, SCEColor.Black);
 
+    /// <summary>
+    /// Gets or sets the base pixel.
+    /// </summary>
     public Pixel BasePixel
     {
         get { return _basePixel; }
@@ -92,10 +75,24 @@ public sealed class LineRenderer : IRenderable
 
     private StackMode _stackMode = StackMode.TopDown;
 
+    /// <summary>
+    /// Gets or sets the stack mode.
+    /// </summary>
     public StackMode StackMode
     {
         get { return _stackMode; }
         set { SCEUtils.ObserveSet(value, ref _stackMode, ref _update); }
+    }
+
+    private int _scroll;
+
+    /// <summary>
+    /// Gets or sets the scroll.
+    /// </summary>
+    public int Scroll
+    {
+        get { return _scroll; }
+        set { SCEUtils.ObserveSet(value, ref _scroll, ref _update); }
     }
 
     public IView<Pixel> Render()
@@ -115,38 +112,52 @@ public sealed class LineRenderer : IRenderable
             _buffer.CleanResize(Width, Height);
         }
 
-        _buffer.Fill(BasePixel);
-
-        for (int i = 0; i < _lines.Length; i++)
+        for (int y = 0; y < Height; y++)
         {
-            Line line = _lines[i];
+            int index = TranslateIndex(y);
+
+            if (index < 0 || index >= Lines.Count)
+            {
+                ClearLine(y);
+                continue;
+            }
+
+            Line line = Lines[index];
 
             if (line == null || line.Text == null)
             {
+                ClearLine(y);
                 continue;
             }
 
             int x = line.Anchor.AnchorHorizontal(Width - line.Text.Length);
-            int y = TranslateY(i);
 
-            _buffer.MapLine(line.Text, x, y, line.fgColor, line.bgColor);
+            _buffer.MapLine(line.Text, x, y, line.FgColor, line.BgColor);
         }
 
         _update = false;
     }
 
-    private void Line_OnUpdate(object? sender, EventArgs args)
+    private void ClearLine(int y)
     {
-        _update = true;
+        for (int x = 0; x < Width; x++)
+        {
+            _buffer[x, y] = BasePixel;
+        }
     }
 
-    private int TranslateY(int i)
+    private int TranslateIndex(int i)
     {
         return StackMode switch
         {
             StackMode.TopDown  => i,
             StackMode.BottomUp => Height - i - 1,
             _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}.")
-        };
+        } + Scroll;
+    }
+
+    private void Lines_OnUpdate()
+    {
+        _update = true;
     }
 }

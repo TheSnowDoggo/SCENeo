@@ -44,11 +44,14 @@ internal sealed class ManagerUi
         {
             SCEColor color = (SCEColor)i;
 
-            _selector[i] = new Option()
+            var option = new VerticalSelector.Option()
             {
                 Text = color.ToString().PadRight(_selector.Width),
             };
+
+            _selector.Options.Add(option);
         }
+
 
         _viewport = new Viewport()
         {
@@ -60,8 +63,9 @@ internal sealed class ManagerUi
         {
             Renderable = _viewport,
             Output = ConsoleOutput.Instance,
-            OnResize = Display_OnResize,
         };
+
+        _display.OnResize += Display_OnResize;
     }
 
     public void Run()

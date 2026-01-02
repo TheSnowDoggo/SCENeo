@@ -11,20 +11,20 @@ public interface IRenderable : IDimensioned
     bool Visible { get; }
 
     /// <summary>
-    /// Gets the 2D coordinate offset.
+    /// Gets the coordinate offset.
     /// </summary>
     public Vec2I Offset { get; }
 
     /// <summary>
-    /// Gets the index representing the order this should be rendered in.
+    /// Gets the layer representing the order this should be rendered in.
     /// </summary>
     /// <remarks>
     /// Lower values should represent items which will be rendered first.
     /// </remarks>
-    public int ZIndex { get; }
+    public int Layer { get; }
 
     /// <summary>
-    /// Gets the 2D anchor.
+    /// Gets the anchor alignment.
     /// </summary>
     public Anchor Anchor { get; }
 

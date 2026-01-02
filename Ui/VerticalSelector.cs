@@ -1,55 +1,54 @@
-﻿namespace SCENeo.Ui;
+﻿using static SCENeo.Ui.LineRenderer;
 
-public sealed class VerticalSelector : IRenderable
+namespace SCENeo.Ui;
+
+/// <summary>
+/// A UI control representinng a vertical set of options.
+/// </summary>
+public sealed partial class VerticalSelector : UiBase, IRenderable
 {
     private readonly Image _buffer = new Image();
 
     private bool _update = false;
 
-    private Option[] _options = [];
+    
 
-    private int _selected = 0;
+    private UpdateCollection<Option> _options = [];
 
     public VerticalSelector()
     {
     }
 
-    public Option this[int option]
+    public UpdateCollection<Option> Options
     {
-        get
-        {
-            return _options[option];
-        }
+        get { return _options; }
         set
         {
-            if (value == _options[option])
+            if (value == _options)
             {
                 return;
             }
 
-            if (_options[option] != null)
+            if (_options != null)
             {
-                _options[option].OnUpdate -= Line_OnUpdate;
+                _options.OnUpdate -= Option_OnUpdate;
             }
 
             if (value != null)
             {
-                value.OnUpdate += Line_OnUpdate;
+                value.OnUpdate += Option_OnUpdate;
             }
 
-            _options[option] = value!;
-
+            _options = value!;
             _update = true;
         }
     }
 
-    public bool Visible { get; set; } = true;
-    public Vec2I Offset { get; set; }
-    public int ZIndex { get; set; }
-    public Anchor Anchor { get; set; }
-
     private int _width;
 
+    /// <summary>
+    /// Gets or sets the width.
+    /// </summary>
     public int Width
     {
         get { return _width; }
@@ -58,33 +57,13 @@ public sealed class VerticalSelector : IRenderable
 
     private int _height;
 
+    /// <summary>
+    /// Gets or sets the height.
+    /// </summary>
     public int Height
     {
-        get
-        {
-            return _height;
-        }
-        set
-        {
-            if (value == _height)
-            {
-                return;
-            }
-
-            _height = value;
-
-            for (int i = _height; i < _options.Length; i++)
-            {
-                if (_options[i] != null)
-                {
-                    _options[i].OnUpdate -= Line_OnUpdate;
-                }
-            }
-
-            Array.Resize(ref _options, _height);
-
-            _update = true;
-        }
+        get { return _height; }
+        set { SCEUtils.ObserveSet(value, ref _height, ref _update); }
     }
 
     private Pixel _basePixel = new Pixel(SCEColor.Gray, SCEColor.Black);
@@ -103,20 +82,35 @@ public sealed class VerticalSelector : IRenderable
         set { SCEUtils.ObserveSet(value, ref _stackMode, ref _update); }
     }
 
+    private int _selected = 0;
+
     public int Selected
     {
         get { return _selected; }
         set { SCEUtils.ObserveSet(value, ref _selected, ref _update); }
     }
 
+    private int _scroll;
+
+    /// <summary>
+    /// Gets or sets the scroll.
+    /// </summary>
+    public int Scroll
+    {
+        get { return _scroll; }
+        set { SCEUtils.ObserveSet(value, ref _scroll, ref _update); }
+    }
+
     public bool Select()
     {
-        if (_selected < 0 || _selected >= _options.Length)
+        int index = TranslateIndex(_selected);
+
+        if (index < 0 || index >= Options.Count)
         {
             return false;
         }
 
-        _options[_selected].OnChoose?.Invoke();
+        Options[index].OnChoose?.Invoke();
 
         return true;
     }
@@ -131,6 +125,13 @@ public sealed class VerticalSelector : IRenderable
         Selected = Math.Clamp(Selected + move, 0, Height - 1);
     }
 
+    public void ScrollMove(int move)
+    {
+        Selected = Math.Clamp(Selected + move, 0, Options.Count - 1);
+
+        Scroll = Math.Max(1 + Selected - Height, 0);
+    }
+
     public IView<Pixel> Render()
     {
         if (_update)
@@ -139,6 +140,16 @@ public sealed class VerticalSelector : IRenderable
         }
 
         return _buffer.AsReadonly();
+    }
+
+    public int TranslateIndex(int i)
+    {
+        return StackMode switch
+        {
+            StackMode.TopDown => i,
+            StackMode.BottomUp => Height - i - 1,
+            _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}.")
+        };
     }
 
     private void Update()
@@ -150,17 +161,27 @@ public sealed class VerticalSelector : IRenderable
 
         _buffer.Fill(BasePixel);
 
-        for (int i = 0; i < _options.Length; i++)
+        for (int y = 0; y < Height; y++)
         {
-            Option? option = _options[i];
+            int index = TranslateIndex(y) + Scroll;
 
-            if (option == null) continue;
-            if (option.Text == null) continue;
+            if (index < 0 || index >= Options.Count)
+            {
+                ClearLine(y);
+                continue;
+            }
+
+            Option option = Options[index];
+
+            if (option == null || option.Text == null)
+            {
+                ClearLine(y);
+                continue;
+            }
 
             int x = option.Anchor.AnchorHorizontal(Width - option.Text.Length);
-            int y = TranslateY(i);
 
-            bool selected = i == _selected;
+            bool selected = index == _selected;
 
             SCEColor fgColor = selected ? option.SelectedFgColor : option.UnselectedFgColor;
             SCEColor bgColor = selected ? option.SelectedBgColor : option.UnselectedBgColor;
@@ -171,18 +192,16 @@ public sealed class VerticalSelector : IRenderable
         _update = false;
     }
 
-    private void Line_OnUpdate(object? sender, EventArgs args)
+    private void ClearLine(int y)
     {
-        _update = true;
+        for (int x = 0; x < Width; x++)
+        {
+            _buffer[x, y] = BasePixel;
+        }
     }
 
-    private int TranslateY(int i)
+    private void Option_OnUpdate()
     {
-        return StackMode switch
-        {
-            StackMode.TopDown  => i,
-            StackMode.BottomUp => Height - i - 1,
-            _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}.")
-        };
+        _update = true;
     }
 }

@@ -63,8 +63,9 @@ internal sealed class Manager
         {
             Renderable = _viewport,
             Output = ConsoleOutput.Instance,
-            OnResize = Display_OnResize,
         };
+
+        _display.OnResize += Display_OnResize;
 
         _re = new RenderEngine()
         {

@@ -44,8 +44,9 @@ internal sealed class ManagerUI2
         {
             Renderable = _viewport,
             Output = ConsoleOutput.Instance,
-            OnResize = Display_OnResize,
         };
+
+        _display.OnResize += Display_OnResize;
 
         _renderEngine = new RenderEngine()
         {

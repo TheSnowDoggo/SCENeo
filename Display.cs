@@ -18,7 +18,7 @@ public sealed class Display
     /// <summary>
     /// Called when the renderable size does not match the output size.
     /// </summary>
-    public Action<int, int>? OnResize = null;
+    public event Action<int, int>? OnResize = null;
 
     /// <summary>
     /// Renders the <see cref="Renderable"/> to the <see cref="Output"/>.

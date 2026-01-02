@@ -1,6 +1,6 @@
 ﻿namespace SCENeo.Ui;
 
-public sealed partial class Viewport : IRenderable
+public sealed partial class Viewport : UiBase, IRenderable
 {
     private readonly Image _buffer = new Image();
 
@@ -8,17 +8,19 @@ public sealed partial class Viewport : IRenderable
     {
     }
 
-    public bool Visible { get; set; } = true;
-    public Vec2I Offset { get; set; }
-    public int ZIndex { get; set; }
-    public Anchor Anchor { get; set; }
-
+    /// <summary>
+    /// Gets or sets the width.
+    /// </summary>
     public int Width { get; set; }
+
+    /// <summary>
+    /// Gets or sets the height.
+    /// </summary>
     public int Height { get; set; }
 
     public Pixel BasePixel { get; set; } = Pixel.Black;
 
-    public IEnumerable<IRenderable> Source { get; set; }
+    public IEnumerable<IRenderable> Source { get; set; } = default!;
 
     public IView<Pixel> Render()
     {

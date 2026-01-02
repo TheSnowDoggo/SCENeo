@@ -2,24 +2,8 @@
 
 namespace SCENeo.Ui;
 
-public sealed class RenderManager : IEnumerable<IRenderable>
+public sealed partial class RenderManager : IEnumerable<IRenderable>
 {
-    private sealed class Comparer : IComparer<IRenderSource>
-    {
-        private static readonly Lazy<Comparer> Lazy = new(() => new Comparer());
-
-        private Comparer() { }
-
-        public static Comparer Instance { get { return Lazy.Value; } }
-
-        public int Compare(IRenderSource? a, IRenderSource? b)
-        {
-            if (a == null || b == null) return 0;
-
-            return a.Priority.CompareTo(b.Priority);
-        }
-    }
-
     public List<IRenderSource> Sources { get; set; } = [];
 
     public IEnumerator<IRenderable> GetEnumerator()

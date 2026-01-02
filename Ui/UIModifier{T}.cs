@@ -10,7 +10,7 @@ public abstract class UiModifier<T> : IRenderable
 
     public bool Visible { get { return Source != null && Source.Visible; } }
     public Vec2I Offset { get { return Source.Offset; } }
-    public int ZIndex { get { return Source.ZIndex; } }
+    public int Layer { get { return Source.Layer; } }
     public Anchor Anchor { get { return Source.Anchor; } }
 
     public abstract IView<Pixel> Render();

@@ -19,13 +19,21 @@ public sealed class VirtualConsole : TextWriter, IRenderable
     {
     }
 
+    /// <inheritdoc cref="UiBase.Visible"/>
     public bool Visible { get; set; } = true;
+
+    /// <inheritdoc cref="UiBase.Offset"/>
     public Vec2I Offset { get; set; }
-    public int ZIndex { get; set; }
+
+    /// <inheritdoc cref="UiBase.Layer"/>
+    public int Layer { get; set; }
+
+    /// <inheritdoc cref="UiBase.Anchor"/>
     public Anchor Anchor { get; set; }
 
     private int _width;
 
+    /// <inheritdoc cref="UiBase.Width"/>
     public int Width
     {
         get { return _width; }
@@ -34,6 +42,7 @@ public sealed class VirtualConsole : TextWriter, IRenderable
 
     private int _height;
 
+    /// <inheritdoc cref="UiBase.Height"/>
     public int Height
     {
         get { return _height; }

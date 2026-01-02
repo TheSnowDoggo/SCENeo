@@ -1,6 +1,6 @@
 ﻿namespace SCENeo.Ui;
 
-public sealed class ProgressBar : IRenderable
+public sealed class ProgressBar : UiBase, IRenderable
 {
     public enum FlowMode
     {
@@ -22,13 +22,12 @@ public sealed class ProgressBar : IRenderable
     {
     }
 
-    public bool Visible { get; set; } = true;
-    public Vec2I Offset { get; set; }
-    public int ZIndex { get; set; }
-    public Anchor Anchor { get; set; }
 
     private int _width;
 
+    /// <summary>
+    /// Gets or sets the width.
+    /// </summary>
     public int Width
     {
         get { return _width; }
@@ -37,6 +36,9 @@ public sealed class ProgressBar : IRenderable
 
     private int _height;
 
+    /// <summary>
+    /// Gets or sets the height.
+    /// </summary>
     public int Height
     {
         get { return _height; }

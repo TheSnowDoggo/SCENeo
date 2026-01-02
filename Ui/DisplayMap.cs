@@ -8,13 +8,17 @@ public sealed class DisplayMap : Image, IRenderable
     public DisplayMap(int width, int height) : base(width, height) { }
     public DisplayMap(Vec2I dimensions) : base(dimensions) { }
 
+    /// <inheritdoc cref="UiBase.Visible"/>
     public bool Visible { get; set; } = true;
 
-    public Vec2I Offset { get; set; } = Vec2I.Zero;
+    /// <inheritdoc cref="UiBase.Offset"/>
+    public Vec2I Offset { get; set; }
 
-    public int ZIndex { get; set; } = 0;
+    /// <inheritdoc cref="UiBase.Layer"/>
+    public int Layer { get; set; }
 
-    public Anchor Anchor { get; set; } = Anchor.None;
+    /// <inheritdoc cref="UiBase.Anchor"/>
+    public Anchor Anchor { get; set; }
 
     public IView<Pixel> Render()
     {

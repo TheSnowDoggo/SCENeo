@@ -71,6 +71,6 @@ public static class ColorUtils
     /// <returns>The next random color.</returns>
     public static SCEColor NextColor(this Random random, bool includeTransparent = false)
     {
-        return includeTransparent ? (SCEColor)random.Next(16) : (SCEColor)random.Next(17) - 1;
+        return includeTransparent ? (SCEColor)random.Next(16) : (SCEColor)random.Next(17);
     }
 }
