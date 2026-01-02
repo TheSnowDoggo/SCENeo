@@ -2,6 +2,9 @@
 
 namespace SCENeo;
 
+/// <summary>
+/// A static class containing utility functions for serializing and deserializing images to the SIF format.
+/// </summary>
 public static class SIFUtils
 {
     private const char Delimiter   = '|';
@@ -29,14 +32,20 @@ public static class SIFUtils
         { 'N', SCEColor.Transparent },
     };
 
-    public static string Serialize(Grid2DView<Pixel> view)
+    /// <summary>
+    /// Serializes the image to a SIF.
+    /// </summary>
+    /// <param name="image">The image to serialize.</param>
+    /// <returns>The serialized SIF.</returns>
+    public static string Serialize(Grid2DView<Pixel> image)
     {
-        return Serialize((IView<Pixel>)view);
+        return Serialize((IView<Pixel>)image);
     }
 
-    public static string Serialize(IView<Pixel> view)
+    /// <inheritdoc cref="Serialize(Grid2DView{Pixel})"/>
+    public static string Serialize(IView<Pixel> image)
     {
-        if (view.Width == 0 && view.Height == 0)
+        if (image.Width == 0 && image.Height == 0)
         {
             return $"{Signature}{EmptySif}";
         }
@@ -45,11 +54,11 @@ public static class SIFUtils
         var bgBuilder   = new StringBuilder();
         var charBuilder = new StringBuilder();
 
-        for (int y = 0; y < view.Height; y++)
+        for (int y = 0; y < image.Height; y++)
         {
-            for (int x = 0; x < view.Width; x++)
+            for (int x = 0; x < image.Width; x++)
             {
-                Pixel pixel = view[x, y];
+                Pixel pixel = image[x, y];
 
                 fgBuilder.Append(SifCodes.GetTKey(pixel.FgColor));
                 bgBuilder.Append(SifCodes.GetTKey(pixel.BgColor));
@@ -66,27 +75,14 @@ public static class SIFUtils
         string charStr = charBuilder.ToString();
         charStr = Same(charStr) ? charStr[0].ToString() : RunLengthEncode(charStr);
 
-        return $"{Signature}[{view.Width},{view.Height}]{fgStr}${bgStr}${charStr}$";
+        return $"{Signature}[{image.Width},{image.Height}]{fgStr}${bgStr}${charStr}$";
     }
 
-    private static bool Same(string s)
-    {
-        if (s == string.Empty)
-        {
-            return false;
-        }
-
-        for (int i = 1; i < s.Length; i++)
-        {
-            if (s[i - 1] != s[i])
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
+    /// <summary>
+    /// Deserializes the SIF to an image.
+    /// </summary>
+    /// <param name="sif">The SIF to deserialize.</param>
+    /// <returns>The deserialized grid.</returns>
     public static Grid2D<Pixel> Deserialize(string sif)
     {
         if (!sif.StartsWith(Signature))
@@ -218,6 +214,24 @@ public static class SIFUtils
         return grid;
     }
 
+    private static bool Same(string s)
+    {
+        if (s == string.Empty)
+        {
+            return false;
+        }
+
+        for (int i = 1; i < s.Length; i++)
+        {
+            if (s[i - 1] != s[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private static SCEColor GetColor(char code)
     {
         if (!SifCodes.TryGetUKey(code, out SCEColor color))
@@ -258,40 +272,6 @@ public static class SIFUtils
         return sb.ToString();
     }
 
-    private static void AppendSingle(StringBuilder sb, char c)
-    {
-        if (c == Delimiter)
-        {
-            sb.Append(Delimiter, 2);
-            return;
-        }
-
-        if (!char.IsDigit(c))
-        {
-            sb.Append(c);
-            return;
-        }
-
-        sb.Append($"{Delimiter}{c}{Delimiter}");
-    }
-
-    private static void AppendEncode(StringBuilder sb, char c, int count)
-    {
-        if (count == 1)
-        {
-            AppendSingle(sb, c);
-            return;
-        } 
-
-        if (!char.IsDigit(c) && c != Delimiter)
-        {
-            sb.Append($"{count}{c}");
-            return;
-        }
-
-        sb.Append($"{count}{Delimiter}{c}");
-    }
-
     private static string RunLengthDecode(string str)
     {
         if (str == string.Empty)
@@ -305,6 +285,7 @@ public static class SIFUtils
 
         for (int i = 0; i < str.Length; i++)
         {
+            // ignore non-space control characters
             if (str[i] < ' ')
             {
                 continue;
@@ -361,5 +342,39 @@ public static class SIFUtils
         }
 
         return sb.ToString();
+    }
+
+    private static void AppendSingle(StringBuilder sb, char c)
+    {
+        if (c == Delimiter)
+        {
+            sb.Append(Delimiter, 2);
+            return;
+        }
+
+        if (!char.IsDigit(c))
+        {
+            sb.Append(c);
+            return;
+        }
+
+        sb.Append($"{Delimiter}{c}{Delimiter}");
+    }
+
+    private static void AppendEncode(StringBuilder sb, char c, int count)
+    {
+        if (count == 1)
+        {
+            AppendSingle(sb, c);
+            return;
+        } 
+
+        if (!char.IsDigit(c) && c != Delimiter)
+        {
+            sb.Append($"{count}{c}");
+            return;
+        }
+
+        sb.Append($"{count}{Delimiter}{c}");
     }
 }

@@ -2,46 +2,78 @@
 
 namespace SCENeo;
 
+/// <summary>
+/// A class for receiving delta timed updates with useful statistics and frame capping.
+/// </summary>
 public sealed class Updater
 {
-    public const int Uncapped = -1;
+    public const double Uncapped = double.PositiveInfinity;
 
     private bool _active = false;
 
-    private double _fps = 0;
-
-    private int _frameCap = -1;
+    private double _frameCap = Uncapped;
 
     private double _minimumDelta = -1;
 
-    private double _delta     = 0;
-
-    private double _realDelta = 0;
-
     public Updater() { }
 
+    /// <summary>
+    /// The action fired on each update/frame with delta time.
+    /// </summary>
     public Action<double>? OnUpdate;
 
-    public double FPSUpdateRate { get; set; } = 1.0;
+    /// <summary>
+    /// Gets or sets the frequency in seconds that <see cref="FPS"/> should update.
+    /// </summary>
+    public double FPSUpdatePeriod { get; set; } = 1.0;
 
-    public double Delta { get { return _delta; } }
+    /// <summary>
+    /// Gets the current delta time in seconds.
+    /// </summary>
+    public double Delta { get; private set; }
 
-    public double RealDelta { get { return _realDelta; } }
+    /// <summary>
+    /// Gets the actual time taken to update the last frame in seconds (excluding frame capping).
+    /// </summary>
+    /// <remarks>
+    /// Note this is only useful for debugging.
+    /// </remarks>
+    public double RealDelta { get; private set; }
 
-    public double FPS { get { return _fps; } }
+    /// <summary>
+    /// Gets the current FPS.
+    /// </summary>
+    /// <remarks>
+    /// Note this is not equivalent to the inverse of <see cref="Delta"/> as it's an average recording over <see cref="FPSUpdatePeriod"/>.
+    /// </remarks>
+    public double FPS { get; private set; }
 
-    public int FrameCap
+    /// <summary>
+    /// Gets or sets the maximum allowed frame updates per second.
+    /// </summary>
+    /// <remarks>
+    /// Set to <see cref="double.PositiveInfinity"/> by default.
+    /// </remarks>
+    public double FrameCap
     {
         get { return _frameCap; }
         set
         {
             _frameCap     = value;
-            _minimumDelta = _frameCap != -1 ? 1.0 / _frameCap : -1;
+            _minimumDelta = 1.0 / _frameCap;
         }
     }
 
+    /// <summary>
+    /// Starts the update loop if not currently running.
+    /// </summary>
     public void Start()
     {
+        if (_active)
+        {
+            return;
+        }
+
         var deltaTimer = Stopwatch.StartNew();
         var fpsTimer = Stopwatch.StartNew();
         var realTimer = Stopwatch.StartNew();
@@ -54,21 +86,21 @@ public sealed class Updater
         {
             realTimer.Restart();
 
-            OnUpdate?.Invoke(_delta);
+            OnUpdate?.Invoke(Delta);
 
-            _realDelta = realTimer.Elapsed.TotalSeconds;
+            RealDelta = realTimer.Elapsed.TotalSeconds;
 
             while (deltaTimer.Elapsed.TotalSeconds < _minimumDelta) { }
 
-            _delta = deltaTimer.Elapsed.TotalSeconds;
+            Delta = deltaTimer.Elapsed.TotalSeconds;
 
             deltaTimer.Restart();
 
             frameCount++;
 
-            if (fpsTimer.Elapsed.TotalSeconds >= FPSUpdateRate)
+            if (fpsTimer.Elapsed.TotalSeconds >= FPSUpdatePeriod)
             {
-                _fps = frameCount / fpsTimer.Elapsed.TotalSeconds;
+                FPS = frameCount / fpsTimer.Elapsed.TotalSeconds;
 
                 frameCount = 0;
 
@@ -77,6 +109,9 @@ public sealed class Updater
         }
     }
 
+    /// <summary>
+    /// Stops the update loop on the next frame.
+    /// </summary>
     public void Stop()
     {
         _active = false;

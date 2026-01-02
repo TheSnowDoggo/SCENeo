@@ -65,6 +65,7 @@ public sealed class VirtualOverlay : UiModifier<IRenderable>, IRenderable
 
         Vec2I position = Overlay.Offset + Overlay.Anchor.AnchorDimension(this.Size() - Overlay.Size());
 
+
         if (!Rect2DI.Area(position, Overlay.Width, Overlay.Height).Overlaps(0, 0, Width, Height))
         {
             return view;

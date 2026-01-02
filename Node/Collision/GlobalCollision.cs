@@ -22,7 +22,7 @@ internal static class GlobalCollision
             return false;
         }
 
-        if (boxArea.Contains(sphereArea) || sphereArea.Contains(boxArea))
+        if (boxArea.Encloses(sphereArea) || sphereArea.Encloses(boxArea))
         {
             return true;
         }
@@ -56,7 +56,7 @@ internal static class GlobalCollision
             return true;
         }
 
-        if (boxArea.Contains(lineArea))
+        if (boxArea.Encloses(lineArea))
         {
             return true;
         }
@@ -99,5 +99,10 @@ internal static class GlobalCollision
     private static float XIntersectHorizontal(float m, float c, float y)
     {
         return (y - c) / m;
+    }
+
+    private static bool InFullRange(this float value, float min, float max)
+    {
+        return value >= min && value <= max;
     }
 }

@@ -1,5 +1,11 @@
 ﻿namespace SCENeo;
 
+/// <summary>
+/// An enum representing a color.
+/// </summary>
+/// <remarks>
+/// Differs from <see cref="ConsoleColor"/> by the inclusion of <see cref="SCEColor.Transparent"/>.
+/// </remarks>
 public enum SCEColor
 {
     Transparent = -1,

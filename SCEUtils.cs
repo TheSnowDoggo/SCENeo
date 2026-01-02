@@ -1,5 +1,8 @@
 ﻿namespace SCENeo;
 
+/// <summary>
+/// A static class containing miscellaneous utilitiy functions. 
+/// </summary>
 public static class SCEUtils
 {
     public static int IndexOf(this string str, Predicate<char> predicate, int start)

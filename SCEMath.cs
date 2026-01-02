@@ -1,17 +1,29 @@
 ﻿namespace SCENeo;
 
+/// <summary>
+/// A static class containing math utility functions.
+/// </summary>
 public static class SCEMath
 {
-    public static bool InFullRange(this float value, float min, float max)
-    {
-        return value >= min && value <= max;
-    }
+    private const float FRadDegFactor = 180 / MathF.PI;
+    private const double DRadDegFactor = 180 / Math.PI;
 
+    /// <summary>
+    /// Returns the squared value.
+    /// </summary>
+    /// <param name="value">The value to square.</param>
+    /// <returns>T</returns>
     public static float Squared(this float value)
     {
         return value * value;
     }
 
+    /// <summary>
+    /// Returns the result of <paramref name="a"/> mod <paramref name="b"/>.
+    /// </summary>
+    /// <param name="a">The quotient.</param>
+    /// <param name="b">The dividend.</param>
+    /// <returns>The result of <paramref name="a"/> mod <paramref name="b"/>.</returns>
     public static int Mod(int a, int b)
     {
         return ((a % b) + b) % b;
@@ -52,9 +64,6 @@ public static class SCEMath
     {
         return (value - min) / (max - min);
     }
-
-    private const float FRadDegFactor = 180 / MathF.PI;
-    private const double DRadDegFactor = 180 / Math.PI;
 
     /// <summary>
     /// Converts from radians to degrees.
