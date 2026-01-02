@@ -6,7 +6,7 @@
 /// <remarks>
 /// Good for creating large planes with low memory usage.
 /// </remarks>
-internal sealed class VirtualPlane : IRenderable
+public sealed class VirtualPlane : IRenderable
 {
     private readonly PlainView2D<Pixel> _pv = [];
 

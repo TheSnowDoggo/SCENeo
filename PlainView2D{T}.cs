@@ -2,7 +2,7 @@
 
 namespace SCENeo;
 
-internal sealed class PlainView2D<T> : IView<T>
+public sealed class PlainView2D<T> : IView<T>
 {
     public T Value { get; set; } = default!;
 
@@ -13,8 +13,6 @@ internal sealed class PlainView2D<T> : IView<T>
     public T this[int x, int y] { get { return Value; } }
 
     public T this[Vec2I pos] { get { return Value; } }
-
-    #region IEnumerable
 
     public IEnumerator<T> GetEnumerator()
     {
@@ -30,6 +28,4 @@ internal sealed class PlainView2D<T> : IView<T>
     {
         return GetEnumerator();
     }
-
-    #endregion
 }
