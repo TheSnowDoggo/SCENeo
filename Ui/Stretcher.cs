@@ -64,7 +64,7 @@ public sealed class Stretcher : IRenderable
             Update();
         }
 
-        return _buffer.AsView();
+        return _buffer.AsReadonly();
     }
 
     private void Update()

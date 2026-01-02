@@ -115,7 +115,7 @@ public sealed class ProgressBar : IRenderable
             Update();
         }
 
-        return _buffer.AsView();
+        return _buffer.AsReadonly();
     }
 
     private void Update()

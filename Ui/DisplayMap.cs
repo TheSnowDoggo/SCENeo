@@ -18,6 +18,6 @@ public sealed class DisplayMap : Image, IRenderable
 
     public IView<Pixel> Render()
     {
-        return (Grid2DView<Pixel>)this;
+        return AsReadonly();
     }
 }

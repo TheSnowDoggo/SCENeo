@@ -138,7 +138,7 @@ public sealed class VerticalSelector : IRenderable
             Update();
         }
 
-        return _buffer.AsView();
+        return _buffer.AsReadonly();
     }
 
     private void Update()

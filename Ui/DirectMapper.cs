@@ -54,7 +54,7 @@ public sealed class DirectMapper<T> : IRenderable
             _update = false;
         }
         
-        return _buffer.AsView();
+        return _buffer.AsReadonly();
     }
 
     private void Update()

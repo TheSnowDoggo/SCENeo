@@ -204,7 +204,7 @@ public sealed class VirtualConsole : TextWriter, IRenderable
             Update();
         }
 
-        return _visual.AsView();
+        return _visual.AsReadonly();
     }
 
     public void Clear()

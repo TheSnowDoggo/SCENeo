@@ -3,6 +3,11 @@
 public readonly partial struct Pixel
 {
     /// <summary>
+    /// Gets an empty pixel.
+    /// </summary>
+    public static Pixel Empty => new Pixel();
+
+    /// <summary>
     /// Gets a pixel that will be fully transparent when merged.
     /// </summary>
     public static Pixel Null => new Pixel(ElementTransparent, SCEColor.Transparent, SCEColor.Transparent);

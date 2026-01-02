@@ -37,6 +37,6 @@ public sealed class RenderChannel : IRenderable
 
     public IView<Pixel> Render()
     {
-        return _buffer.AsView();
+        return _buffer.AsReadonly();
     }
 }

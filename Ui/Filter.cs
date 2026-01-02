@@ -24,6 +24,6 @@ public sealed class Filter : UiModifier<IRenderable>
 
         _buffer.Fill((x, y) => FilterMode.Invoke(view[x, y]));
 
-        return (Grid2DView<Pixel>)_buffer;
+        return _buffer.AsReadonly();
     }
 }

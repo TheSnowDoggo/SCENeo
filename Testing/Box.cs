@@ -16,7 +16,7 @@ internal sealed class Box : Node2D
             Anchor = Anchor.Right | Anchor.Bottom,
         };
 
-        dpMap.Fill(() => new Pixel((char)(_rand.Next('a', 'z' + 1)), SCEColor.White, _rand.NextColor()));
+        dpMap.Fill((x, y) => new Pixel((char)(_rand.Next('a', 'z' + 1)), SCEColor.White, _rand.NextColor()));
 
         var sprite = new Sprite2D()
         {
