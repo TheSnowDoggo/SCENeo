@@ -2,26 +2,24 @@
 
 public sealed class Filter : UiModifier<IRenderable>
 {
-    private readonly Image _buffer;
+    private readonly Image _buffer = new Image();
 
-    public Filter(IRenderable source) : base(source)
-    {
-        _buffer = new Image(source.Width, source.Height);
-    }
+    public Filter() { }
 
     public Func<Pixel, Pixel>? FilterMode = null;
 
     public override IView<Pixel> Render()
     {
-        IView<Pixel> view = _source.Render();
+        IView<Pixel> view = Source.Render();
 
-        if (FilterMode == null) return view;
-
-        Vec2I dimensions = view.Size();
-
-        if (_buffer.Size != dimensions)
+        if (FilterMode == null)
         {
-            _buffer.CleanResize(dimensions);
+            return view;
+        }
+
+        if (_buffer.Width != Width || _buffer.Height != Height)
+        {
+            _buffer.CleanResize(Width, Height);
         }
 
         _buffer.Fill((x, y) => FilterMode.Invoke(view[x, y]));

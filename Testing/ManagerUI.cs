@@ -29,7 +29,7 @@ internal sealed class ManagerUi
             BasePixel   = new Pixel(SCEColor.Black, SCEColor.White),
             TextFgColor = SCEColor.Transparent,
             TextBgColor = SCEColor.Transparent,
-            Enabled     = false,
+            Visible     = false,
         };
 
         _selector = new VerticalSelector()

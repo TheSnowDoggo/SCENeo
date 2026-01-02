@@ -39,7 +39,7 @@ internal sealed class VirtualPlane : IRenderable
         set { _pv.Height = value; }
     }
 
-    public bool Enabled { get; set; } = true;
+    public bool Visible { get; set; } = true;
     public Vec2I Offset { get; set; }
     public int ZIndex { get; set; }
     public Anchor Anchor { get; set; }

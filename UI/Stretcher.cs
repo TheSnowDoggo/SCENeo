@@ -22,7 +22,7 @@ public sealed class Stretcher : IRenderable
     {
     }
 
-    public bool Enabled { get; set; } = true;
+    public bool Visible { get; set; } = true;
     public Vec2I Offset { get; set; }
     public int ZIndex { get; set; }
     public Anchor Anchor { get; set; }

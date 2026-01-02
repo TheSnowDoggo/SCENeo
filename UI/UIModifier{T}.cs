@@ -1,17 +1,17 @@
 ﻿namespace SCENeo.Ui;
 
-public abstract class UiModifier<T>(T source) : IRenderable
+public abstract class UiModifier<T> : IRenderable
     where T : IRenderable
 {
-    protected readonly T _source = source;
+    public T Source { get; set; } = default!;
 
-    public virtual int Width { get { return _source.Width; } }
-    public virtual int Height { get { return _source.Height; } }
+    public virtual int Width { get { return Source.Width; } }
+    public virtual int Height { get { return Source.Height; } }
 
-    public bool Enabled { get { return _source.Enabled; } }
-    public Vec2I Offset { get { return _source.Offset; } }
-    public int ZIndex { get { return _source.ZIndex; } }
-    public Anchor Anchor { get { return _source.Anchor; } }
+    public bool Visible { get { return Source != null && Source.Visible; } }
+    public Vec2I Offset { get { return Source.Offset; } }
+    public int ZIndex { get { return Source.ZIndex; } }
+    public Anchor Anchor { get { return Source.Anchor; } }
 
     public abstract IView<Pixel> Render();
 }

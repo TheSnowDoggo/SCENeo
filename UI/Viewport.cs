@@ -8,7 +8,7 @@ public sealed partial class Viewport : IRenderable
     {
     }
 
-    public bool Enabled { get; set; } = true;
+    public bool Visible { get; set; } = true;
     public Vec2I Offset { get; set; }
     public int ZIndex { get; set; }
     public Anchor Anchor { get; set; }
@@ -44,9 +44,7 @@ public sealed partial class Viewport : IRenderable
         {
             Vec2I size = renderable.Size();
 
-            Vec2I anchorOffset = renderable.Anchor.AnchorDimension(renderSize - size);
-
-            Vec2I position = renderable.Offset + anchorOffset;
+            Vec2I position = renderable.Offset + renderable.Anchor.AnchorDimension(renderSize - size);
 
             Rect2DI area = Rect2DI.Area(position, size);
 
@@ -65,7 +63,7 @@ public sealed partial class Viewport : IRenderable
 
         foreach (IRenderable renderable in Source)
         {
-            if (renderable.Enabled)
+            if (renderable.Visible)
             {
                 sorted.Add(renderable);
             }

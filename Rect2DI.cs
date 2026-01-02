@@ -16,6 +16,16 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
         return new Rect2DI(x, y, x + width, y + height);
     }
 
+    public static Rect2DI Area(Vec2I pos, int width, int height)
+    {
+        return Area(pos.X, pos.Y, width, height);
+    }
+
+    public static Rect2DI Area(int x, int y, Vec2I size)
+    {
+        return Area(x, y, size.X, size.Y);
+    }
+
     public static Rect2DI Area(Vec2I position, Vec2I dimensions)
     {
         return new Rect2DI(position, position + dimensions);
@@ -48,8 +58,6 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
         return End - Start;
     }
 
-    #region Overlaps
-
     public readonly bool Overlaps(int left, int top, int right, int bottom)
     {
         if (Right < left || Left > right)
@@ -73,10 +81,6 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
         return Overlaps(other.Start, other.End);
     }
 
-    #endregion
-
-    #region Trim
-
     public readonly Rect2DI Trim(int left, int top, int right, int bottom)
     {
         return new Rect2DI()
@@ -98,10 +102,6 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
         return Trim(other.Left, other.Top, other.Right, other.Bottom);
     }
 
-    #endregion
-
-    #region Contains
-
     public readonly bool Contains(int left, int top, int right, int bottom)
     {
         return left >= Left && right <= Right && top >= Top && bottom <= Bottom;
@@ -117,19 +117,15 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
         return Contains(rect.Left, rect.Top, rect.Right, rect.Bottom);
     }
 
-    public readonly bool Contains(int x, int y)
+    public readonly bool HasPoint(int x, int y)
     {
-        return x >= Left && x <= Right && y >= Top && y <= Bottom;
+        return x >= Left && y >= Top && x < Right  && y < Bottom;
     }
 
-    public readonly bool Contains(Vec2I position)
+    public readonly bool HasPoint(Vec2I position)
     {
-        return Contains(position.X, position.Y);
+        return position.X >= Left && position.Y >= Top && position.X < Right && position.Y < Bottom;
     }
-
-    #endregion
-
-    #region Equality
 
     public readonly bool Equals(Rect2DI other)
     {
@@ -146,10 +142,6 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
         return HashCode.Combine(Left, Top, Right, Bottom);
     }
 
-    #endregion
-
-    #region Enumerate
-
     public IEnumerable<Vec2I> Enumerate()
     {
         for (int y = Top; y < Bottom; y++)
@@ -160,8 +152,6 @@ public struct Rect2DI(int left, int top, int right, int bottom) : IEquatable<Rec
             }
         }
     }
-
-    #endregion
 
     public readonly override string ToString()
     {

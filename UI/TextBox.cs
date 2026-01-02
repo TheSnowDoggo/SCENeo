@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace SCENeo.Ui;
 
@@ -20,7 +19,7 @@ public sealed class TextBox : IRenderable
     {
     }
 
-    public bool Enabled { get; set; } = true;
+    public bool Visible { get; set; } = true;
     public Vec2I Offset { get; set; }
     public int ZIndex { get; set; }
     public Anchor Anchor { get; set; }
@@ -89,14 +88,6 @@ public sealed class TextBox : IRenderable
         set { SCEUtils.ObserveSet(value, ref _textWrapping, ref _update); }
     }
 
-    private bool _richText = false;
-
-    public bool RichText
-    {
-        get { return _richText; }
-        set { SCEUtils.ObserveSet(value, ref _richText, ref _update); }
-    }
-
     public IView<Pixel> Render()
     {
         if (_update)
@@ -123,80 +114,14 @@ public sealed class TextBox : IRenderable
         int startY = Math.Max(top, 0);
         int endY = Math.Min(top + lines.Count, Height);
 
-        SCEColor fgColor = TextFgColor;
-        SCEColor bgColor = TextBgColor;
-
         for (int y = startY, i = startY - top; y < endY; y++, i++)
         {
             int x = TextAnchor.AnchorHorizontal(Width - lines[i].Length);
 
-            if (RichText)
-            {
-                MapRich(lines[i], x, y, ref fgColor, ref bgColor);
-            }
-            else
-            {
-                _buffer.MapLine(lines[i], x, y, _textFgColor, _textBgColor);
-            }
+            _buffer.MapLine(lines[i], x, y, _textFgColor, _textBgColor);
         }
 
         _update = false;
-    }
-
-    private bool MapRich(string line, int x, int y, ref SCEColor fgColor, ref SCEColor bgColor)
-    {
-        if (y < 0 || y >= Height)
-        {
-            return false;
-        }
-
-        int startX = Math.Max(x, 0);
-
-        if (startX >= Width)
-        {
-            return false;
-        }
-
-        int endX = Math.Min(x + line.Length, Width);
-
-        if (endX <= 0)
-        {
-            return false;
-        }
-
-        for (int curX = startX, i = startX - x; curX < endX && i < line.Length; i++)
-        {
-            if (!IsEscapeCode(line[i]) || i == line.Length - 1 || !SIFUtils.SifCodes.TryGetUKey(line[i + 1], out SCEColor color))
-            {
-                _buffer[curX, y] = _buffer[curX, y].Merge(new Pixel(line[i], fgColor, bgColor));
-
-                curX++;
-                continue;
-            }
-
-            if (line[i] == '`')
-            {
-                fgColor = color;
-            }
-            else
-            {
-                bgColor = color;
-            }
-
-            i++;
-        }
-
-        return true;
-    }
-
-    private static bool IsEscapeCode(char c)
-    {
-        return c is '`' or '¬';
-    }
-
-    private bool EscapeAt(int index)
-    {
-        return RichText && IsEscapeCode(Text[index]) && index != Text.Length - 1 && SIFUtils.SifCodes.ContainsTKey(Text[index + 1]);
     }
 
     private List<string> CharacterSplitLines()
@@ -204,7 +129,6 @@ public sealed class TextBox : IRenderable
         var list = new List<string>();
 
         var sb = new StringBuilder();
-        int visualLength = 0;
 
         for (int i = 0; i < Text.Length; i++)
         {
@@ -213,24 +137,12 @@ public sealed class TextBox : IRenderable
             if (!newline)
             {
                 sb.Append(Text[i]);
-
-                if (EscapeAt(i))
-                {
-                    sb.Append(Text[i + 1]);
-                    i++;
-                }
-                else
-                {
-                    visualLength++;
-                }
             }
 
-            if (newline || (visualLength == Width && (i == Text.Length - 1 || Text[i + 1] != '\n')))
+            if (newline || (sb.Length == Width && (i == Text.Length - 1 || Text[i + 1] != '\n')))
             {
                 list.Add(sb.ToString());
-
                 sb.Clear();
-                visualLength = 0;
             }
         }
 
@@ -247,10 +159,7 @@ public sealed class TextBox : IRenderable
         var list = new List<string>();
 
         var wordBuilder = new StringBuilder();
-        int wordVisualLength = 0;
-
         var lineBuilder = new StringBuilder();
-        int lineVisualLength = 0;
 
         for (int i = 0; i < Text.Length; i++)
         {
@@ -259,29 +168,17 @@ public sealed class TextBox : IRenderable
             if (Text[i] != ' ' && !newLine)
             {
                 wordBuilder.Append(Text[i]);
-
-                if (!EscapeAt(i))
-                {
-                    wordVisualLength++;
-                    continue;
-                }
-
-                i++;
                 continue;
             }
 
-            if (!newLine && lineVisualLength + wordVisualLength < Width)
+            if (!newLine && lineBuilder.Length + wordBuilder.Length < Width)
             {
                 lineBuilder.Append(wordBuilder);
                 wordBuilder.Clear();
 
-                lineVisualLength += wordVisualLength;
-                wordVisualLength = 0;
-
                 if (lineBuilder.Length < Width)
                 {
                     lineBuilder.Append(' ');
-                    lineVisualLength++;
                 }
 
                 continue;
@@ -293,14 +190,10 @@ public sealed class TextBox : IRenderable
             lineBuilder.Append(wordBuilder);
             wordBuilder.Clear();
 
-            lineVisualLength = wordVisualLength;
-            wordVisualLength = 0;
 
-
-            if (lineVisualLength < Width)
+            if (lineBuilder.Length < Width)
             {
                 lineBuilder.Append(' ');
-                lineVisualLength++;
             }
         }
 

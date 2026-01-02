@@ -8,7 +8,7 @@ public sealed class Sprite2D : Node2D, IRenderable
 
     public int Height { get { return GetSource().Height; } }
 
-    public bool Enabled { get { return Source != null; } }
+    public bool Visible { get { return Source != null; } }
 
     public Vec2I Offset { get { return (Vec2I)GlobalPosition.Round() * new Vec2I(2, 1) + GetSource().Offset; } }
 

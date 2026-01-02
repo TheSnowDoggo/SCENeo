@@ -87,7 +87,7 @@ public sealed class RenderEngine : IEngine
 
         foreach (Node node in nodes)
         {
-            if (node is IRenderable renderable && renderable.Enabled)
+            if (node is IRenderable renderable && renderable.Visible)
             {
                 state.Inputs.Add(RenderInput.Create(renderable));
             }

@@ -2,7 +2,7 @@
 
 public interface IRenderable : IDimensioned
 {
-    bool Enabled { get; }
+    bool Visible { get; }
     public Vec2I Offset { get; }
     public int ZIndex { get; }
     public Anchor Anchor { get; }

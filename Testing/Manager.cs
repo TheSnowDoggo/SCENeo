@@ -39,8 +39,9 @@ internal sealed class Manager
             //Anchor    = Anchor.Right | Anchor.Bottom,
         };
 
-        var rc2Filter = new Filter(rc2)
+        var rc2Filter = new Filter()
         {
+            Source = rc2,
             FilterMode = null, 
         };
 
