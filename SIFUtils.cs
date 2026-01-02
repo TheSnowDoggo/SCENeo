@@ -8,7 +8,7 @@ public static class SIFUtils
     private const char EmptySif    = '^';
     private const string Signature = "SIF0";
 
-    private static readonly BiMap<char, SCEColor> SifCodes = new()
+    public static IReadOnlyBiMap<char, SCEColor> SifCodes { get; } = new BiMap<char, SCEColor>()
     {
         { 'K', SCEColor.Black       },
         { 'B', SCEColor.DarkBlue    },

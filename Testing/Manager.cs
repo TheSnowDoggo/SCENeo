@@ -26,18 +26,6 @@ internal sealed class Manager
             OnUpdate = Update,
         };
 
-        _viewport = new Viewport()
-        {
-            BasePixel = new Pixel(SCEColor.DarkGray),
-        };
-
-        _display = new Display()
-        {
-            Source   = _viewport,
-            Output   = ConsoleOutput.Instance,
-            OnResize = Display_OnResize,
-        };
-
         var rc1 = new RenderChannel()
         {
             BasePixel = new Pixel(SCEColor.DarkCyan),
@@ -64,7 +52,18 @@ internal sealed class Manager
             Anchor = Anchor.Right,
         };
 
-        _viewport.Renderables.AddRange([rc1, rc2Filter, _fpsUI]);
+        _viewport = new Viewport()
+        {
+            BasePixel = new Pixel(SCEColor.DarkGray),
+            Source    = [rc1, rc2Filter, _fpsUI],
+        };
+
+        _display = new Display()
+        {
+            Source = _viewport,
+            Output = ConsoleOutput.Instance,
+            OnResize = Display_OnResize,
+        };
 
         _re = new RenderEngine()
         {

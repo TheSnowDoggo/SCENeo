@@ -18,7 +18,7 @@ public sealed partial class Viewport : IRenderable
 
     public Pixel BasePixel { get; set; } = Pixel.Black;
 
-    public List<IRenderable> Renderables { get; init; } = [];
+    public IEnumerable<IRenderable> Source { get; set; }
 
     public IView<Pixel> Render()
     {
@@ -61,9 +61,9 @@ public sealed partial class Viewport : IRenderable
 
     private List<IRenderable> GetSorted()
     {
-        var sorted = new List<IRenderable>(Renderables.Count);
+        var sorted = new List<IRenderable>();
 
-        foreach (IRenderable renderable in Renderables)
+        foreach (IRenderable renderable in Source)
         {
             if (renderable.Enabled)
             {

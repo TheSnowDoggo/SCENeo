@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SCENeo;
 
-internal sealed class BiMap<TKey, UKey> : IReadOnlyCollection<KeyValuePair<TKey, UKey>>
+internal sealed class BiMap<TKey, UKey> : IReadOnlyBiMap<TKey, UKey>
     where TKey : notnull
     where UKey : notnull
 {
@@ -80,6 +80,26 @@ internal sealed class BiMap<TKey, UKey> : IReadOnlyCollection<KeyValuePair<TKey,
     public TKey GetTKey(UKey uKey)
     {
         return _uKeyDict[uKey];
+    }
+
+    public UKey? GetUKeyOrDefault(TKey tKey)
+    {
+        return _tKeyDict.GetValueOrDefault(tKey);
+    }
+
+    public UKey GetUKeyOrDefault(TKey tKey, UKey defaultValue)
+    {
+        return _tKeyDict.GetValueOrDefault(tKey, defaultValue);
+    }
+
+    public TKey? GetTKeyOrDefault(UKey uKey)
+    {
+        return _uKeyDict.GetValueOrDefault(uKey);
+    }
+
+    public TKey GetUKeyOrDefault(UKey uKey, TKey defaultValue)
+    {
+        return _uKeyDict.GetValueOrDefault(uKey, defaultValue);
     }
 
     public bool TryGetUKey(TKey tKey, [MaybeNullWhen(false)] out UKey? uKey)

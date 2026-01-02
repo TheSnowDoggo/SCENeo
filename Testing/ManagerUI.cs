@@ -22,18 +22,6 @@ internal sealed class ManagerUi
             FrameCap = Updater.Uncapped,
         };
 
-        _viewport = new Viewport()
-        {
-            BasePixel = new Pixel(SCEColor.DarkCyan),
-        };
-
-        _display = new Display()
-        {
-            Source   = _viewport,
-            Output   = ConsoleOutput.Instance,
-            OnResize = Display_OnResize,
-        };
-
         _textBox = new TextBox()
         {
             Width       = 30,
@@ -62,7 +50,18 @@ internal sealed class ManagerUi
             };
         }
 
-        _viewport.Renderables.AddRange([_textBox, _selector]);
+        _viewport = new Viewport()
+        {
+            BasePixel = new Pixel(SCEColor.DarkCyan),
+            Source    = [_textBox, _selector],
+        };
+
+        _display = new Display()
+        {
+            Source = _viewport,
+            Output = ConsoleOutput.Instance,
+            OnResize = Display_OnResize,
+        };
     }
 
     public void Run()

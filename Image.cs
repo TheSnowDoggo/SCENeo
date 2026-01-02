@@ -92,18 +92,16 @@ public class Image : Grid2D<Pixel>
             return false;
         }
 
-        int endX   = Math.Min(x + line.Length, Width);
+        int endX = Math.Min(x + line.Length, Width);
 
         if (endX <= 0)
         {
             return false;
         }
 
-        int i = startX - x;
-
-        for (int curX = startX; curX < endX; curX++)
+        for (int curX = startX, i = startX - x; curX < endX; curX++, i++)
         {
-            this[curX, y] = this[curX, y].Merge(new Pixel(line[i++], fgColor, bgColor));
+            this[curX, y] = this[curX, y].Merge(new Pixel(line[i], fgColor, bgColor));
         }
 
         return true;

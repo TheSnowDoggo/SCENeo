@@ -22,18 +22,6 @@ internal sealed class ManagerUI2
 
     public ManagerUI2()
     {
-        _viewport = new Viewport()
-        {
-            BasePixel = new Pixel(SCEColor.DarkGray),
-        };
-
-        _display = new Display()
-        {
-            Source   = _viewport,
-            Output   = ConsoleOutput.Instance,
-            OnResize = Display_OnResize,
-        };
-
         _textBox = new TextBox()
         {
             Width  = 20,
@@ -44,6 +32,19 @@ internal sealed class ManagerUI2
         _renderChannel = new RenderChannel()
         {
             BasePixel = new Pixel(SCEColor.DarkCyan),
+        };
+
+        _viewport = new Viewport()
+        {
+            BasePixel = new Pixel(SCEColor.DarkGray),
+            Source = [_textBox, _renderChannel],
+        };
+
+        _display = new Display()
+        {
+            Source = _viewport,
+            Output = ConsoleOutput.Instance,
+            OnResize = Display_OnResize,
         };
 
         _renderEngine = new RenderEngine()
@@ -92,8 +93,6 @@ internal sealed class ManagerUI2
             FrameCap = Updater.Uncapped,
             OnUpdate = Update,
         };
-
-        _viewport.Renderables.AddRange([_textBox, _renderChannel]);
     }
 
     public void Run()

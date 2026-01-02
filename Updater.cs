@@ -68,7 +68,7 @@ public sealed class Updater
 
             if (fpsTimer.Elapsed.TotalSeconds >= FPSUpdateRate)
             {
-                _fps = frameCount / fpsTimer.Elapsed.TotalMilliseconds;
+                _fps = frameCount / fpsTimer.Elapsed.TotalSeconds;
 
                 frameCount = 0;
 
