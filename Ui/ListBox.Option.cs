@@ -18,7 +18,7 @@ public sealed partial class ListBox
         /// <summary>
         /// Gets or sets the option to inherit from.
         /// </summary>
-        public Option Inhertited
+        public Option Inherited
         {
             get { return _inherited; }
             set
@@ -123,37 +123,37 @@ public sealed partial class ListBox
 
         public string GetText()
         {
-            return Text ?? Inhertited?.GetText() ?? string.Empty;
+            return Text ?? Inherited?.GetText() ?? string.Empty;
         }
 
         public SCEColor GetSelectedFgColor()
         {
-            return SelectedFgColor ?? Inhertited?.GetSelectedFgColor() ?? SCEColor.Black;
+            return SelectedFgColor ?? Inherited?.GetSelectedFgColor() ?? SCEColor.Black;
         }
 
         public SCEColor GetSelectedBgColor()
         {
-            return SelectedBgColor ?? Inhertited?.GetSelectedBgColor() ?? SCEColor.White;
+            return SelectedBgColor ?? Inherited?.GetSelectedBgColor() ?? SCEColor.White;
         }
 
         public SCEColor GetUnselectedFgColor()
         {
-            return UnselectedFgColor ?? Inhertited?.GetUnselectedFgColor() ?? SCEColor.White;
+            return UnselectedFgColor ?? Inherited?.GetUnselectedFgColor() ?? SCEColor.White;
         }
 
         public SCEColor GetUnselectedBgColor()
         {
-            return UnselectedBgColor ?? Inhertited?.GetUnselectedBgColor() ?? SCEColor.Black;
+            return UnselectedBgColor ?? Inherited?.GetUnselectedBgColor() ?? SCEColor.Black;
         }
 
         public Anchor GetAnchor()
         {
-            return Anchor ?? Inhertited?.GetAnchor() ?? SCENeo.Anchor.None;
+            return Anchor ?? Inherited?.GetAnchor() ?? SCENeo.Anchor.None;
         }
 
         public bool GetFitToLength()
         {
-            return FitToLength ?? Inhertited?.GetFitToLength() ?? false;
+            return FitToLength ?? Inherited?.GetFitToLength() ?? false;
         }
 
         public IEnumerable<Option> SubOption(IEnumerable<string> optionText)
@@ -162,7 +162,7 @@ public sealed partial class ListBox
             {
                 yield return new Option()
                 {
-                    Inhertited = this,
+                    Inherited = this,
                     Text = text,
                 };
             }

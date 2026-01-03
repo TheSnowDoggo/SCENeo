@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -15,14 +15,16 @@
 not production code, not properly tested, also docs not done</Description>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<RepositoryUrl>https://github.com/TheSnowDoggo/SCENeo</RepositoryUrl>
-	<PackageReleaseNotes></PackageReleaseNotes>
+	<PackageReleaseNotes>overhauled sif and image saving
+
+changed listbox and list (previously vertical selector and line renderer)</PackageReleaseNotes>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageProjectUrl>https://github.com/TheSnowDoggo/SCENeo</PackageProjectUrl>
 	<Copyright>MIT License</Copyright>
 	<SignAssembly>True</SignAssembly>
 	<AssemblyOriginatorKeyFile>keyPair.snk</AssemblyOriginatorKeyFile>
 	<DelaySign>False</DelaySign>
-	<Version>1.0.1</Version>
+	<Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

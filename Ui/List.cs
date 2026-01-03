@@ -124,22 +124,27 @@ public sealed partial class List : UiBase, IRenderable
 
             Line line = Lines[index];
 
-            if (line == null || line.Text == null)
+            if (line == null)
             {
                 ClearLine(y);
                 continue;
             }
 
-            if (line.FitToLength)
+            string text      = line.GetText();
+            SCEColor fgColor = line.GetFgColor();
+            SCEColor bgColor = line.GetBgColor();
+            Anchor anchor    = line.GetAnchor();
+
+            if (line.GetFitToLength())
             {
-                _buffer.MapLine(line.Text.FitToLength(Width, line.Anchor), 0, y, line.FgColor, line.BgColor);
+                _buffer.MapLine(text.FitToLength(Width, anchor), 0, y, fgColor, bgColor);
 
                 continue;
             }
 
-            int x = line.Anchor.AnchorHorizontal(Width - line.Text.Length);
+            int x = anchor.AnchorHorizontal(Width - text.Length);
 
-            _buffer.MapLine(line.Text, x, y, line.FgColor, line.BgColor);
+            _buffer.MapLine(text, x, y, fgColor, bgColor);
         }
 
         _update = false;

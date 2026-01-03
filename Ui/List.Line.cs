@@ -16,83 +16,124 @@ public sealed partial class List
         {
         }
 
-        private string _text = string.Empty;
+        private Line? _inherited;
+
+        public Line? Inherited
+        {
+            get { return _inherited; }
+            set
+            {
+                if (value != _inherited)
+                {
+                    return;
+                }
+
+                if (_inherited != null)
+                {
+                    _inherited.OnUpdate -= OnUpdate;
+                }
+
+                if (value != null)
+                {
+                    value.OnUpdate += OnUpdate;
+                }
+
+                _inherited = value;
+
+                OnUpdate?.Invoke();
+            }
+        }
+
+        private string? _text;
 
         /// <summary>
         /// Gets or sets the text contents.
         /// </summary>
-        public string Text
+        public string? Text
         {
-            get { return _text; }
-            set { Update(value, ref _text); }
+            get => _text;
+            set => Update(value, ref _text);
         }
 
-        private SCEColor _fgColor = SCEColor.Gray;
+        private SCEColor? _fgColor;
 
         /// <summary>
         /// Gets or sets the text foreground color.
         /// </summary>
-        public SCEColor FgColor
+        public SCEColor? FgColor
         {
-            get { return _fgColor; }
-            set { Update(value, ref _fgColor); }
+            get => _fgColor;
+            set => Update(value, ref _fgColor);
         }
 
-        private SCEColor _bgColor = SCEColor.Black;
+        private SCEColor? _bgColor;
 
         /// <summary>
         /// Gets or sets the text background color.
         /// </summary>
-        public SCEColor BgColor
+        public SCEColor? BgColor
         {
-            get { return _bgColor; }
-            set { Update(value, ref _bgColor); }
+            get => _bgColor;
+            set => Update(value, ref _bgColor);
         }
 
-        private Anchor _anchor;
+        private Anchor? _anchor;
 
         /// <summary>
         /// Gets or sets the text anchor alignment.
         /// </summary>
-        public Anchor Anchor
+        public Anchor? Anchor
         {
-            get { return _anchor; }
-            set { Update(value, ref _anchor); }
+            get => _anchor;
+            set => Update(value, ref _anchor);
         }
 
-        private bool _fitToLength;
+        private bool? _fitToLength;
 
         /// <summary>
         /// Gets or sets whether the text should be fit to length.
         /// </summary>
-        public bool FitToLength
+        public bool? FitToLength
         {
-            get { return _fitToLength; }
-            set { Update(value, ref _fitToLength); }
+            get => _fitToLength;
+            set => Update(value, ref _fitToLength);
         }
 
-        public Line FromText(string text)
+        public string GetText()
         {
-            return new Line()
-            {
-                Text = text,
-                FgColor = FgColor,
-                BgColor = BgColor,
-                Anchor = Anchor,
-                FitToLength = FitToLength,
-            };
+            return Text ?? Inherited?.GetText() ?? string.Empty;
         }
 
-        public UpdateList<Line> FromArray(params string[] text)
+        public SCEColor GetFgColor()
         {
-            var collection = new UpdateList<Line>(text.Length);
+            return FgColor ?? Inherited?.GetFgColor() ?? SCEColor.Gray;
+        }
 
-            for (int i = 0; i < text.Length; i++)
+        public SCEColor GetBgColor()
+        {
+            return BgColor ?? Inherited?.GetBgColor() ?? SCEColor.Black;
+        }
+
+        public Anchor GetAnchor()
+        {
+            return Anchor ?? Inherited?.GetAnchor() ?? SCENeo.Anchor.None;
+        }
+
+        public bool GetFitToLength()
+        {
+            return FitToLength ?? Inherited?.GetFitToLength() ?? false;
+        }
+
+        public IEnumerable<Line> SubLine(IEnumerable<string> lineText)
+        {
+            foreach (string text in lineText)
             {
-                collection.Add(FromText(text[i]));
+                yield return new Line()
+                {
+                    Inherited = this,
+                    Text = text,
+                };
             }
-
-            return collection;
         }
 
         private void Update<T>(T value, ref T field)
