@@ -49,7 +49,6 @@ public sealed class Stretcher : UiBase, IRenderable
     public bool IsBaked { get; set; } = false;
 
     public int Width { get { return Source == null ? 0 : Source.Width * ScaleWidth; } }
-
     public int Height { get { return Source == null ? 0 : Source.Height; } }
 
     public IView<Pixel> Render()

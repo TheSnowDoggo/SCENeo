@@ -187,6 +187,15 @@ public class Grid2D<T> : IView<T>, IEnumerable<T>,
     }
 
     /// <summary>
+    /// Resizes the grid to the new size copying over any data that fits.
+    /// </summary>
+    /// <param name="size">The new size.</param>
+    public void Resize(Vec2I size)
+    {
+        Resize(size.X, size.Y);
+    }
+
+    /// <summary>
     /// Resizes the grid clearing all previous data.
     /// </summary>
     /// <param name="width">The new width.</param>
@@ -194,6 +203,15 @@ public class Grid2D<T> : IView<T>, IEnumerable<T>,
     public void CleanResize(int width, int height)
     {
         _data = new T[width, height];
+    }
+
+    /// <summary>
+    /// Resizes the grid clearing all previous data.
+    /// </summary>
+    /// <param name="size">The new size.</param>
+    public void CleanResize(Vec2I size)
+    {
+        CleanResize(size.X, size.Y);
     }
 
     /// <summary>

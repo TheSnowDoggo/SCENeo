@@ -2,12 +2,12 @@
 
 public sealed class ProgressBar : UiBase, IRenderable
 {
-    public enum FlowMode
+    public enum Flow
     {
-        LeftToRight,
-        RightToLeft,
-        TopToBottom,
-        BottomToTop,
+        LeftRight,
+        RightLeft,
+        TopBottom,
+        BottomTop,
     }
 
     private readonly Image _buffer = new Image();
@@ -21,7 +21,6 @@ public sealed class ProgressBar : UiBase, IRenderable
     public ProgressBar()
     {
     }
-
 
     private int _width;
 
@@ -45,9 +44,9 @@ public sealed class ProgressBar : UiBase, IRenderable
         set { SCEUtils.ObserveSet(value, ref _height, ref _update); }
     }
 
-    private FlowMode _mode = FlowMode.LeftToRight;
+    private Flow _mode = Flow.LeftRight;
 
-    public FlowMode Mode
+    public Flow Mode
     {
         get { return _mode; }
         set { SCEUtils.ObserveSet(value, ref _mode, ref _update); }
@@ -95,7 +94,7 @@ public sealed class ProgressBar : UiBase, IRenderable
 
     public bool Horizontal
     {
-        get { return Mode is FlowMode.LeftToRight or FlowMode.RightToLeft; }
+        get { return Mode is Flow.LeftRight or Flow.RightLeft; }
     }
 
     public int Fill()
@@ -139,19 +138,19 @@ public sealed class ProgressBar : UiBase, IRenderable
 
         switch (Mode)
         {
-        case FlowMode.LeftToRight:
+        case Flow.LeftRight:
             _buffer.Fill(FillPixel, 0, 0, fill, Height);
             _buffer.Fill(BackPixel, fill, 0, Width, Height);
             break;
-        case FlowMode.TopToBottom:
+        case Flow.TopBottom:
             _buffer.Fill(FillPixel, 0, 0, Width, fill);
             _buffer.Fill(BackPixel, 0, fill, Width, Height);
             break;
-        case FlowMode.RightToLeft:
+        case Flow.RightLeft:
             _buffer.Fill(BackPixel, 0, 0, Width - fill, Height);
             _buffer.Fill(FillPixel, Width - fill, 0, Width, Height);
             break;
-        case FlowMode.BottomToTop:
+        case Flow.BottomTop:
             _buffer.Fill(BackPixel, 0, 0, Width, Height - fill);
             _buffer.Fill(FillPixel, 0, Height - fill, Width, Height);
             break;

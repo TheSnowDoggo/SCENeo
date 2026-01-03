@@ -1,13 +1,11 @@
-﻿using static SCENeo.Ui.VerticalSelector;
+﻿namespace SCENeo.Ui;
 
-namespace SCENeo.Ui;
-
-public sealed partial class LineRenderer
+public sealed partial class List
 {
     /// <summary>
-    /// A class representing a single line in a <see cref="LineRenderer"/>.
+    /// A class representing a single line in a <see cref="List"/>.
     /// </summary>
-    public sealed class Line : IUpdate
+    public class Line : IUpdate
     {
         /// <summary>
         /// Action invoked on property update.
@@ -85,9 +83,9 @@ public sealed partial class LineRenderer
             };
         }
 
-        public UpdateCollection<Line> FromArray(params string[] text)
+        public UpdateList<Line> FromArray(params string[] text)
         {
-            var collection = new UpdateCollection<Line>(text.Length);
+            var collection = new UpdateList<Line>(text.Length);
 
             for (int i = 0; i < text.Length; i++)
             {

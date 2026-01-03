@@ -7,6 +7,33 @@
     <Nullable>enable</Nullable>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Title>SCENeo</Title>
+	<Authors>Luna Sparkle</Authors>
+	<Description>c# console rendering library
+
+not production code, not properly tested, also docs not done</Description>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<RepositoryUrl>https://github.com/TheSnowDoggo/SCENeo</RepositoryUrl>
+	<PackageReleaseNotes></PackageReleaseNotes>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageProjectUrl>https://github.com/TheSnowDoggo/SCENeo</PackageProjectUrl>
+	<Copyright>MIT License</Copyright>
+	<SignAssembly>True</SignAssembly>
+	<AssemblyOriginatorKeyFile>keyPair.snk</AssemblyOriginatorKeyFile>
+	<DelaySign>False</DelaySign>
+	<Version>1.0.1</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

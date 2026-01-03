@@ -12,7 +12,7 @@ internal sealed class ManagerUi
 
     private readonly TextLabel _textBox;
 
-    private readonly VerticalSelector _selector;
+    private readonly ListBox _selector;
 
     public ManagerUi()
     {
@@ -32,7 +32,7 @@ internal sealed class ManagerUi
             Visible     = false,
         };
 
-        _selector = new VerticalSelector()
+        _selector = new ListBox()
         {
             Width     = 20,
             Height    = 16,
@@ -44,7 +44,7 @@ internal sealed class ManagerUi
         {
             SCEColor color = (SCEColor)i;
 
-            var option = new VerticalSelector.Option()
+            var option = new ListBox.Option()
             {
                 Text = color.ToString().PadRight(_selector.Width),
             };

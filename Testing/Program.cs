@@ -1,4 +1,6 @@
-﻿namespace SCENeo.Testing;
+﻿using SCENeo.Ui;
+
+namespace SCENeo.Testing;
 
 internal static class Program
 {

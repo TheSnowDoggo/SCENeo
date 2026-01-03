@@ -1,25 +1,24 @@
-﻿using static SCENeo.Ui.LineRenderer;
-
-namespace SCENeo.Ui;
+﻿namespace SCENeo.Ui;
 
 /// <summary>
 /// A UI control representinng a vertical set of options.
 /// </summary>
-public sealed partial class VerticalSelector : UiBase, IRenderable
+public sealed partial class ListBox : UiBase, IRenderable
 {
     private readonly Image _buffer = new Image();
 
     private bool _update = false;
 
-    
-
-    private UpdateCollection<Option> _options = [];
-
-    public VerticalSelector()
+    public ListBox()
     {
     }
 
-    public UpdateCollection<Option> Options
+    private UpdateList<Option> _options = [];
+
+    /// <summary>
+    /// Gets or sets the list of options.
+    /// </summary>
+    public UpdateList<Option> Options
     {
         get { return _options; }
         set
@@ -101,20 +100,6 @@ public sealed partial class VerticalSelector : UiBase, IRenderable
         set { SCEUtils.ObserveSet(value, ref _scroll, ref _update); }
     }
 
-    public bool Select()
-    {
-        int index = TranslateIndex(_selected);
-
-        if (index < 0 || index >= Options.Count)
-        {
-            return false;
-        }
-
-        Options[index].OnChoose?.Invoke();
-
-        return true;
-    }
-
     public void WrapMove(int move)
     {
         Selected = SCEMath.Mod(Selected + move, Height);
@@ -173,28 +158,30 @@ public sealed partial class VerticalSelector : UiBase, IRenderable
 
             Option option = Options[index];
 
-            if (option == null || option.Text == null)
+            if (option == null)
             {
                 ClearLine(y);
                 continue;
             }
 
-            
+            string text = option.GetText();
+
+            Anchor anchor = option.GetAnchor();
 
             bool selected = index == _selected;
 
-            SCEColor fgColor = selected ? option.SelectedFgColor : option.UnselectedFgColor;
-            SCEColor bgColor = selected ? option.SelectedBgColor : option.UnselectedBgColor;
+            SCEColor fgColor = selected ? option.GetSelectedFgColor() : option.GetUnselectedFgColor();
+            SCEColor bgColor = selected ? option.GetSelectedBgColor() : option.GetUnselectedBgColor();
 
-            if (option.FitToLength)
+            if (option.GetFitToLength())
             {
-                _buffer.MapLine(option.Text.FitToLength(Width, option.Anchor), 0, y, fgColor, bgColor);
+                _buffer.MapLine(text.FitToLength(Width, anchor), 0, y, fgColor, bgColor);
                 continue;
             }
 
-            int x = option.Anchor.AnchorHorizontal(Width - option.Text.Length);
+            int x = anchor.AnchorHorizontal(Width - text.Length);
 
-            _buffer.MapLine(option.Text, x, y, fgColor, bgColor);
+            _buffer.MapLine(text, x, y, fgColor, bgColor);
         }
 
         _update = false;

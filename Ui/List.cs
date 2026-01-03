@@ -3,19 +3,19 @@
 /// <summary>
 /// A UI control representing a vertical set of lines.
 /// </summary>
-public sealed partial class LineRenderer : UiBase, IRenderable
+public sealed partial class List : UiBase, IRenderable
 {
     private readonly Image _buffer = new Image();
 
     private bool _update = false;
 
-    private UpdateCollection<Line> _lines = [];
+    private UpdateList<Line> _lines = [];
 
-    public LineRenderer()
+    public List()
     {
     }
 
-    public UpdateCollection<Line> Lines
+    public UpdateList<Line> Lines
     {
         get { return _lines; }
         set

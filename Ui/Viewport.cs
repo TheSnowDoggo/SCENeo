@@ -18,8 +18,14 @@ public sealed partial class Viewport : UiBase, IRenderable
     /// </summary>
     public int Height { get; set; }
 
+    /// <summary>
+    /// Gets or sets the base pixel.
+    /// </summary>
     public Pixel BasePixel { get; set; } = Pixel.Black;
 
+    /// <summary>
+    /// Gets or sets the source of renderables.
+    /// </summary>
     public IEnumerable<IRenderable> Source { get; set; } = default!;
 
     public IView<Pixel> Render()

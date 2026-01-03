@@ -2,23 +2,27 @@
 
 namespace SCENeo.Ui;
 
-public sealed class UpdateCollection<T> : IReadOnlyList<T>, IUpdate
+/// <summary>
+/// Represents a list of update items.
+/// </summary>
+/// <typeparam name="T">The stored <see cref="IUpdate"/> type.</typeparam>
+public sealed class UpdateList<T> : IReadOnlyList<T>, IUpdate
     where T : IUpdate
 {
     private readonly List<T> _list = [];
 
     public event Action? OnUpdate;
 
-    public UpdateCollection()
+    public UpdateList()
     {
     }
 
-    public UpdateCollection(int capacity)
+    public UpdateList(int capacity)
     {
         _list = new List<T>(capacity);
     }
 
-    public UpdateCollection(IEnumerable<T> collection)
+    public UpdateList(IEnumerable<T> collection)
     {
         AddRange(collection);
     }
