@@ -1,90 +1,79 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Text;
+using static SCENeo.ImageSerializer;
 
 namespace SCENeo;
 
 public static class ImageSerializer
 {
-    private const byte TransparentSignature = 84;
-    private const byte OpaqueSignature = 79;
-
-    public static void Serialize(Stream stream, IView<Pixel> view, bool opaque = false)
+    public enum Mode
     {
-        stream.WriteByte(opaque ? OpaqueSignature : TransparentSignature);
+        Full,
+        Opaque,
+        BgOnly,
+        BgOnlyOpaque,
+    }
+
+    private const byte FullSignature = 84;
+    private const byte OpaqueSignature = 79;
+    private const byte BgOnlySignature = 66;
+    private const byte BgOnlyOpaqueSignature = 98;
+
+    public static void Serialize(Stream stream, IView<Pixel> view, Mode encoding = Mode.Full)
+    {
+        stream.WriteByte(GetSignature(encoding));
 
         stream.Write(BitConverter.GetBytes(view.Width));
         stream.Write(BitConverter.GetBytes(view.Height));
 
-        char[] buffer = new char[1];
-
-        for (int y = 0; y < view.Height; y++)
+        switch (encoding)
         {
-            for (int x = 0; x < view.Width; x++)
-            {
-                Pixel pixel = view[x, y];
-
-                buffer[0] = pixel.Element;
-                stream.WriteByte(Encoding.UTF8.GetBytes(buffer)[0]);
-
-                if (opaque)
-                {
-                    stream.WriteByte(PackColors(pixel.FgColor, pixel.BgColor));
-                    continue;
-                }
-
-                stream.WriteByte((byte)pixel.FgColor);
-                stream.WriteByte((byte)pixel.BgColor);
-            }
+        case Mode.Full:
+            SerializeFull(stream, view);
+            break;
+        case Mode.Opaque:
+            SerializeOpaque(stream, view);
+            break;
+        case Mode.BgOnly:
+            SerializeBgOnly(stream, view);
+            break;
+        case Mode.BgOnlyOpaque:
+            SerializeBgOnlyOpaque(stream, view);
+            break;
         }
     }
 
-    public static void Serialize(string path, IView<Pixel> view, bool opaque = false)
+    public static void Serialize(string path, IView<Pixel> view, Mode encoding = Mode.Full)
     {
         using (var stream = File.Open(path, FileMode.Create))
         {
-            Serialize(stream, view, opaque);
+            Serialize(stream, view, encoding);
         }
     }
 
     public static Grid2D<Pixel> Deserialize(Stream stream)
     {
-        byte encoding = (byte)stream.ReadByte();
-
-        bool opaque = encoding switch
-        {
-        OpaqueSignature      => true,
-        TransparentSignature => false,
-        _ => throw new InvalidDataException($"Unknown encoding type {encoding}.")
-        };
+        Mode mode = GetEncoding((byte)stream.ReadByte());
 
         int width  = stream.ReadInt32();
         int height = stream.ReadInt32();
 
         var grid = new Grid2D<Pixel>(width, height);
 
-        byte[] buffer = new byte[1];
-
-        for (int y = 0; y < height; y++)
+        switch (mode)
         {
-            for (int x = 0; x < width; x++)
-            {
-                buffer[0] = (byte)stream.ReadByte();
-                char element = Encoding.UTF8.GetChars(buffer)[0];
-
-                SCEColor fgColor;
-                SCEColor bgColor;
-
-                if (opaque)
-                {
-                    UnpackColors((byte)stream.ReadByte(), out fgColor, out bgColor);
-                }
-                else
-                {
-                    fgColor = (SCEColor)stream.ReadByte();
-                    bgColor = (SCEColor)stream.ReadByte();
-                }
-
-                grid[x, y] = new Pixel(element, fgColor, bgColor);
-            }
+        case Mode.Full:
+            DeserializeFull(grid, stream);
+            break;
+        case Mode.Opaque:
+            DeserializeOpaque(grid, stream);
+            break;
+        case Mode.BgOnly:
+            DeserializeBgOnly(grid, stream);
+            break;
+        case Mode.BgOnlyOpaque:
+            DeserializeBgOnlyOpaque(grid, stream);
+            break;
         }
 
         return grid;
@@ -98,25 +87,190 @@ public static class ImageSerializer
         }
     }
 
+    private static void SerializeFull(Stream stream, IView<Pixel> view)
+    {
+        char[] buffer = new char[1];
+
+        for (int y = 0; y < view.Height; y++)
+        {
+            for (int x = 0; x < view.Width; x++)
+            {
+                Pixel pixel = view[x, y];
+
+                buffer[0] = pixel.Element;
+                stream.WriteByte(Encoding.UTF8.GetBytes(buffer)[0]);
+
+                stream.WriteByte((byte)pixel.FgColor);
+                stream.WriteByte((byte)pixel.BgColor);
+            }
+        }
+    }
+
+    private static void SerializeOpaque(Stream stream, IView<Pixel> view)
+    {
+        char[] buffer = new char[1];
+
+        for (int y = 0; y < view.Height; y++)
+        {
+            for (int x = 0; x < view.Width; x++)
+            {
+                Pixel pixel = view[x, y];
+
+                buffer[0] = pixel.Element;
+                stream.WriteByte(Encoding.UTF8.GetBytes(buffer)[0]);
+
+                stream.WriteByte(PackColors(pixel.FgColor, pixel.BgColor));
+            }
+        }
+    }
+
+    private static void SerializeBgOnly(Stream stream, IView<Pixel> view)
+    {
+        for (int y = 0; y < view.Height; y++)
+        {
+            for (int x = 0; x < view.Width; x++)
+            {
+                stream.WriteByte((byte)view[x, y].BgColor);
+            }
+        }
+    }
+
+    private static void SerializeBgOnlyOpaque(Stream stream, IView<Pixel> view)
+    {
+        byte lower = 0;
+        bool isLower = true;
+
+        for (int y = 0; y < view.Height; y++)
+        {
+            for (int x = 0; x < view.Width; x++)
+            {
+                if (isLower)
+                {
+                    lower = AsOpaque(view[x, y].BgColor);
+                }
+                else
+                {
+                    stream.WriteByte((byte)(lower + (AsOpaque(view[x, y].BgColor) << 4)));
+                }
+
+                isLower = !isLower;
+            }
+        }
+    }
+
+    private static void DeserializeFull(Grid2D<Pixel> grid, Stream stream)
+    {
+        byte[] buffer = new byte[1];
+
+        for (int y = 0; y < grid.Height; y++)
+        {
+            for (int x = 0; x < grid.Width; x++)
+            {
+                buffer[0] = (byte)stream.ReadByte();
+                char element = Encoding.UTF8.GetChars(buffer)[0];
+
+                SCEColor fgColor = (SCEColor)stream.ReadByte();
+                SCEColor bgColor = (SCEColor)stream.ReadByte();
+
+                grid[x, y] = new Pixel(element, fgColor, bgColor);
+            }
+        }
+    }
+
+    private static void DeserializeOpaque(Grid2D<Pixel> grid, Stream stream)
+    {
+        byte[] buffer = new byte[1];
+
+        for (int y = 0; y < grid.Height; y++)
+        {
+            for (int x = 0; x < grid.Width; x++)
+            {
+                buffer[0] = (byte)stream.ReadByte();
+                char element = Encoding.UTF8.GetChars(buffer)[0];
+
+                UnpackColors((byte)stream.ReadByte(), out SCEColor fgColor, out SCEColor bgColor);
+
+                grid[x, y] = new Pixel(element, fgColor, bgColor);
+            }
+        }
+    }
+
+    private static void DeserializeBgOnly(Grid2D<Pixel> grid, Stream stream)
+    {
+        for (int y = 0; y < grid.Height; y++)
+        {
+            for (int x = 0; x < grid.Width; x++)
+            {
+                SCEColor bgColor = (SCEColor)stream.ReadByte();
+
+                grid[x, y] = new Pixel(bgColor);
+            }
+        }
+    }
+
+    private static void DeserializeBgOnlyOpaque(Grid2D<Pixel> grid, Stream stream)
+    {
+        byte value = 0;
+        bool isLower = true;
+
+        for (int y = 0; y < grid.Height; y++)
+        {
+            for (int x = 0; x < grid.Width; x++)
+            {
+                if (isLower)
+                {
+                    value = (byte)stream.ReadByte();
+
+                    grid[x, y] = new Pixel((SCEColor)(value & 0xF));
+                }
+                else
+                {
+                    grid[x, y] = new Pixel((SCEColor)(value >> 4));
+                }
+
+                isLower = !isLower;
+            }
+        }
+    }
+
     private static byte PackColors(SCEColor fgColor, SCEColor bgColor)
     {
-        if (fgColor == SCEColor.Transparent)
-        {
-            fgColor = SCEColor.Black;
-        }
-
-        if (bgColor == SCEColor.Transparent)
-        {
-            bgColor = SCEColor.Black;
-        }
-
-        return (byte)((int)fgColor + (((int)bgColor) << 4));
+        return (byte)(AsOpaque(fgColor) + (AsOpaque(bgColor) << 4));
     }
 
     private static void UnpackColors(byte packedColors, out SCEColor fgColor, out SCEColor bgColor)
     {
         fgColor = (SCEColor)(packedColors & 0xF);
         bgColor = (SCEColor)(packedColors >> 4);
+    }
+
+    private static byte GetSignature(Mode encoding)
+    {
+        return encoding switch
+        {
+            Mode.Full         => FullSignature,
+            Mode.Opaque       => OpaqueSignature,
+            Mode.BgOnly       => BgOnlySignature,
+            Mode.BgOnlyOpaque => BgOnlyOpaqueSignature,
+            _ => throw new ArgumentOutOfRangeException(nameof(encoding), encoding, "Encoding is invalid.")
+        };
+    }
+
+    private static Mode GetEncoding(byte signature)
+    {
+        return signature switch
+        {
+            FullSignature         => Mode.Full,
+            OpaqueSignature       => Mode.Opaque,
+            BgOnlySignature       => Mode.BgOnly,
+            BgOnlyOpaqueSignature => Mode.BgOnlyOpaque,
+            _ => throw new ArgumentOutOfRangeException(nameof(signature), signature, "Signature is invalid.")
+        };
+    }
+
+    private static byte AsOpaque(SCEColor color)
+    {
+        return (byte)((int)color & 0xF);
     }
 
     private static int ReadInt32(this Stream stream)

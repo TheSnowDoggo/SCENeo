@@ -240,6 +240,26 @@ public class Grid2D<T> : IView<T>, IEnumerable<T>,
         Array.Clear(_data);
     }
 
+    /// <summary>
+    /// Translates the given index to a position.
+    /// </summary>
+    /// <param name="index">The index to translate.</param>
+    /// <returns>The resulting position.</returns>
+    public Vec2I ToPosition(int index)
+    {
+        return new Vec2I(index % Width, index / Width);
+    }
+
+    /// <summary>
+    /// Translates the given position to an index.
+    /// </summary>
+    /// <param name="position">The position to translate.</param>
+    /// <returns>The resulting index.</returns>
+    public int ToIndex(Vec2I position)
+    {
+        return position.Y * Width + position.X;
+    }
+
     public object Clone()
     {
         return new Grid2D<T>((T[,])_data.Clone());
