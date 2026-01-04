@@ -50,6 +50,8 @@ public class Node
 
     public Dictionary<string, Node>.ValueCollection Children { get { return _children.Values; } }
 
+    public HashSet<string> Tags { get; set; } = [];
+
     public void AddChild(Node child)
     {
         if (!_children.TryAdd(child.Name, child))
@@ -144,8 +146,26 @@ public class Node
 
             foreach (Node child in node.Children)
             {
-                if (!child.Active) continue;
+                if (child.Active)
+                {
+                    stack.Push(child);
+                }
+            }
+        }
+    }
 
+    public IEnumerable<Node> Descendents()
+    {
+        var stack = new Stack<Node>();
+
+        stack.Push(this);
+
+        while (stack.TryPop(out Node? node))
+        {
+            yield return node;
+
+            foreach (Node child in node.Children)
+            {
                 stack.Push(child);
             }
         }

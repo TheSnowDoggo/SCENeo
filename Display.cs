@@ -5,6 +5,9 @@
 /// </summary>
 public sealed class Display
 {
+    private int _width;
+    private int _height;
+
     /// <summary>
     /// Gets or sets the item to render on update.
     /// </summary>
@@ -16,7 +19,7 @@ public sealed class Display
     public IOutputSource Output { get; set; } = null!;
 
     /// <summary>
-    /// Called when the renderable size does not match the output size.
+    /// Called when the output size channges.
     /// </summary>
     public event Action<int, int>? OnResize = null;
 
@@ -28,8 +31,11 @@ public sealed class Display
         int width  = Output.Width;
         int height = Output.Height;
 
-        if (width != Renderable.Width || height != Renderable.Height)
+        if (width != _width || height != _height)
         {
+            _width = width;
+            _height = height;
+
             OnResize?.Invoke(width, height);
         }
 

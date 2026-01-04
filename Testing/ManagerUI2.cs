@@ -12,7 +12,7 @@ internal sealed class ManagerUI2
 
     private readonly TextLabel _textBox;
 
-    private readonly NodeManager _nodeManager;
+    private readonly NodeTree _tree;
 
     private readonly RenderEngine _renderEngine;
 
@@ -53,7 +53,7 @@ internal sealed class ManagerUI2
             Channels = new() { { 0, _renderChannel } }
         };
 
-        _nodeManager = new NodeManager()
+        _tree = new NodeTree()
         {
             Engines = [_renderEngine],
         };
@@ -92,7 +92,7 @@ internal sealed class ManagerUI2
             Source = floorVp,
         };
 
-        _nodeManager.Tree.Root.AddChildren([ball, floor, camera]);
+        _tree.Root.AddChildren([ball, floor, camera]);
 
         _updater = new Updater()
         {
@@ -103,7 +103,7 @@ internal sealed class ManagerUI2
 
     public void Run()
     {
-        _nodeManager.Start();
+        _tree.Start();
 
         _updater.Start();
     }
@@ -112,7 +112,7 @@ internal sealed class ManagerUI2
     {
         _textBox.Text = $"FPS: {_updater.FPS}";
 
-        _nodeManager.Update(delta);
+        _tree.Update(delta);
 
         _display.Update();
     }

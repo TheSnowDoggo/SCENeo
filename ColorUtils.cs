@@ -15,7 +15,7 @@ public static class ColorUtils
     /// <returns>The converted color.</returns>
     public static ConsoleColor ToConsoleColor(this SCEColor color)
     {
-        return color == SCEColor.Transparent ? ConsoleColor.Black : (ConsoleColor)color;
+        return (ConsoleColor)((int)color & 0xF);
     }
 
     /// <summary>

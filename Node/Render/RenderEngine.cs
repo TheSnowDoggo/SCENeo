@@ -74,7 +74,7 @@ public sealed class RenderEngine : IEngine
                     view = input.Renderable.Render();
                 }
 
-                output.Channel.Load(view, screenPosition);
+                output.Channel.Load(view, screenPosition, input.Renderable.Layer);
             }
         }
     }
@@ -90,6 +90,7 @@ public sealed class RenderEngine : IEngine
             if (node is IRenderable renderable && renderable.Visible)
             {
                 state.Inputs.Add(RenderInput.Create(renderable));
+                continue;
             }
 
             if (node is Camera2D camera && Channels.TryGetValue(camera.Channel, out RenderChannel? renderChannel) 

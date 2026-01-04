@@ -11,7 +11,7 @@ internal sealed class Manager
 
     private readonly RenderEngine _re;
 
-    private readonly NodeManager _nm;
+    private readonly NodeTree _tree;
 
     private readonly Viewport _viewport;
 
@@ -76,7 +76,7 @@ internal sealed class Manager
             },
         };
 
-        _nm = new NodeManager()
+        _tree = new NodeTree()
         {
             Engines = [_re, new CollisionEngine()],
         };
@@ -106,7 +106,7 @@ internal sealed class Manager
             MaxVelocity = 10,
         };
 
-        _nm.Tree.Root.AddChildren([enemy, player, box, camera]);
+        _tree.Root.AddChildren([enemy, player, box, camera]);
     }
 
     public void Run()
@@ -117,16 +117,16 @@ internal sealed class Manager
 
     private void Start()
     {
-        _nm.Start();
+        _tree.Start();
     }
 
     private void Update(double delta)
     {
-        _nm.Update(delta);
+        _tree.Update(delta);
 
         _display.Update();
 
-        _fpsUI.Text = $"FPS: {_updater.FPS}\n{_nm.Tree.Root.GetNode<Node2D>("Enemy").GlobalPosition}";
+        _fpsUI.Text = $"FPS: {_updater.FPS}\n{_tree.Root.GetNode<Node2D>("Enemy").GlobalPosition}";
     }
 
     private void Display_OnResize(int width, int height)
