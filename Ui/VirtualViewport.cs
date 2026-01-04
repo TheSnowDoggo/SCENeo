@@ -82,7 +82,7 @@ public sealed class VirtualViewport : ViewportBase
     /// <summary>
     /// Gets or sets a value indicated whether merging should be enabled.
     /// </summary>
-    public bool Merging { get; set; } = false;
+    public bool Merging { get; set; } = true;
 
     public override IView<Pixel> Render()
     {

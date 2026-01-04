@@ -245,6 +245,8 @@ public sealed class VirtualConsole : TextWriter, IRenderable
     public void Clear()
     {
         _buffer.Clear();
+        CursorPosition = Vec2I.Zero;
+        Scroll = Vec2I.Zero;
         _update = true;
     }
 
