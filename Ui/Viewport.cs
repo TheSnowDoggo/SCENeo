@@ -1,6 +1,6 @@
 ﻿namespace SCENeo.Ui;
 
-public sealed partial class Viewport : UiBase, IRenderable
+public sealed partial class Viewport : ViewportBase
 {
     private readonly Image _buffer = new Image();
 
@@ -8,27 +8,7 @@ public sealed partial class Viewport : UiBase, IRenderable
     {
     }
 
-    /// <summary>
-    /// Gets or sets the width.
-    /// </summary>
-    public int Width { get; set; }
-
-    /// <summary>
-    /// Gets or sets the height.
-    /// </summary>
-    public int Height { get; set; }
-
-    /// <summary>
-    /// Gets or sets the base pixel.
-    /// </summary>
-    public Pixel BasePixel { get; set; } = Pixel.Black;
-
-    /// <summary>
-    /// Gets or sets the source of renderables.
-    /// </summary>
-    public IEnumerable<IRenderable> Source { get; set; } = default!;
-
-    public IView<Pixel> Render()
+    public override IView<Pixel> Render()
     {
         Update();
 
@@ -46,39 +26,14 @@ public sealed partial class Viewport : UiBase, IRenderable
 
         Rect2DI renderArea = new Rect2DI(Width, Height);
 
-        Vec2I renderSize = new Vec2I(Width, Height);
-
         foreach (IRenderable renderable in GetSorted())
         {
-            Vec2I size = renderable.Size();
+            MappedArea(renderable, out Vec2I position, out Rect2DI area);
 
-            Vec2I position = renderable.Offset + renderable.Anchor.AnchorDimension(renderSize - size);
-
-            Rect2DI area = Rect2DI.Area(position, size);
-
-            if (!renderArea.Overlaps(area))
+            if (renderArea.Overlaps(area))
             {
-                continue;
-            }
-
-            _buffer.MergeMap(renderable.Render(), position);
-        }
-    }
-
-    private List<IRenderable> GetSorted()
-    {
-        var sorted = new List<IRenderable>();
-
-        foreach (IRenderable renderable in Source)
-        {
-            if (renderable.Visible)
-            {
-                sorted.Add(renderable);
+                _buffer.MergeMap(renderable.Render(), position);
             }
         }
-
-        sorted.Sort(Comparer.Instance);
-
-        return sorted;
     }
 }

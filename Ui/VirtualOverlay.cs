@@ -37,18 +37,12 @@ public sealed class VirtualOverlay : UiModifier<IRenderable>, IRenderable
 
         public IEnumerator<Pixel> GetEnumerator()
         {
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    yield return this[x, y];
-                }
-            }
+            return SCEUtils.GetEnumerator(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return SCEUtils.GetEnumerator(this);
         }
     }
 
@@ -64,7 +58,6 @@ public sealed class VirtualOverlay : UiModifier<IRenderable>, IRenderable
         }
 
         Vec2I position = Overlay.Offset + Overlay.Anchor.AnchorDimension(this.Size() - Overlay.Size());
-
 
         if (!Rect2DI.Area(position, Overlay.Width, Overlay.Height).Overlaps(0, 0, Width, Height))
         {

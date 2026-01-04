@@ -21,26 +21,18 @@ public sealed class Grid2DView<T>(Grid2D<T> grid) : IView<T>, ICloneable
 
     public Rect2DI Area() => _grid.Area();
 
-    #region IEnumerable
-
     public IEnumerator<T> GetEnumerator()
     {
-        return _grid.GetEnumerator();
+        return SCEUtils.GetEnumerator(this);
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return _grid.GetEnumerator();
+        return SCEUtils.GetEnumerator(this);
     }
-
-    #endregion
-
-    #region ICloneable
 
     public object Clone()
     {
         return _grid.Clone();
     }
-
-    #endregion
 }

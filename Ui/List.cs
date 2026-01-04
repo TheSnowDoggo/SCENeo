@@ -114,7 +114,7 @@ public sealed partial class List : UiBase, IRenderable
 
         for (int y = 0; y < Height; y++)
         {
-            int index = TranslateIndex(y);
+            int index = TranslateIndex(y) + Scroll;
 
             if (index < 0 || index >= Lines.Count)
             {
@@ -165,7 +165,7 @@ public sealed partial class List : UiBase, IRenderable
             StackMode.TopDown  => i,
             StackMode.BottomUp => Height - i - 1,
             _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}.")
-        } + Scroll;
+        };
     }
 
     private void Lines_OnUpdate()

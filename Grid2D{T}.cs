@@ -68,18 +68,15 @@ public class Grid2D<T> : IView<T>, IEnumerable<T>,
     /// <param name="area">The area on the <paramref name="view"/> to map.</param>
     public void Map(IView<T> view, Vec2I position, Rect2DI area)
     {
-        Vec2I difference = area.Start - position;
+        area = area.Trim(0, 0, view.Width, view.Height);
 
-        Rect2DI trim = area.Trim(difference, Size + difference);
+        Vec2I start = area.Start - position;
 
-        position += trim.Start;
+        area = area.Trim(start, Size + start);
 
-        for (int viewY = trim.Top, thisY = position.Y; viewY < trim.Bottom; viewY++, thisY++)
+        foreach (Vec2I viewPosition in area)
         {
-            for (int viewX = trim.Left, thisX = position.X; viewX < trim.Right; viewX++, thisX++)
-            {
-                this[thisX, thisY] = view[viewX, viewY];
-            }
+            this[viewPosition - start] = view[viewPosition];
         }
     }
 

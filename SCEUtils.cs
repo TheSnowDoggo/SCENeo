@@ -105,4 +105,15 @@ public static class SCEUtils
     {
         return pos.X >= 0 && pos.Y >= 0 && pos.X < dimensioned.Width && pos.Y < dimensioned.Height;
     }
+
+    public static IEnumerator<T> GetEnumerator<T>(IView<T> view)
+    {
+        for (int y = 0; y < view.Height; y++)
+        {
+            for (int x = 0; x < view.Width; x++)
+            {
+                yield return view[x, y];
+            }
+        }
+    }
 }

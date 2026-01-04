@@ -147,6 +147,12 @@ public sealed class VirtualConsole : TextWriter, IRenderable
         }
     }
 
+    public int CursorIndex
+    {
+        get { return ToCursorIndex(); }
+        set { CursorPosition = ToCursorPosition(value); }
+    }
+
     private int _tabWidth;
 
     public int TabWidth
@@ -190,13 +196,26 @@ public sealed class VirtualConsole : TextWriter, IRenderable
                 Write(' ');
             }
             break;
+        case '\b':
+            if (_cursorPosition.X > 0)
+            {
+                _cursorPosition.X--;
+                break;
+            }
+
+            if (_cursorPosition.Y > 0)
+            {
+                _cursorPosition.Y--;
+            }
+
+            break;
         default:
             if (c < ' ')
             {
                 break;
             }
 
-            _buffer[CursorIndex()] = new Pixel(c, ForegroundColor, BackgroundColor);
+            _buffer[ToCursorIndex()] = new Pixel(c, ForegroundColor, BackgroundColor);
 
             _cursorPosition.X++;
 
@@ -226,6 +245,53 @@ public sealed class VirtualConsole : TextWriter, IRenderable
     public void Clear()
     {
         _buffer.Clear();
+        _update = true;
+    }
+
+    public void MoveCursor(int move)
+    {
+        CursorIndex = Math.Clamp(CursorIndex + move, 0, _buffer.Count - 1);
+    }
+
+    public void ShiftLeft(int index, int count, int shift)
+    {
+        if (shift < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(shift), shift, "Shift must be positive.");
+        }
+
+        if (shift == 0 || count <= 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            int current = index + i;
+            _buffer[current - shift] = _buffer[current];
+        }
+
+        _update = true;
+    }
+
+    public void ShiftRight(int index, int count, int shift)
+    {
+        if (shift < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(shift), shift, "Shift must be positive.");
+        }
+
+        if (shift == 0 || count <= 0)
+        {
+            return;
+        }
+
+        for (int i = count - 1; i >= 0; i--)
+        {
+            int current = index + i;
+            _buffer[current + shift] = _buffer[current];
+        }
+
         _update = true;
     }
 
@@ -311,8 +377,13 @@ public sealed class VirtualConsole : TextWriter, IRenderable
         return y * BufferWidth + x;
     }
 
-    private int CursorIndex()
+    private int ToCursorIndex()
     {
         return CursorPosition.Y * BufferWidth + CursorPosition.X;
+    }
+
+    private Vec2I ToCursorPosition(int cursorIndex)
+    {
+        return new Vec2I(cursorIndex % BufferWidth, cursorIndex / BufferWidth);
     }
 }

@@ -2,27 +2,23 @@
 
 public sealed class Sprite2D : Node2D, IRenderable
 {
-    public IRenderable? Source { get; set; } = default;
+    public IRenderable Source { get; set; } = null!;
 
-    public int Width { get { return GetSource().Width; } }
+    public bool Visible { get { return VisibleOverride ?? Source?.Visible ?? false; } }
+    public Vec2I Offset { get { return (Vec2I)GlobalPosition.Round() * new Vec2I(2, 1) + (OffsetOverride ?? Source.Offset); } }
+    public int Layer { get { return LayerOverride ?? Source.Layer; } }
+    public Anchor Anchor { get { return AnchorOverride ?? Source.Anchor; } }
 
-    public int Height { get { return GetSource().Height; } }
+    public bool? VisibleOverride { get; set; }
+    public Vec2I? OffsetOverride { get; set; }
+    public int? LayerOverride { get; set; }
+    public Anchor? AnchorOverride { get; set; }
 
-    public bool Visible { get { return Source != null; } }
-
-    public Vec2I Offset { get { return (Vec2I)GlobalPosition.Round() * new Vec2I(2, 1) + GetSource().Offset; } }
-
-    public int Layer { get { return GetSource().Layer; } }
-
-    public Anchor Anchor { get { return GetSource().Anchor; } }
+    public int Width { get { return Source.Width; } }
+    public int Height { get { return Source.Height; } }
 
     public IView<Pixel> Render()
     {
-        return GetSource().Render();
-    }
-
-    private IRenderable GetSource()
-    {
-        return Source ?? throw new NullReferenceException("Source was null.");
+        return Source.Render();
     }
 }

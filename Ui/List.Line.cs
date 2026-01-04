@@ -38,7 +38,7 @@ public sealed partial class List
                     value.OnUpdate += OnUpdate;
                 }
 
-                _inherited = value;
+                _inherited = value!;
 
                 OnUpdate?.Invoke();
             }
