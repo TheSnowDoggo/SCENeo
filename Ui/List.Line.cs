@@ -16,9 +16,9 @@ public sealed partial class List
         {
         }
 
-        private Line? _inherited;
+        private Line _inherited = null!;
 
-        public Line? Inherited
+        public Line Inherited
         {
             get { return _inherited; }
             set

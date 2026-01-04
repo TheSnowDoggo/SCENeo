@@ -133,12 +133,12 @@ public sealed partial class ListBox
 
         public SCEColor GetSelectedBgColor()
         {
-            return SelectedBgColor ?? Inherited?.GetSelectedBgColor() ?? SCEColor.White;
+            return SelectedBgColor ?? Inherited?.GetSelectedBgColor() ?? SCEColor.Gray;
         }
 
         public SCEColor GetUnselectedFgColor()
         {
-            return UnselectedFgColor ?? Inherited?.GetUnselectedFgColor() ?? SCEColor.White;
+            return UnselectedFgColor ?? Inherited?.GetUnselectedFgColor() ?? SCEColor.Gray;
         }
 
         public SCEColor GetUnselectedBgColor()

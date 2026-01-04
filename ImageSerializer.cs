@@ -1,9 +1,10 @@
-﻿using System.Drawing;
-using System.Text;
-using static SCENeo.ImageSerializer;
+﻿using System.Text;
 
 namespace SCENeo;
 
+/// <summary>
+/// Itility functions for serializing and deserializing images to a proprietary binary format.
+/// </summary>
 public static class ImageSerializer
 {
     public enum Mode

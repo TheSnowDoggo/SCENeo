@@ -6,7 +6,9 @@ public sealed partial class RenderManager
     {
         private static readonly Lazy<Comparer> Lazy = new(() => new Comparer());
 
-        private Comparer() { }
+        private Comparer()
+        {
+        }
 
         public static Comparer Instance { get { return Lazy.Value; } }
 

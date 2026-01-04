@@ -18,9 +18,7 @@ public sealed class ProgressBar : UiBase, IRenderable
 
     private int _lastFill = -1;
 
-    public ProgressBar()
-    {
-    }
+    public ProgressBar() { }
 
     private int _width;
 

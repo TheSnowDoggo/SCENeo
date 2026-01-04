@@ -18,11 +18,15 @@ public sealed class Stretcher : UiBase, IRenderable
 
     private Scaling _textScaling = Scaling.None;
 
-    public Stretcher()
-    {
-    }
+    public Stretcher() { }
 
-    public IRenderable? Source { get; set; }
+    private IRenderable? _source;
+
+    public IRenderable? Source
+    {
+        get { return _source; }
+        set { SCEUtils.ObserveSet(value, ref _source, ref _update); }
+    }
 
     public int ScaleWidth
     {

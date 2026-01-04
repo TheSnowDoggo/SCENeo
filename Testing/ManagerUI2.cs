@@ -61,7 +61,7 @@ internal sealed class ManagerUI2
         var camera = new FreeCamera2D()
         {
             Name     = "camera",
-            Position = new Vec2(-30, -10),
+            Position = new Vec2(-10, -10),
         };
 
         var ball = new Ball(2, 2)
@@ -72,13 +72,18 @@ internal sealed class ManagerUI2
             Gravity  = new Vec2(0, 10),
         };
 
-        ball.AddChild(camera);
+        //ball.AddChild(camera);
 
         // can be very large as no grid is actually stored
-        var floorVp = new VirtualPlane(int.MaxValue, int.MaxValue)
+        var floorVp = new ViewForwarder()
         {
-            Value  = new Pixel(SCEColor.Green),
-            Anchor = Anchor.Center | Anchor.Bottom,
+            Anchor = Anchor.None,
+            View = new PlainView2D<Pixel>()
+            {
+                Width = 1000000,
+                Height = 1000000,
+                Value = new Pixel(SCEColor.Green),
+            },
         };
 
         var floor = new Sprite2D()
@@ -87,7 +92,7 @@ internal sealed class ManagerUI2
             Source = floorVp,
         };
 
-        _nodeManager.Tree.Root.AddChildren([ball, floor]);
+        _nodeManager.Tree.Root.AddChildren([ball, floor, camera]);
 
         _updater = new Updater()
         {

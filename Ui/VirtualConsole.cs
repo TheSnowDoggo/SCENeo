@@ -33,7 +33,9 @@ public sealed class VirtualConsole : TextWriter, IRenderable
 
     private int _width;
 
-    /// <inheritdoc cref="UiBase.Width"/>
+    /// <summary>
+    /// Gets or sets the console width.
+    /// </summary>
     public int Width
     {
         get { return _width; }
@@ -42,7 +44,9 @@ public sealed class VirtualConsole : TextWriter, IRenderable
 
     private int _height;
 
-    /// <inheritdoc cref="UiBase.Height"/>
+    /// <summary>
+    /// Gets or sets the console height.
+    /// </summary>
     public int Height
     {
         get { return _height; }
@@ -51,6 +55,9 @@ public sealed class VirtualConsole : TextWriter, IRenderable
 
     private Vec2I _scroll;
 
+    /// <summary>
+    /// Gets or sets the console scroll.
+    /// </summary>
     public Vec2I Scroll
     {
         get { return _scroll; }
@@ -161,7 +168,7 @@ public sealed class VirtualConsole : TextWriter, IRenderable
 
     public bool Autoscroll { get; set; } = true;
 
-    public override Encoding Encoding { get { return Encoding.Default; } }
+    public override Encoding Encoding { get { return Encoding.UTF8; } }
 
     public override void Write(char c)
     {

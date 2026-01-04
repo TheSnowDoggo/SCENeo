@@ -148,11 +148,11 @@ public struct Rect2DI : IEquatable<Rect2DI>,
     /// <inheritdoc cref="Overlaps(Rect2DI)"/>
     public readonly bool Overlaps(int left, int top, int right, int bottom)
     {
-        if (Right < left || Left > right)
+        if (Right <= left || Left > right)
         {
             return false;
         }
-        if (Bottom < top || Top > bottom)
+        if (Bottom <= top || Top > bottom)
         {
             return false;
         }

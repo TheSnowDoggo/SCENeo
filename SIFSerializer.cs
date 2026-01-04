@@ -3,7 +3,7 @@
 namespace SCENeo;
 
 /// <summary>
-/// A static class containing utility functions for serializing and deserializing images to the SIF format.
+/// Utility functions for serializing and deserializing images to the proprietary SIF format.
 /// </summary>
 public static class SIFSerializer
 {

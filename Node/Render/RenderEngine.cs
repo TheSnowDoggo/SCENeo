@@ -9,13 +9,13 @@ public sealed class RenderEngine : IEngine
 
         public static RenderInput Create(IRenderable renderable)
         {
-            Vec2I dimensions = renderable.Size();
+            Vec2I size = renderable.Size();
 
-            Vec2I anchorOffset = renderable.Anchor.AnchorDimension(dimensions) - dimensions;
+            Vec2I anchorOffset = renderable.Anchor.AnchorDimension(size) - size;
 
             Vec2I renderPosition = renderable.Offset + anchorOffset;
 
-            Rect2DI renderArea = Rect2DI.Area(renderPosition, dimensions);
+            Rect2DI renderArea = Rect2DI.Area(renderPosition, size);
 
             return new RenderInput(renderable, renderArea);
         }
@@ -95,7 +95,9 @@ public sealed class RenderEngine : IEngine
             if (node is Camera2D camera && Channels.TryGetValue(camera.Channel, out RenderChannel? renderChannel) 
                 && channels.Add(camera.Channel))
             {
-                state.Outputs.Add(RenderOutput.Create(renderChannel, camera.RenderPosition()));
+                Vec2I position = camera.RenderPosition() - camera.Anchor.AnchorDimension(renderChannel.Size());
+
+                state.Outputs.Add(RenderOutput.Create(renderChannel, position));
             }
         }
 

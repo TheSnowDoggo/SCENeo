@@ -12,7 +12,7 @@ internal sealed class FreeCamera2D : Camera2D
 
     public override void Update(double delta)
     {
-        Vec2 moveVec = MoveVector();
+        Vec2 moveVec = Vec2I.Zero;
 
         if (moveVec == Vec2.Zero)
         {
@@ -35,12 +35,5 @@ internal sealed class FreeCamera2D : Camera2D
     private double Speed()
     {
         return WalkSpeed;
-    }
-
-    private static Vec2 MoveVector()
-    {
-        Vec2 moveVec = Vec2.Zero;
-
-        return moveVec;
     }
 }
