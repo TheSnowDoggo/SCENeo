@@ -1,4 +1,6 @@
-﻿namespace SCENeo;
+﻿using SCENeo.Ui;
+
+namespace SCENeo;
 
 /// <summary>
 /// A struct representing a 2D integer vector.
@@ -71,7 +73,7 @@ public partial struct Vec2I : IEquatable<Vec2I>
     /// <returns>The rotated vector.</returns>
     public readonly Vec2I Rotated90C()
     {
-        return new Vec2I(Y, -X);
+        return new Vec2I(-Y, X);
     }
 
     /// <summary>
@@ -80,7 +82,25 @@ public partial struct Vec2I : IEquatable<Vec2I>
     /// <returns>The rotated vector.</returns>
     public readonly Vec2I Rotated90AC()
     {
-        return new Vec2I(-Y, X);
+        return new Vec2I(Y, -X);
+    }
+
+    /// <summary>
+    /// Returns the vector rotated by the given rotation enum.
+    /// </summary>
+    /// <param name="rotation">The rotation.</param>
+    /// <returns>The rotated vector.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public readonly Vec2I Rotated(Rotation rotation)
+    {
+        return rotation switch
+        {
+            Rotation.None  => this,
+            Rotation.Right => Rotated90C(),
+            Rotation.Flip  => Rotated180(),
+            Rotation.Left  => Rotated90AC(),
+            _ => throw new ArgumentOutOfRangeException(nameof(rotation), rotation, "Rotation is invalid."),
+        };
     }
 
     /// <summary>

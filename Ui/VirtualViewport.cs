@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace SCENeo.Ui;
+﻿namespace SCENeo.Ui;
 
 public sealed class VirtualViewport : ViewportBase
 {
@@ -16,38 +14,29 @@ public sealed class VirtualViewport : ViewportBase
         }
     }
 
-    private sealed class ViewportView : IView<Pixel>
+    private sealed class View : ViewBase
     {
-        private VirtualViewport _source;
         private IReadOnlyList<RenderItem> _items;
+        private Pixel _basePixel;
+        private bool _merging;
 
-        public ViewportView(VirtualViewport source, IReadOnlyList<RenderItem> renderItems)
+        public View(VirtualViewport source, IReadOnlyList<RenderItem> renderItems)
+            : base(source.Width, source.Height)
         {
-            _source = source;
+            _basePixel = source.BasePixel;
+            _merging = source.Merging;
+
             _items = renderItems;
         }
 
-        public int Width => _source.Width;
-        public int Height => _source.Height;
-
-        public Pixel this[int x, int y]
+        public override Pixel this[int x, int y]
         {
             get => this[new Vec2I(x, y)];
         }
 
-        public Pixel this[Vec2I position]
+        public override Pixel this[Vec2I position]
         {
-            get => _source.Merging ? GetMerged(position) : GetFirst(position);
-        }
-
-        public IEnumerator<Pixel> GetEnumerator()
-        {
-            return SCEUtils.GetEnumerator(this);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return SCEUtils.GetEnumerator(this);
+            get => _merging ? GetMerged(position) : GetFirst(position);
         }
 
         private Pixel GetFirst(Vec2I position)
@@ -60,12 +49,12 @@ public sealed class VirtualViewport : ViewportBase
                 }
             }
 
-            return _source.BasePixel;
+            return _basePixel;
         }
 
         private Pixel GetMerged(Vec2I position)
         {
-            Pixel pixel = _source.BasePixel;
+            Pixel pixel = _basePixel;
 
             foreach (RenderItem item in _items)
             {
@@ -122,6 +111,6 @@ public sealed class VirtualViewport : ViewportBase
             renderItems.Add(renderItem);
         }
 
-        return new ViewportView(this, renderItems);
+        return new View(this, renderItems);
     }
 }

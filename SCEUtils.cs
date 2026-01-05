@@ -106,7 +106,12 @@ public static class SCEUtils
         return pos.X >= 0 && pos.Y >= 0 && pos.X < dimensioned.Width && pos.Y < dimensioned.Height;
     }
 
-    public static IEnumerator<T> GetEnumerator<T>(IView<T> view)
+    public static void Swap<T>(ref T a, ref T b)
+    {
+        (a, b) = (b, a);
+    }
+
+    public static IEnumerator<T> EnumerateData<T>(IView<T> view)
     {
         for (int y = 0; y < view.Height; y++)
         {
@@ -115,5 +120,31 @@ public static class SCEUtils
                 yield return view[x, y];
             }
         }
+    }
+
+    public static IEnumerable<Vec2I> EnumerateArea(int left, int top, int right, int bottom)
+    {
+        for (int y = top; y < bottom; y++)
+        {
+            for (int x = left; x < right; x++)
+            {
+                yield return new Vec2I(x, y);
+            }
+        }
+    }
+
+    public static IEnumerable<Vec2I> EnumerateArea(int width, int height)
+    {
+        return EnumerateArea(0, 0, width, height);
+    }
+
+    public static IEnumerable<Vec2I> EnumerateArea(Vec2I size)
+    {
+        return EnumerateArea(0, 0, size.X, size.Y);
+    }
+
+    public static IEnumerable<Vec2I> EnumerateArea<T>(IView<T> view)
+    {
+        return EnumerateArea(view.Width, view.Height);
     }
 }

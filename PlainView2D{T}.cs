@@ -11,12 +11,10 @@ public sealed class PlainView2D<T> : IView<T>
     public T Value { get; set; } = default!;
 
     public int Width { get; set; }
-
     public int Height { get; set; }
 
-    public T this[int x, int y] { get { return Value; } }
-
-    public T this[Vec2I pos] { get { return Value; } }
+    public T this[int x, int y] => Value;
+    public T this[Vec2I pos] => Value;
 
     public IEnumerator<T> GetEnumerator()
     {

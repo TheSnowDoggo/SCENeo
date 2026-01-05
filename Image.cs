@@ -5,6 +5,11 @@
 /// </summary>
 public class Image : Grid2D<Pixel>
 {
+    public Image()
+        : base()
+    {
+    }
+
     public Image(Pixel[,] data) 
         : base(data) 
     { 
@@ -12,11 +17,6 @@ public class Image : Grid2D<Pixel>
 
     public Image(Grid2D<Pixel> data) 
         : base(data)
-    { 
-    }
-
-    public Image() 
-        : base() 
     { 
     }
 
@@ -41,10 +41,7 @@ public class Image : Grid2D<Pixel>
     {
         var image = new Image(width, height);
 
-        if (pixel != Pixel.Empty)
-        {
-            image.Fill(pixel);
-        }
+        image.Fill(pixel);
 
         return image;
     }

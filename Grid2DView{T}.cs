@@ -23,12 +23,12 @@ public sealed class Grid2DView<T>(Grid2D<T> grid) : IView<T>, ICloneable
 
     public IEnumerator<T> GetEnumerator()
     {
-        return SCEUtils.GetEnumerator(this);
+        return SCEUtils.EnumerateData(this);
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return SCEUtils.GetEnumerator(this);
+        return SCEUtils.EnumerateData(this);
     }
 
     public object Clone()

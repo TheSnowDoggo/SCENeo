@@ -89,36 +89,38 @@ public class Node
         child._tree   = null;
     }
 
-    public Node GetChild(string name)
+    public Node? GetChild(string name)
     {
-        return _children[name];
+        return _children.GetValueOrDefault(name);
     }
 
-    public T GetChild<T>(string name) where T : Node
+    public T? GetChild<T>(string name)
+        where T : Node
     {
-        return (T)GetChild(name);
+        return (T?)GetChild(name);
     }
 
-    public Node GetNode(string path)
+    public Node? GetNode(string path)
     {
-        if (path == string.Empty)
-        {
-            return GetChild(path);
-        }
-
-        Node current = this;
+        Node? current = this;
 
         foreach (string node in path.Trim('/').Split('/'))
         {
             current = current.GetChild(node);
+
+            if (current == null)
+            {
+                return null;
+            }
         }
 
         return current;
     }
 
-    public T GetNode<T>(string path) where T : Node
+    public T? GetNode<T>(string path) 
+        where T : Node
     {
-        return (T)GetNode(path);
+        return (T?)GetNode(path);
     }
 
     public virtual void Start()

@@ -4,7 +4,10 @@ public sealed class NodeTree
 {
     public NodeTree()
     {
-        Root = new Node(this);
+        Root = new Node(this)
+        {
+            Name = "Root",
+        };
     }
 
     public readonly Node Root;

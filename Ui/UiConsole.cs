@@ -2,7 +2,7 @@
 
 namespace SCENeo.Ui;
 
-public sealed class VirtualConsole : TextWriter, IRenderable
+public sealed class UiConsole : TextWriter, IRenderable
 {
     public const int DefaultBufferWidth  = 200;
     public const int DefaultBufferHeight = 9000;
@@ -15,7 +15,7 @@ public sealed class VirtualConsole : TextWriter, IRenderable
 
     private bool _bufferUpdate;
 
-    public VirtualConsole()
+    public UiConsole()
     {
     }
 
