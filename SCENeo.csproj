@@ -15,16 +15,14 @@
 not production code, not properly tested, also docs not done</Description>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<RepositoryUrl>https://github.com/TheSnowDoggo/SCENeo</RepositoryUrl>
-	<PackageReleaseNotes>changes the node system
-new virtual viewport
-and more</PackageReleaseNotes>
+	<PackageReleaseNotes>changes to node and other improvements</PackageReleaseNotes>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageProjectUrl>https://github.com/TheSnowDoggo/SCENeo</PackageProjectUrl>
 	<Copyright>MIT License</Copyright>
 	<SignAssembly>True</SignAssembly>
 	<AssemblyOriginatorKeyFile>keyPair.snk</AssemblyOriginatorKeyFile>
 	<DelaySign>False</DelaySign>
-	<Version>1.2.0</Version>
+	<Version>1.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
