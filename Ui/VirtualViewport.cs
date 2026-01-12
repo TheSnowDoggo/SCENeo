@@ -1,5 +1,8 @@
 ﻿namespace SCENeo.Ui;
 
+/// <summary>
+/// DO NOT USE SLOW
+/// </summary>
 public sealed class VirtualViewport : ViewportBase
 {
     private sealed class RenderItem

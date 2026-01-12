@@ -3,5 +3,5 @@
 public interface IReceiver
 {
     ushort Layers { get; }
-    Action<IListener>? CollisionReceive { get; }
+    Action<IListener>? Receive { get; }
 }

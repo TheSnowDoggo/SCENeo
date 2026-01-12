@@ -1,11 +1,11 @@
 ﻿namespace SCENeo.Node.Collision;
 
-internal class RayCast2D : Node2D, IListener
+public class RayCast2D : Node2D, IListener
 {
     public ushort Masks { get; set; }
     public Vec2 EndPosition { get; set; }
 
-    public Action<IReceiver>? CollisionListen { get; set; }
+    public Action<IReceiver>? Listen { get; set; }
 
     public float Left => Math.Min(GlobalPosition.X, EndPosition.X);
     public float Right => Math.Max(GlobalPosition.X, EndPosition.X);

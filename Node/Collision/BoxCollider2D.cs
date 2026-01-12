@@ -1,6 +1,6 @@
 ﻿namespace SCENeo.Node.Collision;
 
-public sealed class BoxCollider2D : Collider2D
+public class BoxCollider2D : Collider2D
 {
     public Vec2 Size { get; set; }
     public Anchor Anchor { get; set; }

@@ -11,7 +11,6 @@ public sealed class NodeTree
     }
 
     public event Action<Node>? AddNode;
-
     public event Action<Node>? RemoveNode;
 
 

@@ -3,6 +3,6 @@
 public interface IListener
 {
     ushort Masks { get; }
-    Action<IReceiver>? CollisionListen { get; }
+    Action<IReceiver>? Listen { get; }
     bool CollidesWith(IReceiver other);
 }

@@ -1,6 +1,6 @@
 ﻿namespace SCENeo.Node;
 
-internal class KinematicNode2D : Node2D
+public class KinematicNode2D : Node2D
 {
     public Vec2 Velocity;
 

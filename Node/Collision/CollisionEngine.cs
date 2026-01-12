@@ -60,8 +60,8 @@ public sealed class CollisionEngine : IEngine
                 continue;
             }
 
-            receiver.CollisionReceive?.Invoke(listener);
-            listener.CollisionListen?.Invoke(receiver);
+            receiver.Receive?.Invoke(listener);
+            listener.Listen?.Invoke(receiver);
         }
     }
 

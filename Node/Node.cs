@@ -73,11 +73,6 @@ public class Node
         }
 
         _tree.OnAddNode(child);
-
-        foreach (Node node in ActiveDescendents())
-        {
-            node.Ready();
-        }
     }
 
     public void AddChildren(IEnumerable<Node> children)
@@ -140,13 +135,6 @@ public class Node
         where T : Node
     {
         return (T?)GetNode(path);
-    }
-
-    /// <summary>
-    /// Called when the node enters a tree.
-    /// </summary>
-    public virtual void Ready()
-    {
     }
 
     /// <summary>
