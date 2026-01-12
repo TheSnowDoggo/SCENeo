@@ -3,11 +3,11 @@
 public class Camera2D : Node2D
 {
     public int Channel { get; set; }
-
     public Anchor Anchor { get; set; }
+    public PositionRounding Rounding { get; set; }
 
     public Vec2I RenderPosition()
     {
-        return (GlobalPosition * new Vec2(2, 1)).Round().ToVec2I();
+        return GlobalPosition.RoundToRenderCoords(Rounding);
     }
 }

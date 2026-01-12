@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace SCENeo.Node.Collision;
+﻿namespace SCENeo.Node.Collision;
 
 public sealed class BoxCollider2D : Collider2D
 {
@@ -10,8 +8,6 @@ public sealed class BoxCollider2D : Collider2D
     public Rect2D GlobalArea()
     {
         Vec2 position = GetPosition() + Anchor.AnchorDimension(Size) - Size;
-
-        //Debug.WriteLine($"a: {GetPosition()} b: {GlobalPosition}");
 
         return new Rect2D(position, position + Size);
     }

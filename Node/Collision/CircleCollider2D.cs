@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace SCENeo.Node.Collision;
+﻿namespace SCENeo.Node.Collision;
 
 public sealed class CircleCollider2D : Collider2D
 {

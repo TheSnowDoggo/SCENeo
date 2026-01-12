@@ -5,7 +5,7 @@ public sealed class RenderEngine : IEngine
     private sealed class RenderInput(IRenderable renderable, Rect2DI renderArea)
     {
         public readonly IRenderable Renderable = renderable;
-        public readonly Rect2DI     RenderArea = renderArea;
+        public readonly Rect2DI RenderArea = renderArea;
 
         public static RenderInput Create(IRenderable renderable)
         {
@@ -23,8 +23,8 @@ public sealed class RenderEngine : IEngine
 
     private sealed class RenderOutput(RenderChannel channel, Rect2DI renderArea)
     {
-        public readonly RenderChannel Channel    = channel;
-        public readonly Rect2DI       RenderArea = renderArea;
+        public readonly RenderChannel Channel = channel;
+        public readonly Rect2DI RenderArea = renderArea;
 
         public static RenderOutput Create(RenderChannel renderChannel, Vec2I renderPosition)
         {
@@ -36,7 +36,7 @@ public sealed class RenderEngine : IEngine
 
     private sealed class RenderState
     {
-        public readonly List<RenderInput>  Inputs  = [];
+        public readonly List<RenderInput> Inputs = [];
         public readonly List<RenderOutput> Outputs = [];
     }
 

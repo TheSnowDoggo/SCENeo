@@ -259,11 +259,6 @@ public partial struct Vec2 : IEquatable<Vec2>
         return new Vec2(MathF.Round(X, digits, mode), MathF.Round(Y, digits, mode));
     }
 
-    public readonly Vec2 RoundedToPixel()
-    {
-        return (this * new Vec2(2, 1)).Round().ToVec2I() / new Vec2(2, 1);
-    }
-
     /// <summary>
     /// Returns this vector with each component floored by <see cref="MathF.Floor(float)"/>.
     /// </summary>
