@@ -4,8 +4,8 @@ public sealed class CollisionEngine : IEngine
 {
     private sealed class CollisionState
     {
-        public readonly List<IListener>                  Listeners = [];
-        public readonly Dictionary<int, List<IReceiver>> Layers    = [];
+        public readonly List<IListener> Listeners = [];
+        public readonly Dictionary<int, List<IReceiver>> Layers = [];
 
         public void AddReceiver(int layer, IReceiver receiver)
         {
@@ -19,20 +19,24 @@ public sealed class CollisionEngine : IEngine
         }
     }
 
+    private CollisionState _state = null!;
+
     public bool Enabled { get; set; } = true;
 
     public void Update(double _, IReadOnlyList<Node> nodes)
     {
-        FindCollisions(LoadCollisionState(nodes));
+        LoadCollisionState(nodes);
+
+        ResolveCollisions();
     }
 
-    private static void FindCollisions(CollisionState collisionState)
+    private void ResolveCollisions()
     {
-        foreach (IListener listener in collisionState.Listeners)
+        foreach (IListener listener in _state.Listeners)
         {
             foreach (int mask in listener.Masks.EnumerateFlags())
             {
-                if (!collisionState.Layers.TryGetValue(mask, out List<IReceiver>? receivers))
+                if (!_state.Layers.TryGetValue(mask, out List<IReceiver>? receivers))
                 {
                     continue;
                 }
@@ -51,34 +55,34 @@ public sealed class CollisionEngine : IEngine
                 continue;
             }
 
-            if (listener.CollidesWith(receiver))
+            if (!listener.CollidesWith(receiver))
             {
-                receiver.OnCollisionReceive?.Invoke(listener);
-                listener.OnCollisionListen?.Invoke(receiver);
+                continue;
             }
+
+            receiver.CollisionReceive?.Invoke(listener);
+            listener.CollisionListen?.Invoke(receiver);
         }
     }
 
-    private static CollisionState LoadCollisionState(IReadOnlyList<Node> nodes)
+    private void LoadCollisionState(IReadOnlyList<Node> nodes)
     {
-        var state = new CollisionState();
+        _state = new CollisionState();
 
         foreach (Node node in nodes)
         {
             if (node is IListener listener && listener.Masks != 0)
             {
-                state.Listeners.Add(listener);
+                _state.Listeners.Add(listener);
             }
 
             if (node is IReceiver receiver)
             {
                 foreach (int layer in receiver.Layers.EnumerateFlags())
                 {
-                    state.AddReceiver(layer, receiver);
+                    _state.AddReceiver(layer, receiver);
                 }
             }
         }
-
-        return state;
     }
 }

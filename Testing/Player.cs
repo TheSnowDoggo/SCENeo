@@ -48,7 +48,7 @@ internal sealed class Player : KinematicNode2D
         {
             Radius = 2.0f,
             Layers = SCEUtils.CreateFlags(0),
-            OnCollisionReceive = OnCollisionReceive,
+            CollisionReceive = OnCollisionReceive,
         };
 
         AddChildren([camera, sprite, collider]);

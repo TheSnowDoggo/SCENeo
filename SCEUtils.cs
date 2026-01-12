@@ -59,15 +59,12 @@ public static class SCEUtils
 
     public static IEnumerable<int> EnumerateFlags(this ushort data)
     {
-        ushort cur = data;
         for (int i = 0; i < 16; i++)
         {
-            if ((cur & 1) == 1)
+            if (((data >> i) & 1) == 1)
             {
                 yield return i;
             }
-
-            cur <<= 1;
         }
     }
 

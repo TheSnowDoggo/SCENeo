@@ -40,27 +40,36 @@ public sealed class RenderEngine : IEngine
         public readonly List<RenderOutput> Outputs = [];
     }
 
+    private RenderState _state = null!;
+
     public bool Enabled { get; set; } = true;
 
     public Dictionary<int, RenderChannel> Channels { get; init; } = [];
 
     public void Update(double _, IReadOnlyList<Node> nodes)
     {
-        Render(LoadRenderState(nodes));
+        LoadRenderState(nodes);
+
+        InitializeOutputs();
+
+        Render();
     }
 
-    private static void Render(RenderState renderState)
+    private void InitializeOutputs()
     {
-        foreach (RenderOutput output in renderState.Outputs)
+        foreach (RenderOutput output in _state.Outputs)
         {
             output.Channel.Initialize();
         }
+    }
 
-        foreach (RenderInput input in renderState.Inputs)
+    private void Render()
+    {
+        foreach (RenderInput input in _state.Inputs)
         {
             IView<Pixel>? view = null;
 
-            foreach (RenderOutput output in renderState.Outputs)
+            foreach (RenderOutput output in _state.Outputs)
             {
                 if (!input.RenderArea.Overlaps(output.RenderArea))
                 {
@@ -79,9 +88,9 @@ public sealed class RenderEngine : IEngine
         }
     }
 
-    private RenderState LoadRenderState(IReadOnlyList<Node> nodes)
+    private void LoadRenderState(IReadOnlyList<Node> nodes)
     {
-        var state = new RenderState();
+        _state = new RenderState();
 
         var channels = new HashSet<int>();
 
@@ -89,7 +98,7 @@ public sealed class RenderEngine : IEngine
         {
             if (node is IRenderable renderable && renderable.Visible)
             {
-                state.Inputs.Add(RenderInput.Create(renderable));
+                _state.Inputs.Add(RenderInput.Create(renderable));
                 continue;
             }
 
@@ -98,10 +107,8 @@ public sealed class RenderEngine : IEngine
             {
                 Vec2I position = camera.RenderPosition() - camera.Anchor.AnchorDimension(renderChannel.Size());
 
-                state.Outputs.Add(RenderOutput.Create(renderChannel, position));
+                _state.Outputs.Add(RenderOutput.Create(renderChannel, position));
             }
         }
-
-        return state;
     }
 }

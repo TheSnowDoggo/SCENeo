@@ -5,7 +5,7 @@ public class Sprite2D : Node2D, IRenderable
     public virtual IRenderable Source { get; set; } = null!;
 
     public bool Visible => VisibleOverride ?? Source?.Visible ?? false;
-    public Vec2I Offset => (Vec2I)GlobalPosition.Round() * new Vec2I(2, 1) + (OffsetOverride ?? Source.Offset);
+    public Vec2I Offset => (GlobalPosition * new Vec2(2, 1)).Round().ToVec2I() + (OffsetOverride ?? Source.Offset);
     public int Layer => LayerOverride ?? Source.Layer;
     public Anchor Anchor => AnchorOverride ?? Source.Anchor;
 

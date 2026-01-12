@@ -18,6 +18,45 @@ public static class SCEMath
         return value * value;
     }
 
+    public static float Discriminant(float a, float b, float c)
+    {
+        return b * b - (4 * a * c);
+    }
+
+    public static float[] SolveQuadratic(float a, float b, float c)
+    {
+        float discriminant = Discriminant(a, b, c);
+
+        // One solution
+        if (discriminant == 0)
+        {
+            return [(-b + MathF.Sqrt(discriminant)) / 2 * a];
+        }
+
+        // Two solutions
+        if (discriminant > 0)
+        {
+            float sqrt = MathF.Sqrt(discriminant);
+            float divisor = 2 * a;
+            return [(-b + sqrt) / divisor, (-b - sqrt) / divisor];
+        }
+
+        return [];
+    }
+
+    public static void MinMax(float a, float b, out float min, out float max)
+    {
+        if (a >= b)
+        {
+            min = b;
+            max = a;
+            return;
+        }
+
+        min = a;
+        max = b;
+    }
+
     /// <summary>
     /// Returns the result of <paramref name="a"/> mod <paramref name="b"/>.
     /// </summary>

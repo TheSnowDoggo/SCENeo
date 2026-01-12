@@ -47,6 +47,41 @@ public static class AnchorUtils
         return new Vec2I(AnchorHorizontal(anchor, difference.X), AnchorVertical(anchor, difference.Y));
     }
 
+    public static float AnchorHorizontal(this Anchor anchor, float difference)
+    {
+        if (anchor.Contains(Anchor.Center))
+        {
+            return difference / 2;
+        }
+
+        if (anchor.Contains(Anchor.Right))
+        {
+            return difference;
+        }
+
+        return 0;
+    }
+
+    public static float AnchorVertical(this Anchor anchor, float difference)
+    {
+        if (anchor.Contains(Anchor.Middle))
+        {
+            return difference / 2;
+        }
+
+        if (anchor.Contains(Anchor.Bottom))
+        {
+            return difference;
+        }
+
+        return 0;
+    }
+
+    public static Vec2 AnchorDimension(this Anchor anchor, Vec2 difference)
+    {
+        return new Vec2(AnchorHorizontal(anchor, difference.X), AnchorVertical(anchor, difference.Y));
+    }
+
     public static string FitToLength(this string text, int length, char fill, Anchor anchor = Anchor.None)
     {
         if (text.Length == length)

@@ -10,6 +10,11 @@ public sealed class NodeTree
         };
     }
 
+    public event Action<Node>? AddNode;
+
+    public event Action<Node>? RemoveNode;
+
+
     public readonly Node Root;
 
     public List<IEngine> Engines { get; init; } = [];
@@ -40,5 +45,15 @@ public sealed class NodeTree
                 engine.Update(delta, active);
             }
         }
+    }
+
+    internal void OnAddNode(Node node)
+    {
+        AddNode?.Invoke(node);
+    }
+
+    internal void OnRemoveNode(Node node)
+    {
+        RemoveNode?.Invoke(node);
     }
 }

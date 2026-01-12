@@ -5,8 +5,6 @@ namespace SCENeo;
 /// <summary>
 /// A struct representing a 2D integer vector.
 /// </summary>
-/// <param name="x">The x-component.</param>
-/// <param name="y">The y-component.</param>
 public partial struct Vec2I : IEquatable<Vec2I>
 {
     /// <summary>
@@ -121,6 +119,11 @@ public partial struct Vec2I : IEquatable<Vec2I>
     {
         x = X;
         y = Y;
+    }
+
+    public readonly Vec2 ToVec2()
+    {
+        return new Vec2(X, Y);
     }
 
     public readonly bool Equals(Vec2I other)

@@ -1,39 +1,19 @@
-﻿namespace SCENeo.Node.Collision;
+﻿using System.Diagnostics;
+
+namespace SCENeo.Node.Collision;
 
 public sealed class CircleCollider2D : Collider2D
 {
-    public float Radius;
+    public float Radius { get; set; }
+    public Anchor Anchor { get; set; }
 
-    public Rect2D GlobalArea()
+    public Vec2 Size => Vec2.One * Radius;
+
+    public Circle2D GlobalCircle()
     {
-        return new Rect2D(GlobalPosition - Radius, GlobalPosition + Radius);
-    }
+        Vec2 position = GetPosition() + Anchor.AnchorDimension(Size) - Size;
 
-    public bool OverlapsVertical(float x, float top, float bottom)
-    {
-        float d = Descriminant(x - GlobalPosition.X);
-
-        if (d < 0) return false;
-
-        float y = GlobalPosition.Y + MathF.Sqrt(d);
-
-        return y >= bottom && y <= top;
-    }
-
-    public bool OverlapsHorizontal(float y, float left, float right)
-    {
-        float d = Descriminant(y - GlobalPosition.Y);
-
-        if (d < 0) return false;
-
-        float x = GlobalPosition.X + MathF.Sqrt(d);
-
-        return x >= left && x <= right;
-    }
-
-    private float Descriminant(float m)
-    {
-        return Radius.Squared() - m.Squared();
+        return new Circle2D(Radius, position);
     }
 
     public override bool CollidesWith(IReceiver receiver)

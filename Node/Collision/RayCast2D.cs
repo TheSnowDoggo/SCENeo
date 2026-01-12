@@ -3,14 +3,16 @@
 internal class RayCast2D : Node2D, IListener
 {
     public ushort Masks { get; set; }
-
-    public Action<IReceiver>? OnCollisionListen { get; set; }
-
     public Vec2 EndPosition { get; set; }
 
-    public Vec2 GlobalEnd()
+    public Action<IReceiver>? CollisionListen { get; set; }
+
+    public float Left => Math.Min(GlobalPosition.X, EndPosition.X);
+    public float Right => Math.Max(GlobalPosition.X, EndPosition.X);
+
+    public Line2D GlobalLine()
     {
-        return GlobalPosition + EndPosition;
+        return Line2D.FromPoints(GlobalPosition, GlobalPosition + EndPosition);
     }
 
     public bool CollidesWith(IReceiver other)

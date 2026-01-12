@@ -64,6 +64,17 @@ public struct Rect2D : IEquatable<Rect2D>
     /// </summary>
     public readonly Vec2 End { get { return new Vec2(Right, Bottom); } }
 
+    public static Rect2D FromPoints(Vec2 a, Vec2 b)
+    {
+        return new Rect2D()
+        {
+            Left   = MathF.Min(a.X, b.X),
+            Top    = MathF.Min(a.Y, b.Y),
+            Right  = MathF.Max(a.X, b.X),
+            Bottom = MathF.Max(a.Y, b.Y),
+        };
+    }
+
     /// <summary>
     /// Returns the size of the area (equivalent to End - Start).
     /// </summary>
@@ -76,11 +87,11 @@ public struct Rect2D : IEquatable<Rect2D>
     /// <inheritdoc cref="Overlaps(Rect2D)"/>
     public readonly bool Overlaps(float left, float top, float right, float bottom)
     {
-        if (Right < left || Left > right)
+        if (Right <= left || Left >= right)
         {
             return false;
         }
-        if (Bottom < top || Top > bottom)
+        if (Bottom <= top || Top >= bottom)
         {
             return false;
         }

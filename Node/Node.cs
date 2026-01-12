@@ -20,7 +20,7 @@ public class Node
 
     public string Name
     {
-        get { return _name; }
+        get => _name;
         set
         {
             if (_name == value) return;
@@ -42,13 +42,13 @@ public class Node
         }
     }
 
-    public Node? Parent { get { return _parent; } }
+    public Node? Parent => _parent;
 
-    public NodeTree? Tree { get { return _tree; } }
+    public NodeTree? Tree => _tree;
 
     public bool Active { get; set; } = true;
 
-    public Dictionary<string, Node>.ValueCollection Children { get { return _children.Values; } }
+    public Dictionary<string, Node>.ValueCollection Children => _children.Values;
 
     public HashSet<string> Tags { get; set; } = [];
 
@@ -65,7 +65,19 @@ public class Node
         }
 
         child._parent = this;
-        child._tree   = _tree;
+        child._tree = _tree;
+
+        if (_tree == null)
+        {
+            return;
+        }
+
+        _tree.OnAddNode(child);
+
+        foreach (Node node in ActiveDescendents())
+        {
+            node.Ready();
+        }
     }
 
     public void AddChildren(IEnumerable<Node> children)
@@ -86,7 +98,14 @@ public class Node
         _children.Remove(name);
 
         child._parent = null;
-        child._tree   = null;
+        child._tree = null;
+
+        if (_tree == null)
+        {
+            return;
+        }
+
+        _tree.OnRemoveNode(child);
     }
 
     public Node? GetChild(string name)
@@ -123,10 +142,24 @@ public class Node
         return (T?)GetNode(path);
     }
 
+    /// <summary>
+    /// Called when the node enters a tree.
+    /// </summary>
+    public virtual void Ready()
+    {
+    }
+
+    /// <summary>
+    /// Called on start.
+    /// </summary>
     public virtual void Start()
     {
     }
 
+    /// <summary>
+    /// Called on update.
+    /// </summary>
+    /// <param name="delta">The time elapsed since last frame in seconds.</param>
     public virtual void Update(double delta)
     {
     }

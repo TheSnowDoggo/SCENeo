@@ -48,22 +48,6 @@ public partial struct Vec2 : IEquatable<Vec2>
     public static bool operator >=(Vec2 v1, Vec2 v2) => v1.X >= v2.X && v1.Y >= v2.Y;
 
     /// <summary>
-    /// Returns the area between this vector and <paramref name="other"/>.
-    /// </summary>
-    /// <param name="other">The other vector.</param>
-    /// <returns>The resulting area.</returns>
-    public readonly Rect2D AreaBetween(Vec2 other)
-    {
-        return new Rect2D()
-        {
-            Left   = MathF.Min(X, other.X),
-            Top    = MathF.Min(Y, other.Y),
-            Right  = MathF.Max(X, other.X),
-            Bottom = MathF.Max(Y, other.Y),
-        };
-    }
-
-    /// <summary>
     /// Returns the length of this vector.
     /// </summary>
     /// <returns>The length of this vector.</returns>
@@ -275,6 +259,11 @@ public partial struct Vec2 : IEquatable<Vec2>
         return new Vec2(MathF.Round(X, digits, mode), MathF.Round(Y, digits, mode));
     }
 
+    public readonly Vec2 RoundedToPixel()
+    {
+        return (this * new Vec2(2, 1)).Round().ToVec2I() / new Vec2(2, 1);
+    }
+
     /// <summary>
     /// Returns this vector with each component floored by <see cref="MathF.Floor(float)"/>.
     /// </summary>
@@ -300,9 +289,14 @@ public partial struct Vec2 : IEquatable<Vec2>
     /// <returns>The gradient or <see cref="float.NaN"/> if there is no gradient.</returns>
     public readonly float GradientBetween(Vec2 other)
     {
-        float d = other.X - X;
-        if (d == 0) return float.NaN;
-        return (other.Y - Y) / d;
+        float deltaX = other.X - X;
+
+        if (deltaX == 0)
+        {
+            return float.NaN;
+        }
+
+        return (other.Y - Y) / deltaX;
     }
 
     public readonly void LineBetween(Vec2 other, out float gradient, out float yIntercept)
@@ -320,6 +314,11 @@ public partial struct Vec2 : IEquatable<Vec2>
     {
         x = X;
         y = Y;
+    }
+
+    public readonly Vec2I ToVec2I()
+    {
+        return new Vec2I((int)X, (int)Y);
     }
 
     public readonly bool Equals(Vec2 other)

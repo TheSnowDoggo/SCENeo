@@ -32,7 +32,7 @@ internal sealed class Box : Node2D
 
         var collider = new BoxCollider2D()
         {
-            Area  = new Rect2D(dpMap.Size),
+            Size  = dpMap.Size,
             Masks = SCEUtils.CreateFlags(0),
         };
 

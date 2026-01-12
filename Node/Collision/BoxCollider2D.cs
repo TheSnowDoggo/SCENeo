@@ -1,12 +1,19 @@
-﻿namespace SCENeo.Node.Collision;
+﻿using System.Diagnostics;
+
+namespace SCENeo.Node.Collision;
 
 public sealed class BoxCollider2D : Collider2D
 {
-    public Rect2D Area;
+    public Vec2 Size { get; set; }
+    public Anchor Anchor { get; set; }
 
     public Rect2D GlobalArea()
     {
-        return Area + GlobalPosition;
+        Vec2 position = GetPosition() + Anchor.AnchorDimension(Size) - Size;
+
+        //Debug.WriteLine($"a: {GetPosition()} b: {GlobalPosition}");
+
+        return new Rect2D(position, position + Size);
     }
 
     public override bool CollidesWith(IReceiver receiver)

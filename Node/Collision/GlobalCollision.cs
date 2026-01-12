@@ -4,105 +4,65 @@ internal static class GlobalCollision
 {
     public static bool Collides(BoxCollider2D box1, BoxCollider2D box2)
     {
+        if (box1.Size <= Vec2.Zero || box2.Size <= Vec2.Zero)
+        {
+            return false;
+        }
+
         return box1.GlobalArea().Overlaps(box2.GlobalArea());
     }
 
     public static bool Collides(CircleCollider2D circle1, CircleCollider2D circle2)
     {
-        return circle1.GlobalPosition.DistanceTo(circle2.GlobalPosition) <= circle1.Radius + circle2.Radius; 
-    }
-
-    public static bool Collides(CircleCollider2D sphere, BoxCollider2D box)
-    {
-        Rect2D sphereArea = sphere.GlobalArea();
-        Rect2D boxArea    = box.GlobalArea();
-
-        if (!sphereArea.Overlaps(boxArea))
+        if (circle1.Radius <= 0 || circle2.Radius <= 0)
         {
             return false;
         }
 
-        if (boxArea.Encloses(sphereArea) || sphereArea.Encloses(boxArea))
+        return circle1.GlobalCircle().Overlaps(circle2.GlobalCircle()); 
+    }
+
+    public static bool Collides(CircleCollider2D circle, BoxCollider2D box)
+    {
+        if (box.Size <= Vec2.Zero || circle.Radius <= 0)
         {
-            return true;
+            return false;
         }
 
-        if (sphere.OverlapsVertical  (boxArea.Left  , boxArea.Top , boxArea.Bottom) ||
-            sphere.OverlapsVertical  (boxArea.Right , boxArea.Top , boxArea.Bottom) ||
-            sphere.OverlapsHorizontal(boxArea.Top   , boxArea.Left, boxArea.Right ) ||
-            sphere.OverlapsHorizontal(boxArea.Bottom, boxArea.Left, boxArea.Right ))
-        {
-            return true;
-        }
-
-        return false;
+        return circle.GlobalCircle().Overlaps(box.GlobalArea());
     }
 
     public static bool Collides(RayCast2D raycast, BoxCollider2D box)
     {
-        Vec2 start = raycast.GlobalPosition;
-        Vec2 end   = raycast.GlobalEnd();
-
-        Rect2D lineArea = start.AreaBetween(end);
-        Rect2D boxArea  = box.GlobalArea();
-
-        if (!boxArea.Overlaps(lineArea))
+        if (box.Size <= Vec2.Zero)
         {
             return false;
         }
 
-        if (lineArea.Left == lineArea.Right)
+        Rect2D boxArea = box.GlobalArea();
+
+        if (raycast.Right < boxArea.Left || raycast.Left > boxArea.Right)
         {
-            return true;
+            return false;
         }
 
-        if (boxArea.Encloses(lineArea))
-        {
-            return true;
-        }
-
-        start.LineBetween(end, out float m, out float c);
-
-        if (YIntersectVertical  (m, c, boxArea.Left  ).InFullRange(boxArea.Top , boxArea.Bottom) ||
-            YIntersectVertical  (m, c, boxArea.Right ).InFullRange(boxArea.Top , boxArea.Bottom) ||
-            XIntersectHorizontal(m, c, boxArea.Top   ).InFullRange(boxArea.Left, boxArea.Right ) ||
-            XIntersectHorizontal(m, c, boxArea.Bottom).InFullRange(boxArea.Left, boxArea.Right ))
-        {
-            return true;
-        }
-
-        return false;
+        return raycast.GlobalLine().Overlaps(boxArea);
     }
 
     public static bool Collides(RayCast2D raycast, CircleCollider2D circle)
     {
-        raycast.GlobalPosition.LineBetween(raycast.GlobalEnd(), out float l_m, out float l_c);
+        if (circle.Radius <= 0)
+        {
+            return false;
+        }
 
-        circle.GlobalPosition.Deconstruct(out float c_a, out float c_b);
+        Circle2D circle2d = circle.GlobalCircle();
 
-        float c_r = circle.Radius;
+        if (raycast.Right < circle2d.Left || raycast.Left > circle2d.Right)
+        {
+            return false;
+        }
 
-        float q_a = l_m.Squared() + 1;
-        float q_b = (l_m * (l_c - c_b) - c_a) * 2;
-        float q_c = (l_c - c_b).Squared() + c_a.Squared() - c_r.Squared();
-
-        float discriminant = q_b.Squared() - (4 * q_a * q_c);
-
-        return discriminant >= 0;
-    }
-    
-    private static float YIntersectVertical(float m, float c, float x)
-    {
-        return m * x + c;
-    }
-
-    private static float XIntersectHorizontal(float m, float c, float y)
-    {
-        return (y - c) / m;
-    }
-
-    private static bool InFullRange(this float value, float min, float max)
-    {
-        return value >= min && value <= max;
+        return raycast.GlobalLine().Overlaps(circle2d);
     }
 }
