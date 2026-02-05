@@ -97,7 +97,7 @@ internal sealed class ManagerUI2
         _updater = new Updater()
         {
             FrameCap = Updater.Uncapped,
-            OnUpdate = Update,
+            Updated = Update,
         };
     }
 

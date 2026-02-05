@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SCENeo.Input;
 
-internal sealed class TextEntry
+public sealed class TextEntry
 {
     private static readonly FrozenDictionary<ConsoleKey, EntryKey> DefaultKeyMappings = new Dictionary<ConsoleKey, EntryKey>()
     {

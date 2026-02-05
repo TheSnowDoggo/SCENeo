@@ -23,7 +23,7 @@ internal sealed class Manager
     {
         _updater = new Updater()
         {
-            OnUpdate = Update,
+            Updated = Update,
         };
 
         var rc1 = new RenderChannel()

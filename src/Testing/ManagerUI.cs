@@ -18,7 +18,7 @@ internal sealed class ManagerUi
     {
         _updater = new Updater()
         {
-            OnUpdate = Update,
+            Updated = Update,
             FrameCap = Updater.Uncapped,
         };
 

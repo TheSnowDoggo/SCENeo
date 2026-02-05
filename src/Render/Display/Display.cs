@@ -8,6 +8,15 @@ public sealed class Display
     private int _width;
     private int _height;
 
+    public Display()
+    {
+    }
+
+    public Display(DisplayResize resized)
+    {
+        Resized = resized;
+    }
+
     /// <summary>
     /// Gets or sets the item to render on update.
     /// </summary>

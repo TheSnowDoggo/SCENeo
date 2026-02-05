@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using SCENeo.Ui;
+using System.Diagnostics;
 
 namespace SCENeo;
 
@@ -15,12 +16,19 @@ public sealed class Updater
 
     private double _minimumDelta = -1;
 
-    public Updater() { }
+    public Updater()
+    {
+    }
+
+    public Updater(Action<double> updated)
+    {
+        Updated = updated;
+    }
 
     /// <summary>
     /// The action fired on each update/frame with delta time.
     /// </summary>
-    public Action<double> OnUpdate;
+    public Action<double> Updated;
 
     /// <summary>
     /// Gets or sets the frequency in seconds that <see cref="FPS"/> should update.
@@ -86,7 +94,7 @@ public sealed class Updater
         {
             realTimer.Restart();
 
-            OnUpdate?.Invoke(Delta);
+            Updated?.Invoke(Delta);
 
             RealDelta = realTimer.Elapsed.TotalSeconds;
 
