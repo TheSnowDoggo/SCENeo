@@ -21,7 +21,7 @@ public sealed class Display
     /// <summary>
     /// Called when the output size channges.
     /// </summary>
-    public event Action<int, int> OnResize;
+    public event DisplayResize Resized;
 
     /// <summary>
     /// Renders the <see cref="Renderable"/> to the <see cref="Output"/>.
@@ -36,7 +36,7 @@ public sealed class Display
             _width = width;
             _height = height;
 
-            OnResize?.Invoke(width, height);
+            Resized?.Invoke(width, height);
         }
 
         IView<Pixel> view = Renderable.Render();

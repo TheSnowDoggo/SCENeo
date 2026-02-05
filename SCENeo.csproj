@@ -22,7 +22,7 @@ not production code, not properly tested, also docs not done</Description>
 	<SignAssembly>True</SignAssembly>
 	<AssemblyOriginatorKeyFile>keyPair.snk</AssemblyOriginatorKeyFile>
 	<DelaySign>False</DelaySign>
-	<Version>1.3.0</Version>
+	<Version>1.4.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -65,7 +65,7 @@ internal sealed class Manager
             Output = ConsoleOutput.Instance,
         };
 
-        _display.OnResize += Display_OnResize;
+        _display.Resized += Display_OnResize;
 
         _re = new RenderEngine()
         {
