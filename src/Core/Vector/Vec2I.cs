@@ -47,6 +47,54 @@ public partial struct Vec2I : IEquatable<Vec2I>
     public static bool operator <=(Vec2I v1, Vec2I v2) => v1.X <= v2.X && v1.Y <= v2.Y;
     public static bool operator >=(Vec2I v1, Vec2I v2) => v1.X >= v2.X && v1.Y >= v2.Y;
 
+    public static Vec2I Parse(string str)
+    {
+        int comma = str.IndexOf(',');
+        if (comma == -1)
+        {
+            throw new InvalidDataException("Missing comma seperating components.");
+        }
+
+        string xStr = str[..comma];
+        if (!int.TryParse(xStr, out int x))
+        {
+            throw new InvalidDataException($"X component \'{xStr}\' was in an invalid format.");
+        }
+
+        string yStr = str[(comma + 1)..];
+        if (!int.TryParse(yStr, out int y))
+        {
+            throw new InvalidDataException($"Y component \'{yStr}\' was in an invalid format.");
+        }
+
+        return new Vec2I(x, y);
+    }
+
+    public static bool TryParse(string str, out Vec2I value)
+    {
+        int comma = str.IndexOf(',');
+        if (comma == -1 || comma == str.Length -1)
+        {
+            value = default;
+            return false;
+        }
+
+        if (!int.TryParse(str[..comma], out int x))
+        {
+            value = default;
+            return false;
+        }
+
+        if (!int.TryParse(str[(comma + 1)..], out int y))
+        {
+            value = default;
+            return false;
+        }
+
+        value = new Vec2I(x, y);
+        return true;
+    }
+
     /// <summary>
     /// Returns this vector with the absolute value of both components.
     /// </summary>
@@ -143,6 +191,6 @@ public partial struct Vec2I : IEquatable<Vec2I>
 
     public readonly override string ToString()
     {
-        return $"{{ {X}, {Y} }}";
+        return $"{X}, {Y}";
     }
 }

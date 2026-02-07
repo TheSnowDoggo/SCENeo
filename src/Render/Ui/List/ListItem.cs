@@ -1,4 +1,5 @@
-﻿namespace SCENeo.Ui;
+﻿using SCENeo;
+namespace SCENeo.Ui;
 
 /// <summary>
 /// A class representing a single line in a <see cref="List"/>.
@@ -8,37 +9,37 @@ public class ListItem : IUpdate
     /// <summary>
     /// Action invoked on property update.
     /// </summary>
-    public event Action OnUpdate;
+    public event Action Updated;
 
     public ListItem()
     {
     }
 
-    private ListItem _inherited = null!;
+    private ListItem _inherited;
 
     public ListItem Inherited
     {
         get { return _inherited; }
         set
         {
-            if (value != _inherited)
+            if (value == _inherited)
             {
                 return;
             }
 
             if (_inherited != null)
             {
-                _inherited.OnUpdate -= OnUpdate;
+                _inherited.Updated -= Inherited_OnUpdate;
             }
 
             if (value != null)
             {
-                value.OnUpdate += OnUpdate;
+                value.Updated += Inherited_OnUpdate;
             }
 
-            _inherited = value!;
+            _inherited = value;
 
-            OnUpdate?.Invoke();
+            Updated?.Invoke();
         }
     }
 
@@ -50,7 +51,7 @@ public class ListItem : IUpdate
     public string Text
     {
         get => _text;
-        set => Update(value, ref _text);
+        set => Update(ref _text, value);
     }
 
     private SCEColor? _fgColor;
@@ -61,7 +62,7 @@ public class ListItem : IUpdate
     public SCEColor? FgColor
     {
         get => _fgColor;
-        set => Update(value, ref _fgColor);
+        set => Update(ref _fgColor, value);
     }
 
     private SCEColor? _bgColor;
@@ -72,7 +73,7 @@ public class ListItem : IUpdate
     public SCEColor? BgColor
     {
         get => _bgColor;
-        set => Update(value, ref _bgColor);
+        set => Update(ref _bgColor, value);
     }
 
     private Anchor? _anchor;
@@ -83,7 +84,7 @@ public class ListItem : IUpdate
     public Anchor? Anchor
     {
         get => _anchor;
-        set => Update(value, ref _anchor);
+        set => Update(ref _anchor, value);
     }
 
     private bool? _fitToLength;
@@ -94,7 +95,7 @@ public class ListItem : IUpdate
     public bool? FitToLength
     {
         get => _fitToLength;
-        set => Update(value, ref _fitToLength);
+        set => Update(ref _fitToLength, value);
     }
 
     public string GetText()
@@ -122,27 +123,41 @@ public class ListItem : IUpdate
         return FitToLength ?? Inherited?.GetFitToLength() ?? false;
     }
 
-    public IEnumerable<ListItem> SubLine(IEnumerable<string> lineText)
+    public UpdateList<ListItem> FromTemplate(IList<string> lines)
     {
-        foreach (string text in lineText)
+        var list = new UpdateList<ListItem>(lines.Count);
+
+        foreach (string text in lines)
         {
-            yield return new ListItem()
-            {
-                Inherited = this,
-                Text = text,
-            };
+            list.Add(FromTemplate(text));
         }
+
+        return list;
     }
 
-    private void Update<T>(T value, ref T field)
+    public ListItem FromTemplate(string text)
     {
-        if (EqualityComparer<T>.Default.Equals(value, field))
+        var inherit = this;
+        return new ListItem()
+        {
+            Inherited = inherit,
+            Text = text,
+        };
+    }
+
+    private void Inherited_OnUpdate()
+    {
+        Updated?.Invoke();
+    }
+
+    private void Update<T>(ref T field, T value)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value))
         {
             return;
         }
 
         field = value;
-
-        OnUpdate?.Invoke();
+        Updated?.Invoke();
     }
 }

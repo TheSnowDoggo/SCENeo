@@ -27,12 +27,12 @@ public sealed partial class List : UiBase, IRenderable
 
             if (_items != null)
             {
-                _items.OnUpdate -= Lines_OnUpdate;
+                _items.Updated -= Lines_OnUpdate;
             }
 
             if (value != null)
             {
-                value.OnUpdate += Lines_OnUpdate;
+                value.Updated += Lines_OnUpdate;
             }
 
             _items = value!;

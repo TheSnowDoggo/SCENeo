@@ -333,6 +333,6 @@ public partial struct Vec2 : IEquatable<Vec2>
 
     public readonly override string ToString()
     {
-        return $"{{ {X}, {Y} }}";
+        return $"{X}, {Y}";
     }
 }

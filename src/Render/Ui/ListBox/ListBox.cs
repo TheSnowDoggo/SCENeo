@@ -30,15 +30,15 @@ public sealed partial class ListBox : UiBase, IRenderable
 
             if (_items != null)
             {
-                _items.OnUpdate -= Option_OnUpdate;
+                _items.Updated -= Option_OnUpdate;
             }
 
             if (value != null)
             {
-                value.OnUpdate += Option_OnUpdate;
+                value.Updated += Option_OnUpdate;
             }
 
-            _items = value!;
+            _items = value;
             _update = true;
         }
     }

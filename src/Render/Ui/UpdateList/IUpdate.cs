@@ -8,5 +8,5 @@ public interface IUpdate
     /// <summary>
     /// Action invoked on update.
     /// </summary>
-    event Action OnUpdate;
+    event Action Updated;
 }

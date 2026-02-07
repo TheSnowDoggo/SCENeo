@@ -56,7 +56,7 @@ public sealed class TextEntry
         set => _sb = new StringBuilder(value);
     }
 
-    public int MaxCharacters { get; set; }
+    public int MaxCharacters { get; set; } = int.MaxValue;
 
     public IReadOnlyDictionary<ConsoleKey, EntryKey> KeyMappings { get; set; } = DefaultKeyMappings;
 
@@ -71,10 +71,10 @@ public sealed class TextEntry
         switch (key)
         {
         case EntryKey.Enter:
-            Enter.Invoke();
+            Enter?.Invoke();
             break;
         case EntryKey.Exit:
-            Exit.Invoke();
+            Exit?.Invoke();
             break;
         case EntryKey.Delete:
             Delete();

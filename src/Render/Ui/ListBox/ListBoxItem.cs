@@ -5,7 +5,7 @@
 /// </summary>
 public class ListBoxItem : IUpdate
 {
-    public event Action OnUpdate;
+    public event Action Updated;
 
     public ListBoxItem()
     {
@@ -28,17 +28,17 @@ public class ListBoxItem : IUpdate
 
             if (_inherited != null)
             {
-                _inherited.OnUpdate -= OnUpdate;
+                _inherited.Updated -= Inherited_OnUpdate;
             }
 
             if (value != null)
             {
-                value.OnUpdate += OnUpdate;
+                value.Updated += Inherited_OnUpdate;
             }
 
-            _inherited = value!;
+            _inherited = value;
 
-            OnUpdate?.Invoke();
+            Updated?.Invoke();
         }
     }
 
@@ -50,7 +50,7 @@ public class ListBoxItem : IUpdate
     public string Text
     {
         get { return _text; }
-        set { Update(value, ref _text); }
+        set { Update(ref _text, value); }
     }
 
     private SCEColor? _selectedFgColor;
@@ -61,7 +61,7 @@ public class ListBoxItem : IUpdate
     public SCEColor? SelectedFgColor
     {
         get => _selectedFgColor;
-        set => Update(value, ref _selectedFgColor);
+        set => Update(ref _selectedFgColor, value);
     }
 
     private SCEColor? _selectedBgColor;
@@ -72,7 +72,7 @@ public class ListBoxItem : IUpdate
     public SCEColor? SelectedBgColor
     {
         get => _selectedBgColor;
-        set => Update(value, ref _selectedBgColor);
+        set => Update(ref _selectedBgColor, value);
     }
 
     private SCEColor? _unselectedFgColor;
@@ -83,7 +83,7 @@ public class ListBoxItem : IUpdate
     public SCEColor? UnselectedFgColor
     {
         get => _unselectedFgColor;
-        set => Update(value, ref _unselectedFgColor);
+        set => Update(ref _unselectedFgColor, value);
     }
 
     private SCEColor? _unselectedBgColor;
@@ -94,7 +94,7 @@ public class ListBoxItem : IUpdate
     public SCEColor? UnselectedBgColor
     {
         get => _unselectedBgColor;
-        set => Update(value, ref _unselectedBgColor);
+        set => Update(ref _unselectedBgColor, value);
     }
 
     private Anchor? _anchor;
@@ -105,7 +105,7 @@ public class ListBoxItem : IUpdate
     public Anchor? Anchor
     {
         get => _anchor;
-        set => Update(value, ref _anchor);
+        set => Update(ref _anchor, value);
     }
 
     private bool? _fitToLength;
@@ -116,7 +116,7 @@ public class ListBoxItem : IUpdate
     public bool? FitToLength
     {
         get => _fitToLength;
-        set => Update(value, ref _fitToLength);
+        set => Update(ref _fitToLength, value);
     }
 
     public string GetText()
@@ -154,24 +154,41 @@ public class ListBoxItem : IUpdate
         return FitToLength ?? Inherited?.GetFitToLength() ?? false;
     }
 
-    public IEnumerable<ListBoxItem> SubOption(IEnumerable<string> optionText)
+    public UpdateList<ListBoxItem> FromTemplate(IList<string> lines)
     {
-        foreach (string text in optionText)
+        var list = new UpdateList<ListBoxItem>(lines.Count);
+
+        foreach (string text in lines)
         {
-            yield return new ListBoxItem()
-            {
-                Inherited = this,
-                Text = text,
-            };
+            list.Add(FromTemplate(text));
         }
+
+        return list;
     }
 
-    private void Update<T>(T value, ref T field)
+    public ListBoxItem FromTemplate(string text)
     {
-        if (!EqualityComparer<T>.Default.Equals(value, field))
+        var inherit = this;
+        return new ListBoxItem()
         {
-            field = value;
-            OnUpdate?.Invoke();
+            Inherited = inherit,
+            Text = text,
+        };
+    }
+
+    private void Inherited_OnUpdate()
+    {
+        Updated?.Invoke();
+    }
+
+    private void Update<T>(ref T field, T value)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value))
+        {
+            return;
         }
+
+        field = value;
+        Updated?.Invoke();
     }
 }

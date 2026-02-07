@@ -6,12 +6,12 @@ namespace SCENeo.Ui;
 /// Represents a list of update items.
 /// </summary>
 /// <typeparam name="T">The stored <see cref="IUpdate"/> type.</typeparam>
-public sealed class UpdateList<T> : IReadOnlyList<T>, IUpdate
+public sealed class UpdateList<T> : IList<T>, IUpdate
     where T : IUpdate
 {
     private readonly List<T> _list = [];
 
-    public event Action OnUpdate;
+    public event Action Updated;
 
     public UpdateList()
     {
@@ -44,9 +44,11 @@ public sealed class UpdateList<T> : IReadOnlyList<T>, IUpdate
         }
     }
 
-    public int Count { get { return _list.Count; } }
+    public int Count => _list.Count;
 
-    public int Capacity { get { return _list.Capacity; } }
+    public int Capacity => _list.Capacity;
+
+    public bool IsReadOnly => false;
 
     public void Add(T item)
     {
@@ -82,12 +84,34 @@ public sealed class UpdateList<T> : IReadOnlyList<T>, IUpdate
         _list.RemoveAt(index);
     }
 
+    public int IndexOf(T item)
+    {
+        return _list.IndexOf(item);
+    }
+
+    public bool Contains(T item)
+    {
+        return _list.Contains(item);
+    } 
+
+    public void Insert(int index, T item)
+    {
+        _list.Insert(index, item);
+
+        Hook(item);
+    }
+
     public void RemoveRange(int index, int count)
     {
         for (int i = 0; i < count; i++)
         {
             RemoveAt(index + i);
         }
+    }
+
+    public void CopyTo(T[] array, int arrayIndex)
+    {
+        _list.CopyTo(array, arrayIndex);
     }
 
     public void Clear()
@@ -114,7 +138,7 @@ public sealed class UpdateList<T> : IReadOnlyList<T>, IUpdate
     {
         if (item != null)
         {
-            item.OnUpdate += Item_Update;
+            item.Updated += Item_Update;
         }
     }
 
@@ -122,12 +146,12 @@ public sealed class UpdateList<T> : IReadOnlyList<T>, IUpdate
     {
         if (item != null)
         {
-            item.OnUpdate -= Item_Update;
+            item.Updated -= Item_Update;
         }
     }
 
     private void Item_Update()
     {
-        OnUpdate?.Invoke();
+        Updated?.Invoke();
     }
 }
