@@ -125,7 +125,7 @@ public sealed class UiConsole : TextWriter, IRenderable
     public SCEColor ForegroundColor { get; set; } = SCEColor.Gray;
     public SCEColor BackgroundColor { get; set; }
 
-    public Pixel VoidPixel { get; set; }
+    public Pixel BasePixel { get; set; }
 
     private Vec2I _cursorPosition;
 
@@ -244,7 +244,7 @@ public sealed class UiConsole : TextWriter, IRenderable
 
     public void Clear()
     {
-        _buffer.Clear();
+        _buffer.Fill(BasePixel);
         CursorPosition = Vec2I.Zero;
         Scroll = Vec2I.Zero;
         _update = true;
@@ -305,6 +305,7 @@ public sealed class UiConsole : TextWriter, IRenderable
         }
 
         _buffer = new ShiftBuffer<Pixel>(_bufferWidth * _bufferHeight);
+        _buffer.Fill(BasePixel);
 
         _bufferUpdate = false;
     }
@@ -338,7 +339,7 @@ public sealed class UiConsole : TextWriter, IRenderable
 
         for (int i = 0; i < BufferWidth; i++)
         {
-            _buffer[start + i] = VoidPixel;
+            _buffer[start + i] = BasePixel;
         }
     }
 
@@ -368,7 +369,7 @@ public sealed class UiConsole : TextWriter, IRenderable
     {
         if (index < 0 || index >= _buffer.Count)
         {
-            return VoidPixel;
+            return BasePixel;
         }
 
         return _buffer[index];

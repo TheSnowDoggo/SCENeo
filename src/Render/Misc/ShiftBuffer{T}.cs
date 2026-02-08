@@ -64,6 +64,11 @@ public sealed class ShiftBuffer<T> : IReadOnlyList<T>
         Array.Clear(_buffer);
     }
 
+    public void Fill(T value)
+    {
+        Array.Fill(_buffer, value);
+    }
+
     public IEnumerator<T> GetEnumerator()
     {
         for (int i = 0; i < _buffer.Length; i++)
