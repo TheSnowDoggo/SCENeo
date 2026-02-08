@@ -112,6 +112,8 @@ public sealed partial class ListBox : UiBase, IRenderable
 
     public void ScrollMove(int move)
     {
+        if (Items.Count == 0) return;
+
         Selected = Math.Clamp(Selected + move, 0, Items.Count - 1);
 
         Scroll = Math.Max(1 + Selected - Height, 0);

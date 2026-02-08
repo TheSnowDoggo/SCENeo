@@ -7,6 +7,8 @@ namespace SCENeo;
 /// </summary>
 public partial struct Vec2 : IEquatable<Vec2>
 {
+    public const int Bytes = 2 * 4;
+
     /// <summary>
     /// The x-component of this vector.
     /// </summary>

@@ -53,16 +53,20 @@ public sealed class UpdateList<T> : IList<T>, IUpdate
     public void Add(T item)
     {
         _list.Add(item);
-
         Hook(item);
+
+        Item_Update();
     }
 
     public void AddRange(IEnumerable<T> collection)
     {
         foreach (T item in collection)
         {
-            Add(item);
+            _list.Add(item);
+            Hook(item);
         }
+
+        Item_Update();
     }
 
     public bool Remove(T item)
@@ -74,6 +78,8 @@ public sealed class UpdateList<T> : IList<T>, IUpdate
 
         Unhook(item);
 
+        Item_Update();
+
         return true;
     }
 
@@ -82,6 +88,8 @@ public sealed class UpdateList<T> : IList<T>, IUpdate
         Unhook(_list[index]);
 
         _list.RemoveAt(index);
+
+        Item_Update();
     }
 
     public int IndexOf(T item)
@@ -105,8 +113,11 @@ public sealed class UpdateList<T> : IList<T>, IUpdate
     {
         for (int i = 0; i < count; i++)
         {
-            RemoveAt(index + i);
+            Unhook(_list[index + i]);
+            _list.RemoveAt(index + i);
         }
+
+        Item_Update();
     }
 
     public void CopyTo(T[] array, int arrayIndex)
@@ -122,6 +133,8 @@ public sealed class UpdateList<T> : IList<T>, IUpdate
         }
 
         _list.Clear();
+
+        Item_Update();
     }
 
     public IEnumerator<T> GetEnumerator()
