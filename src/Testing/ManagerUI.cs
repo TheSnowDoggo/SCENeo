@@ -80,10 +80,10 @@ internal sealed class ManagerUi
         OnInput(Console.ReadKey(true));
     }
 
-    private void Display_OnResize(int width, int height)
+    private void Display_OnResize(Vec2I size)
     {
-        _viewport.Width  = width;
-        _viewport.Height = height;
+        _viewport.Width  = size.X;
+        _viewport.Height = size.Y;
     }
 
     private void OnInput(ConsoleKeyInfo cki)

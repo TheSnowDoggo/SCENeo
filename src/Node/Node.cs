@@ -17,7 +17,7 @@ public class Node
             _tree = tree;
         }
     }
-
+    
     public string Name
     {
         get => _name;

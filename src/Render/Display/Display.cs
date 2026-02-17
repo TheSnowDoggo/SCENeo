@@ -5,14 +5,13 @@
 /// </summary>
 public sealed class Display
 {
-    private int _width;
-    private int _height;
+    private Vec2I _size;
 
     public Display()
     {
     }
 
-    public Display(DisplayResize resized)
+    public Display(Action<Vec2I> resized)
     {
         Resized = resized;
     }
@@ -30,22 +29,19 @@ public sealed class Display
     /// <summary>
     /// Called when the output size channges.
     /// </summary>
-    public event DisplayResize Resized;
+    public event Action<Vec2I> Resized;
 
     /// <summary>
     /// Renders the <see cref="Renderable"/> to the <see cref="Output"/>.
     /// </summary>
     public void Update()
     {
-        int width  = Output.Width;
-        int height = Output.Height;
+        Vec2I size = new Vec2I(Output.Width, Output.Height);
 
-        if (width != _width || height != _height)
+        if (size != _size)
         {
-            _width = width;
-            _height = height;
-
-            Resized?.Invoke(width, height);
+            _size = size;
+            Resized?.Invoke(size);
         }
 
         IView<Pixel> view = Renderable.Render();

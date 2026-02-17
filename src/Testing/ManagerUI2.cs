@@ -117,12 +117,12 @@ internal sealed class ManagerUI2
         _display.Update();
     }
 
-    private void Display_OnResize(int width, int height)
+    private void Display_OnResize(Vec2I size)
     {
-        _viewport.Width  = width;
-        _viewport.Height = height;
+        _viewport.Width  = size.X;
+        _viewport.Height = size.Y;
 
-        _renderChannel.Width  = width;
-        _renderChannel.Height = height;
+        _renderChannel.Width  = size.X;
+        _renderChannel.Height = size.Y;
     }
 }

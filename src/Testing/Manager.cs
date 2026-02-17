@@ -129,12 +129,12 @@ internal sealed class Manager
         _fpsUI.Text = $"FPS: {_updater.FPS}\n{_tree.Root.GetNode<Node2D>("Enemy").GlobalPosition}";
     }
 
-    private void Display_OnResize(int width, int height)
+    private void Display_OnResize(Vec2I size)
     {
-        _viewport.Width  = width;
-        _viewport.Height = height;
+        _viewport.Width  = size.X;
+        _viewport.Height = size.Y;
 
-        _re.Channels[1].Width = width;
-        _re.Channels[1].Width = height;
+        _re.Channels[1].Width = size.X;
+        _re.Channels[1].Width = size.Y;
     }
 }
