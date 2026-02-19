@@ -1,23 +1,54 @@
-﻿namespace SCENeo.Scenes;
+﻿using System.Collections;
 
-public sealed class SceneManager : Scene
+namespace SCENeo.Scenes;
+
+public class SceneManager : Scene, IReadOnlyList<Scene>
 {
-	public IReadOnlyDictionary<string, Scene> Scenes { get; set; }
+	private readonly List<Scene> _scenes = [];
 
-	public Scene Get(string name)
+	public int Count => _scenes.Count;
+	
+	public Scene InputFocus { get; set; }
+	
+	public Scene this[int index] => _scenes[index];
+	
+	public void Add(Scene scene)
 	{
-		return Scenes[name];
+		_scenes.Add(scene);
+		scene.Parent = this;
 	}
 
-	public T Get<T>(string name)
-		where T : Scene
+	public bool Remove(Scene scene)
 	{
-		return (T)Scenes[name];
+		if (!_scenes.Remove(scene))
+		{
+			return false;
+		}
+		scene.Parent = null;
+		return true;
+	}
+
+	public override void Open()
+	{
+		base.Open();
+		foreach (var scene in _scenes)
+		{
+			scene.Open();
+		}
+	}
+	
+	public override void Close()
+	{
+		base.Close();
+		foreach (var scene in _scenes)
+		{
+			scene.Close();
+		}
 	}
 
 	public override void Start()
 	{
-		foreach (var scene in Scenes.Values)
+		foreach (var scene in _scenes)
 		{
 			scene.Start();
 		}
@@ -25,7 +56,7 @@ public sealed class SceneManager : Scene
 
 	public override void Update(double delta)
 	{
-		foreach (var scene in Scenes.Values)
+		foreach (var scene in _scenes)
 		{
 			if (!scene.Enabled)
 			{
@@ -38,7 +69,7 @@ public sealed class SceneManager : Scene
 
 	public override IEnumerable<IRenderable> Render()
 	{
-		foreach (var scene in Scenes.Values)
+		foreach (var scene in _scenes)
 		{
 			if (!scene.Enabled || !scene.Visible)
 			{
@@ -54,7 +85,7 @@ public sealed class SceneManager : Scene
 
 	public override void DisplayResize(Vec2I size)
 	{
-		foreach (var scene in Scenes.Values)
+		foreach (var scene in _scenes)
 		{
 			scene.DisplayResize(size);
 		}
@@ -62,7 +93,7 @@ public sealed class SceneManager : Scene
 
 	public override void RawInput(ConsoleKeyInfo cki)
 	{
-		foreach (var scene in Scenes.Values)
+		foreach (var scene in _scenes)
 		{
 			if (!scene.Enabled)
 			{
@@ -70,6 +101,27 @@ public sealed class SceneManager : Scene
 			}
 			
 			scene.RawInput(cki);
+
+			if (InputFocus == scene)
+			{
+				scene.FocusedInput(cki);
+				continue;
+			}
+
+			if (InputFocus == null)
+			{
+				scene.UnfocusedInput(cki);
+			}
 		}
+	}
+
+	public IEnumerator<Scene> GetEnumerator()
+	{
+		return _scenes.GetEnumerator();
+	}
+
+	IEnumerator IEnumerable.GetEnumerator()
+	{
+		return GetEnumerator();
 	}
 }
