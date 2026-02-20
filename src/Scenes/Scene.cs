@@ -14,7 +14,7 @@ public abstract class Scene
 		Close();
 		scene.Open();
 	}
-	
+
 	public virtual void Open()
 	{
 		Enabled = true;

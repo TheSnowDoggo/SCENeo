@@ -11,7 +11,7 @@ public class SceneManager : Scene, IReadOnlyList<Scene>
 	public Scene InputFocus { get; set; }
 	
 	public Scene this[int index] => _scenes[index];
-	
+
 	public void Add(Scene scene)
 	{
 		_scenes.Add(scene);
@@ -91,8 +91,10 @@ public class SceneManager : Scene, IReadOnlyList<Scene>
 		}
 	}
 
-	public override void RawInput(ConsoleKeyInfo cki)
+	public override void UnfocusedInput(ConsoleKeyInfo cki)
 	{
+		var focus = InputFocus;
+		
 		foreach (var scene in _scenes)
 		{
 			if (!scene.Enabled)
@@ -100,18 +102,18 @@ public class SceneManager : Scene, IReadOnlyList<Scene>
 				continue;
 			}
 			
-			scene.RawInput(cki);
-
-			if (InputFocus == scene)
+			if (focus == scene)
 			{
 				scene.FocusedInput(cki);
 				continue;
 			}
-
-			if (InputFocus == null)
+			
+			if (focus == null)
 			{
 				scene.UnfocusedInput(cki);
 			}
+			
+			scene.RawInput(cki);
 		}
 	}
 
