@@ -2,29 +2,11 @@
 
 public sealed class DisplayMap : Image, IRenderable
 {
-    public DisplayMap() 
-        : base() 
-    {
-    }
-
-    public DisplayMap(Pixel[,] data) 
-        : base(data) 
-    {
-    }
-
-    public DisplayMap(Grid2D<Pixel> grid) 
-        : base(grid) 
-    {
-    }
-
-    public DisplayMap(int width, int height) : base(width, height) 
-    {
-    }
-
-    public DisplayMap(Vec2I size) 
-        : base(size) 
-    {
-    }
+    public DisplayMap() { }
+    public DisplayMap(Pixel[,] data) : base(data) { }
+    public DisplayMap(Grid2D<Pixel> grid) : base(grid) { }
+    public DisplayMap(int width, int height) : base(width, height) { }
+    public DisplayMap(Vec2I size) : base(size) { }
 
     /// <inheritdoc cref="UiBase.Visible"/>
     public bool Visible { get; set; } = true;
@@ -49,7 +31,7 @@ public sealed class DisplayMap : Image, IRenderable
     }
 
     /// <inheritdoc cref="Image.Plain(Vec2I, Pixel)"/>
-    public static new DisplayMap Plain(Vec2I size, Pixel pixel)
+    public new static DisplayMap Plain(Vec2I size, Pixel pixel)
     {
         return Plain(size.X, size.Y, pixel);
     }

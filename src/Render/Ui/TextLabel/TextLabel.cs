@@ -9,12 +9,8 @@ public sealed class TextLabel : UiBase, IRenderable
 {
     private readonly Image _buffer = [];
 
-    private bool _update = false;
+    private bool _update;
 
-    public TextLabel()
-    {
-    }
-    
     private int _width;
 
     /// <summary>
@@ -22,8 +18,8 @@ public sealed class TextLabel : UiBase, IRenderable
     /// </summary>
     public int Width
     {
-        get { return _width; }
-        set { SCEUtils.ObserveSet(value, ref _width, ref _update); }
+        get => _width;
+        set => ObserveSet(ref _width, value, ref _update);
     }
 
     private int _height;
@@ -33,8 +29,8 @@ public sealed class TextLabel : UiBase, IRenderable
     /// </summary>
     public int Height
     {
-        get { return _height; }
-        set { SCEUtils.ObserveSet(value, ref _height, ref _update); }
+        get => _height;
+        set => ObserveSet(ref _height, value, ref _update);
     }
 
     private Pixel _basePixel;
@@ -44,8 +40,8 @@ public sealed class TextLabel : UiBase, IRenderable
     /// </summary>
     public Pixel BasePixel
     {
-        get { return _basePixel; }
-        set { SCEUtils.ObserveSet(value, ref _basePixel, ref _update); }
+        get => _basePixel;
+        set => ObserveSet(ref _basePixel, value, ref _update);
     }
 
     private string _text = string.Empty;
@@ -55,8 +51,8 @@ public sealed class TextLabel : UiBase, IRenderable
     /// </summary>
     public string Text
     {
-        get { return _text; }
-        set { SCEUtils.ObserveSet(value, ref _text, ref _update); }
+        get => _text;
+        set => ObserveSet(ref _text, value, ref _update);
     }
 
     private SCEColor _textFgColor = SCEColor.Gray;
@@ -66,8 +62,8 @@ public sealed class TextLabel : UiBase, IRenderable
     /// </summary>
     public SCEColor TextFgColor
     {
-        get { return _textFgColor; }
-        set { SCEUtils.ObserveSet(value, ref _textFgColor, ref _update); }
+        get => _textFgColor;
+        set => ObserveSet(ref _textFgColor, value, ref _update);
     }
 
     private SCEColor _textBgColor = SCEColor.Black;
@@ -77,19 +73,19 @@ public sealed class TextLabel : UiBase, IRenderable
     /// </summary>
     public SCEColor TextBgColor
     {
-        get { return _textBgColor; }
-        set { SCEUtils.ObserveSet(value, ref _textBgColor, ref _update); }
+        get => _textBgColor;
+        set => ObserveSet(ref _textBgColor, value, ref _update);
     }
 
-    private Anchor _textAnchor = Anchor.None;
+    private Anchor _textAnchor;
 
     /// <summary>
     /// Gets or sets the text anchor alignment.
     /// </summary>
     public Anchor TextAnchor
     {
-        get { return _textAnchor; }
-        set { SCEUtils.ObserveSet(value, ref _textAnchor, ref _update); }
+        get => _textAnchor;
+        set => ObserveSet(ref _textAnchor, value, ref _update);
     }
 
     private TextWrapping _textWrapping;
@@ -99,8 +95,8 @@ public sealed class TextLabel : UiBase, IRenderable
     /// </summary>
     public TextWrapping TextWrapping
     {
-        get { return _textWrapping; }
-        set { SCEUtils.ObserveSet(value, ref _textWrapping, ref _update); }
+        get => _textWrapping;
+        set => ObserveSet(ref _textWrapping, value, ref _update);
     }
 
     private bool _fitToLength;
@@ -110,8 +106,8 @@ public sealed class TextLabel : UiBase, IRenderable
     /// </summary>
     public bool FitToLength
     {
-        get { return _fitToLength; }
-        set { SCEUtils.ObserveSet(value, ref _fitToLength, ref _update); }
+        get => _fitToLength;
+        set => ObserveSet(ref _fitToLength, value, ref _update);
     }
 
     public IView<Pixel> Render()
@@ -171,11 +167,13 @@ public sealed class TextLabel : UiBase, IRenderable
                 sb.Append(Text[i]);
             }
 
-            if (newline || (sb.Length == Width && (i == Text.Length - 1 || Text[i + 1] != '\n')))
+            if (!newline && (sb.Length != Width || (i != Text.Length - 1 && Text[i + 1] == '\n')))
             {
-                list.Add(sb.ToString());
-                sb.Clear();
+                continue;
             }
+            
+            list.Add(sb.ToString());
+            sb.Clear();
         }
 
         if (sb.Length != 0)
@@ -231,14 +229,11 @@ public sealed class TextLabel : UiBase, IRenderable
         return list;
     }
 
-    private IReadOnlyList<string> GetLines()
+    private IReadOnlyList<string> GetLines() => TextWrapping switch
     {
-        return TextWrapping switch
-        {
-            TextWrapping.None      => Text.Split('\n'),
-            TextWrapping.Character => CharacterSplitLines(),
-            TextWrapping.Word      => WordSplitLines(),
-            _ => throw new Exception($"Impossible wrapping mode {TextWrapping}")
-        };
-    }
+        TextWrapping.None      => Text.Split('\n'),
+        TextWrapping.Character => CharacterSplitLines(),
+        TextWrapping.Word      => WordSplitLines(),
+        _ => throw new Exception($"Impossible wrapping mode {TextWrapping}")
+    };
 }

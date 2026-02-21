@@ -4,43 +4,14 @@ namespace SCENeo.Ui;
 /// <summary>
 /// A class representing a single line in a <see cref="List"/>.
 /// </summary>
-public class ListItem : IUpdate
+public class ListItem : UpdateBase
 {
-    /// <summary>
-    /// Action invoked on property update.
-    /// </summary>
-    public event Action Updated;
-
-    public ListItem()
-    {
-    }
-
     private ListItem _inherited;
 
     public ListItem Inherited
     {
-        get { return _inherited; }
-        set
-        {
-            if (value == _inherited)
-            {
-                return;
-            }
-
-            if (_inherited != null)
-            {
-                _inherited.Updated -= Inherited_OnUpdate;
-            }
-
-            if (value != null)
-            {
-                value.Updated += Inherited_OnUpdate;
-            }
-
-            _inherited = value;
-
-            Updated?.Invoke();
-        }
+        get => _inherited;
+        set => ObserveSet(ref _inherited, value, Update);
     }
 
     private string _text;
@@ -51,7 +22,7 @@ public class ListItem : IUpdate
     public string Text
     {
         get => _text;
-        set => Update(ref _text, value);
+        set => ObserveSet(ref _text, value);
     }
 
     private SCEColor? _fgColor;
@@ -62,7 +33,7 @@ public class ListItem : IUpdate
     public SCEColor? FgColor
     {
         get => _fgColor;
-        set => Update(ref _fgColor, value);
+        set => ObserveSet(ref _fgColor, value);
     }
 
     private SCEColor? _bgColor;
@@ -73,7 +44,7 @@ public class ListItem : IUpdate
     public SCEColor? BgColor
     {
         get => _bgColor;
-        set => Update(ref _bgColor, value);
+        set => ObserveSet(ref _bgColor, value);
     }
 
     private Anchor? _anchor;
@@ -84,7 +55,7 @@ public class ListItem : IUpdate
     public Anchor? Anchor
     {
         get => _anchor;
-        set => Update(ref _anchor, value);
+        set => ObserveSet(ref _anchor, value);
     }
 
     private bool? _fitToLength;
@@ -95,7 +66,7 @@ public class ListItem : IUpdate
     public bool? FitToLength
     {
         get => _fitToLength;
-        set => Update(ref _fitToLength, value);
+        set => ObserveSet(ref _fitToLength, value);
     }
 
     public string GetText()
@@ -143,21 +114,5 @@ public class ListItem : IUpdate
             Inherited = inherit,
             Text = text,
         };
-    }
-
-    private void Inherited_OnUpdate()
-    {
-        Updated?.Invoke();
-    }
-
-    private void Update<T>(ref T field, T value)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value))
-        {
-            return;
-        }
-
-        field = value;
-        Updated?.Invoke();
     }
 }

@@ -19,8 +19,8 @@ public sealed class ProgressBar : UiBase, IRenderable
     /// </summary>
     public int Width
     {
-        get { return _width; }
-        set { SCEUtils.ObserveSet(value, ref _width, ref _update); }
+        get => _width;
+        set => ObserveSet(ref _width, value, ref _update);
     }
 
     private int _height;
@@ -30,73 +30,65 @@ public sealed class ProgressBar : UiBase, IRenderable
     /// </summary>
     public int Height
     {
-        get { return _height; }
-        set { SCEUtils.ObserveSet(value, ref _height, ref _update); }
+        get => _height;
+        set => ObserveSet(ref _height, value, ref _update);
     }
 
-    private ProgressBarFlow _mode = ProgressBarFlow.LeftRight;
+    private ProgressBarFlow _mode;
 
     public ProgressBarFlow Mode
     {
-        get { return _mode; }
-        set { SCEUtils.ObserveSet(value, ref _mode, ref _update); }
+        get => _mode;
+        set => ObserveSet(ref _mode, value, ref _update);
     }
 
-    private double _min = 0;
+    private double _min;
 
     public double Min
     {
-        get { return _min; }
-        set { SCEUtils.ObserveSet(value, ref _min, ref _valueUpdate); }
+        get => _min;
+        set => ObserveSet(ref _min, value, ref _update);
     }
 
-    private double _max = 0;
+    private double _max;
 
     public double Max
     {
-        get { return _max; }
-        set { SCEUtils.ObserveSet(value, ref _max, ref _valueUpdate); }
+        get => _max;
+        set => ObserveSet(ref _max, value, ref _update);
     }
 
-    private double _value = 0;
+    private double _value;
 
     public double Value
     {
-        get { return _value; }
-        set { SCEUtils.ObserveSet(value, ref _value, ref _valueUpdate); }
+        get => _value;
+        set => ObserveSet(ref _value, value, ref _update);
     }
 
-    private Pixel _fillPixel = new Pixel(SCEColor.Green);
+    private Pixel _fillPixel = Pixel.Green;
 
     public Pixel FillPixel
     {
-        get { return _fillPixel; }
-        set { SCEUtils.ObserveSet(value, ref _fillPixel, ref _update); }
+        get => _fillPixel;
+        set => ObserveSet(ref _fillPixel, value, ref _update);
     }
 
-    private Pixel _backPixel = new Pixel(SCEColor.DarkGray);
+    private Pixel _backPixel = Pixel.DarkGray;
 
     public Pixel BackPixel
     {
-        get { return _backPixel; }
-        set { SCEUtils.ObserveSet(value, ref _backPixel, ref _update); }
+        get => _backPixel;
+        set => ObserveSet(ref _backPixel, value, ref _update);
     }
 
-    public bool Horizontal
-    {
-        get { return Mode is ProgressBarFlow.LeftRight or ProgressBarFlow.RightLeft; }
-    }
+    public bool Horizontal => Mode is ProgressBarFlow.LeftRight or ProgressBarFlow.RightLeft;
 
+    public int FillEnd => Horizontal ? Width : Height;
+    
     public int Fill()
     {
-        int end = FillEnd();
-
-        return Math.Clamp((int)Math.Round(Value.Unlerp(Min, Max).Lerp(0, end)), 0, end);
-    }
-
-    public int FillEnd()
-    {
-        return Horizontal ? Width : Height;
+        return Math.Clamp((int)Math.Round(Value.Unlerp(Min, Max).Lerp(0, FillEnd)), 0, FillEnd);
     }
 
     public IView<Pixel> Render()
@@ -146,7 +138,7 @@ public sealed class ProgressBar : UiBase, IRenderable
             break;
         }
 
-        _update      = false;
+        _update  = false;
         _valueUpdate = false;
     }
 }

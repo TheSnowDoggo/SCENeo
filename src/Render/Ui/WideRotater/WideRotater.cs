@@ -24,19 +24,14 @@ public sealed class WideRotater : UiModifier<IRenderable>
     {
         IView<Pixel> view = Source.Render();
 
-        switch (Rotation)
+        return Rotation switch
         {
-        case Rotation.None:
-            return view;
-        case Rotation.Right:
-            return Rotated90(view);
-        case Rotation.Flip:
-            return Grid2D<Pixel>.Rotated180(view);
-        case Rotation.Left:
-            return Rotated90(view);
-        default:
-            throw new InvalidDataException($"Rotation is invalid {Rotation}");
-        }
+            Rotation.None  => view,
+            Rotation.Right => Rotated90(view),
+            Rotation.Flip  => Grid2D<Pixel>.Rotated180(view),
+            Rotation.Left  => Rotated90(view),
+            _ => throw new InvalidDataException($"Rotation is invalid {Rotation}"),
+        };
     }
 
     private Grid2D<Pixel> Rotated90(IView<Pixel> view)

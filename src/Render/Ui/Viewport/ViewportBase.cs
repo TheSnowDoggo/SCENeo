@@ -32,12 +32,12 @@ public abstract class ViewportBase : UiBase, IRenderable
     /// <summary>
     /// Gets or sets the base pixel.
     /// </summary>
-    public Pixel BasePixel { get; set; } = Pixel.Black;
+    public Pixel BasePixel { get; set; }
 
     /// <summary>
     /// Gets or sets the source of renderables.
     /// </summary>
-    public IEnumerable<IRenderable> Source { get; set; } = default!;
+    public IEnumerable<IRenderable> Source { get; set; }
 
     public abstract IView<Pixel> Render();
 

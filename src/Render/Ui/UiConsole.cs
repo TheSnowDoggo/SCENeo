@@ -15,10 +15,6 @@ public sealed class UiConsole : TextWriter, IRenderable
 
     private bool _bufferUpdate;
 
-    public UiConsole()
-    {
-    }
-
     /// <inheritdoc cref="UiBase.Visible"/>
     public bool Visible { get; set; } = true;
 
@@ -38,8 +34,8 @@ public sealed class UiConsole : TextWriter, IRenderable
     /// </summary>
     public int Width
     {
-        get { return _width; }
-        set { SCEUtils.ObserveSet(value, ref _width, ref _update); }
+        get => _width;
+        set => SCEUtils.ObserveSet(ref _width, value,  ref _update); 
     }
 
     private int _height;
@@ -49,8 +45,8 @@ public sealed class UiConsole : TextWriter, IRenderable
     /// </summary>
     public int Height
     {
-        get { return _height; }
-        set { SCEUtils.ObserveSet(value, ref _height, ref _update); }
+        get => _height;
+        set => SCEUtils.ObserveSet(ref _height, value, ref _update);
     }
 
     private Vec2I _scroll;
@@ -60,8 +56,8 @@ public sealed class UiConsole : TextWriter, IRenderable
     /// </summary>
     public Vec2I Scroll
     {
-        get { return _scroll; }
-        set { SCEUtils.ObserveSet(value, ref _scroll, ref _update); }
+        get => _scroll;
+        set => SCEUtils.ObserveSet(ref _scroll, value, ref _update);
     }
 
     private int _bufferWidth;
@@ -74,10 +70,7 @@ public sealed class UiConsole : TextWriter, IRenderable
     /// </remarks>
     public int BufferWidth
     {
-        get
-        {
-            return _bufferWidth;
-        }
+        get => _bufferWidth;
         set
         {
             if (value == _bufferWidth)
@@ -86,9 +79,7 @@ public sealed class UiConsole : TextWriter, IRenderable
             }
 
             _bufferWidth = value;
-
             _bufferUpdate = true;
-
             _cursorPosition = Vec2I.Zero;
         }
     }
@@ -103,10 +94,7 @@ public sealed class UiConsole : TextWriter, IRenderable
     /// </remarks>
     public int BufferHeight
     {
-        get
-        {
-            return _bufferHeight;
-        }
+        get => _bufferHeight;
         set
         {
             if (value == _bufferHeight)
@@ -115,9 +103,7 @@ public sealed class UiConsole : TextWriter, IRenderable
             }
 
             _bufferHeight = value;
-
             _bufferUpdate = true;
-
             _cursorPosition = Vec2I.Zero;
         }
     }
@@ -131,10 +117,7 @@ public sealed class UiConsole : TextWriter, IRenderable
 
     public Vec2I CursorPosition
     {
-        get
-        {
-            return _cursorPosition;
-        }
+        get => _cursorPosition;
         set
         {
             if (value.X < 0 || value.Y < 0 ||
@@ -149,18 +132,15 @@ public sealed class UiConsole : TextWriter, IRenderable
 
     public int CursorIndex
     {
-        get { return ToCursorIndex(); }
-        set { CursorPosition = ToCursorPosition(value); }
+        get => ToCursorIndex();
+        set => CursorPosition = ToCursorPosition(value);
     }
 
     private int _tabWidth;
 
     public int TabWidth
     {
-        get
-        {
-            return _tabWidth;
-        }
+        get => _tabWidth;
         set
         {
             if (value < 0)
@@ -174,7 +154,7 @@ public sealed class UiConsole : TextWriter, IRenderable
 
     public bool Autoscroll { get; set; } = true;
 
-    public override Encoding Encoding { get { return Encoding.UTF8; } }
+    public override Encoding Encoding => Encoding.UTF8;
 
     public override void Write(char c)
     {

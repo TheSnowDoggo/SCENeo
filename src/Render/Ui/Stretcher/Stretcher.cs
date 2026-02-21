@@ -2,29 +2,23 @@
 
 public sealed class Stretcher : UiBase, IRenderable
 {
-    
-
     private readonly Image _buffer = new Image();
 
-    private bool _update = false;
-
-    private int _scaleWidth;
-
-    private StretcherScaling _textScaling = StretcherScaling.None;
-
-    public Stretcher() { }
+    private bool _update;
 
     private IRenderable _source;
 
     public IRenderable Source
     {
-        get { return _source; }
-        set { SCEUtils.ObserveSet(value, ref _source, ref _update); }
+        get => _source;
+        set => ObserveSet(ref _source, value, ref _update);
     }
 
+    private int _scaleWidth;
+    
     public int ScaleWidth
     {
-        get {  return _scaleWidth; }
+        get => _scaleWidth;
         set
         {
             if (value < 1)
@@ -36,18 +30,19 @@ public sealed class Stretcher : UiBase, IRenderable
         }
     }
 
+    private StretcherScaling _textScaling;
+
     public StretcherScaling Scaling
     {
-        get { return _textScaling; }
-        set { SCEUtils.ObserveSet(value, ref _textScaling, ref _update); }
+        get => _textScaling;
+        set => ObserveSet(ref _textScaling, value, ref _update);
     }
 
-    public bool Bake { get; set; } = false;
+    public bool Bake { get; set; }
+    public bool IsBaked { get; set; }
 
-    public bool IsBaked { get; set; } = false;
-
-    public int Width { get { return Source == null ? 0 : Source.Width * ScaleWidth; } }
-    public int Height { get { return Source == null ? 0 : Source.Height; } }
+    public int Width => Source == null ? 0 : Source.Width * ScaleWidth;
+    public int Height =>  Source?.Height ?? 0;
 
     public IView<Pixel> Render()
     {

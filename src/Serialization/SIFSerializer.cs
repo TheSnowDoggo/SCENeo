@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace SCENeo;
+namespace SCENeo.Serialization;
 
 /// <summary>
 /// Utility functions for serializing and deserializing images to the proprietary SIF format.

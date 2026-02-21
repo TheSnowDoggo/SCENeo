@@ -28,18 +28,20 @@ public static class SCEUtils
         return IndexOf(str, predicate, 0);
     }
 
-    public static void ObserveSet<T>(T value, ref T property, ref bool update)
+    public static void ObserveSet<T>(ref T property, T value, ref bool update)
     {
-        if (!EqualityComparer<T>.Default.Equals(value, property))
+        if (EqualityComparer<T>.Default.Equals(value, property))
         {
-            property = value;
-            update   = true;
+            return;
         }
+        
+        property = value;
+        update   = true;
     }
 
     public static bool GetFlag(this ushort data, int flag)
     {
-        if (flag < 0 || flag > 15)
+        if (flag is < 0 or > 15)
         {
             throw new ArgumentOutOfRangeException(nameof(flag), flag, "Mask must be between 0 and 15.");
         }
@@ -49,7 +51,7 @@ public static class SCEUtils
 
     public static ushort SetFlag(this ushort data, int flag, bool value)
     {
-        if (flag < 0 || flag > 15)
+        if (flag is < 0 or > 15)
         {
             throw new ArgumentOutOfRangeException(nameof(flag), flag, "Mask must be between 0 and 15.");
         }

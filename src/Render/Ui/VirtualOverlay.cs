@@ -21,17 +21,13 @@ public sealed class VirtualOverlay : UiModifier<IRenderable>, IRenderable
         }
 
         public override Pixel this[Vec2I pos]
-        {
-            get => _overlap.HasPoint(pos) ? _source[pos].Merge(_top[pos - _topOffset]) : _source[pos];
-        }
+            => _overlap.HasPoint(pos) ? _source[pos].Merge(_top[pos - _topOffset]) : _source[pos];
 
         public override Pixel this[int x, int y]
-        {
-            get => this[new Vec2I(x, y)];
-        }
+            => this[new Vec2I(x, y)];
     }
 
-    public IRenderable Overlay { get; set; } = default!;
+    public IRenderable Overlay { get; set; }
 
     public override IView<Pixel> Render()
     {

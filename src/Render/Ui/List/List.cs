@@ -3,11 +3,11 @@
 /// <summary>
 /// A UI control representing a vertical set of lines.
 /// </summary>
-public sealed partial class List : UiBase, IRenderable
+public sealed class List : UiBase, IRenderable
 {
     private readonly Image _buffer = new Image();
 
-    private bool _update = false;
+    private bool _update;
 
     private UpdateList<ListItem> _items = [];
 
@@ -17,27 +17,8 @@ public sealed partial class List : UiBase, IRenderable
 
     public UpdateList<ListItem> Items
     {
-        get { return _items; }
-        set
-        {
-            if (value == _items)
-            {
-                return;
-            }
-
-            if (_items != null)
-            {
-                _items.Updated -= Lines_OnUpdate;
-            }
-
-            if (value != null)
-            {
-                value.Updated += Lines_OnUpdate;
-            }
-
-            _items = value!;
-            _update = true;
-        }
+        get => _items;
+        set => ObserveSet(ref _items, value, ref _update, Lines_OnUpdate);
     }
 
     private int _width;
@@ -47,8 +28,8 @@ public sealed partial class List : UiBase, IRenderable
     /// </summary>
     public int Width
     {
-        get { return _width; }
-        set { SCEUtils.ObserveSet(value, ref _width, ref _update); }
+        get => _width;
+        set => ObserveSet(ref _width, value, ref _update);
     }
 
     private int _height;
@@ -58,8 +39,8 @@ public sealed partial class List : UiBase, IRenderable
     /// </summary>
     public int Height
     {
-        get { return _height; }
-        set { SCEUtils.ObserveSet(value, ref _height, ref _update); }
+        get => _height;
+        set => ObserveSet(ref _height, value, ref _update);
     }
 
     private Pixel _basePixel = new Pixel(SCEColor.Gray, SCEColor.Black);
@@ -69,8 +50,8 @@ public sealed partial class List : UiBase, IRenderable
     /// </summary>
     public Pixel BasePixel
     {
-        get { return _basePixel; }
-        set { SCEUtils.ObserveSet(value, ref _basePixel, ref _update); }
+        get => _basePixel;
+        set => ObserveSet(ref _basePixel, value, ref _update);
     }
 
     private StackMode _stackMode = StackMode.TopDown;
@@ -80,8 +61,8 @@ public sealed partial class List : UiBase, IRenderable
     /// </summary>
     public StackMode StackMode
     {
-        get { return _stackMode; }
-        set { SCEUtils.ObserveSet(value, ref _stackMode, ref _update); }
+        get => _stackMode;
+        set => ObserveSet(ref _stackMode, value, ref _update);
     }
 
     private int _scroll;
@@ -91,8 +72,8 @@ public sealed partial class List : UiBase, IRenderable
     /// </summary>
     public int Scroll
     {
-        get { return _scroll; }
-        set { SCEUtils.ObserveSet(value, ref _scroll, ref _update); }
+        get => _scroll;
+        set => ObserveSet(ref _scroll, value, ref _update);
     }
 
     public IView<Pixel> Render()

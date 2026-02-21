@@ -2,11 +2,7 @@
 
 public sealed class ViewForwarder : UiBase, IRenderable
 {
-    public ViewForwarder()
-    {
-    }
-
-    public IView<Pixel> View { get; set; } = null!;
+    public IView<Pixel> View { get; set; }
 
     public int Width => View.Width;
     public int Height => View.Height;

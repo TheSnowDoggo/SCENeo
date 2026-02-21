@@ -3,11 +3,11 @@
 /// <summary>
 /// A UI control representinng a vertical set of options.
 /// </summary>
-public sealed partial class ListBox : UiBase, IRenderable
+public sealed class ListBox : UiBase, IRenderable
 {
     private readonly Image _buffer = new Image();
 
-    private bool _update = false;
+    private bool _update;
 
     public ListBox()
     {
@@ -20,27 +20,8 @@ public sealed partial class ListBox : UiBase, IRenderable
     /// </summary>
     public UpdateList<ListBoxItem> Items
     {
-        get { return _items; }
-        set
-        {
-            if (value == _items)
-            {
-                return;
-            }
-
-            if (_items != null)
-            {
-                _items.Updated -= Option_OnUpdate;
-            }
-
-            if (value != null)
-            {
-                value.Updated += Option_OnUpdate;
-            }
-
-            _items = value;
-            _update = true;
-        }
+        get => _items;
+        set => ObserveSet(ref _items, value, ref _update, () => _update = true);
     }
 
     private int _width;
@@ -50,8 +31,8 @@ public sealed partial class ListBox : UiBase, IRenderable
     /// </summary>
     public int Width
     {
-        get { return _width; }
-        set { SCEUtils.ObserveSet(value, ref _width, ref _update); }
+        get => _width;
+        set => ObserveSet(ref _width, value, ref _update);
     }
 
     private int _height;
@@ -61,32 +42,32 @@ public sealed partial class ListBox : UiBase, IRenderable
     /// </summary>
     public int Height
     {
-        get { return _height; }
-        set { SCEUtils.ObserveSet(value, ref _height, ref _update); }
+        get => _height;
+        set => ObserveSet(ref _height, value, ref _update);
     }
 
     private Pixel _basePixel = new Pixel(SCEColor.Gray, SCEColor.Black);
 
     public Pixel BasePixel
     {
-        get { return _basePixel; }
-        set { SCEUtils.ObserveSet(value, ref _basePixel, ref _update); }
+        get => _basePixel;
+        set => ObserveSet(ref _basePixel, value, ref _update);
     }
 
     private StackMode _stackMode = StackMode.TopDown;
 
     public StackMode StackMode
     {
-        get { return _stackMode; }
-        set { SCEUtils.ObserveSet(value, ref _stackMode, ref _update); }
+        get => _stackMode;
+        set => ObserveSet(ref _stackMode, value, ref _update);
     }
 
-    private int _selected = 0;
+    private int _selected;
 
     public int Selected
     {
-        get { return _selected; }
-        set { SCEUtils.ObserveSet(value, ref _selected, ref _update); }
+        get => _selected;
+        set => ObserveSet(ref _selected, value, ref _update);
     }
 
     private int _scroll;
@@ -96,8 +77,8 @@ public sealed partial class ListBox : UiBase, IRenderable
     /// </summary>
     public int Scroll
     {
-        get { return _scroll; }
-        set { SCEUtils.ObserveSet(value, ref _scroll, ref _update); }
+        get => _scroll;
+        set => ObserveSet(ref _scroll, value, ref _update);
     }
 
     public void WrapMove(int move)
@@ -129,15 +110,12 @@ public sealed partial class ListBox : UiBase, IRenderable
         return _buffer.AsReadonly();
     }
 
-    public int TranslateIndex(int i)
+    public int TranslateIndex(int i) => StackMode switch
     {
-        return StackMode switch
-        {
-            StackMode.TopDown => i,
-            StackMode.BottomUp => Height - i - 1,
-            _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}.")
-        };
-    }
+        StackMode.TopDown  => i,
+        StackMode.BottomUp => Height - i - 1,
+        _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}."),
+    };
 
     private void Update()
     {
@@ -195,10 +173,5 @@ public sealed partial class ListBox : UiBase, IRenderable
         {
             _buffer[x, y] = BasePixel;
         }
-    }
-
-    private void Option_OnUpdate()
-    {
-        _update = true;
     }
 }

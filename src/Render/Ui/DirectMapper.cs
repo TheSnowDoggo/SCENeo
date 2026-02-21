@@ -4,11 +4,7 @@ public sealed class DirectMapper<T> : UiBase, IRenderable
 {
     private readonly Image _buffer = new Image();
 
-    private bool _update = false;
-
-    public DirectMapper()
-    {
-    }
+    private bool _update;
 
     public IView<T> Source { get; set; }
 
@@ -16,17 +12,15 @@ public sealed class DirectMapper<T> : UiBase, IRenderable
 
     public Func<T, Pixel> Translation
     {
-        get { return _translation; }
-        set { SCEUtils.ObserveSet(value, ref _translation, ref _update); }
+        get => _translation;
+        set => ObserveSet(ref _translation, value, ref _update);
     }
 
-    public bool Bake { get; set; } = false;
+    public bool Bake { get; set; }
+    public bool IsBaked { get; set; }
 
-    public bool IsBaked { get; set; } = false;
-
-    public int Width { get { return Source?.Width ?? 0; } }
-
-    public int Height { get { return Source?.Height ?? 0; } }
+    public int Width => Source?.Width ?? 0;
+    public int Height => Source?.Height ?? 0;
 
     public IView<Pixel> Render()
     {
@@ -59,11 +53,6 @@ public sealed class DirectMapper<T> : UiBase, IRenderable
             throw new NullReferenceException("Translation unit is null.");
         }
 
-        _buffer.Fill((x, y) => Translation.Invoke(GetSource()[x, y]));
-    }
-    
-    private IView<T> GetSource()
-    {
-        return Source ?? throw new NullReferenceException("Source is null.");
+        _buffer.Fill((x, y) => Translation.Invoke(Source[x, y]));
     }
 }

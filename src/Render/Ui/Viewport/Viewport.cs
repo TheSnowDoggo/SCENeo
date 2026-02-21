@@ -4,10 +4,6 @@ public sealed partial class Viewport : ViewportBase
 {
     private readonly Image _buffer = new Image();
 
-    public Viewport()
-    {
-    }
-
     public override IView<Pixel> Render()
     {
         Update();
