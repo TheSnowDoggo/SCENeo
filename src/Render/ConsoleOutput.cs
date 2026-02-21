@@ -5,7 +5,7 @@
 /// </summary>
 public sealed class ConsoleOutput : IOutputSource
 {
-    private static Lazy<ConsoleOutput> Lazy = new(() => new ConsoleOutput());
+    private static readonly Lazy<ConsoleOutput> Lazy = new(() => new ConsoleOutput());
 
     private readonly Grid2D<Pixel> _buffer = [];
 
@@ -14,13 +14,10 @@ public sealed class ConsoleOutput : IOutputSource
     /// <summary>
     /// Returns the singleton instance.
     /// </summary>
-    public static ConsoleOutput Instance
-    {
-        get {  return Lazy.Value; }
-    }
+    public static ConsoleOutput Instance => Lazy.Value;
 
-    public int Width { get { return Console.WindowWidth; } }
-    public int Height { get { return Console.WindowHeight; } }
+    public int Width => Console.WindowWidth;
+    public int Height => Console.WindowHeight;
 
     public void Update(IView<Pixel> view)
     {

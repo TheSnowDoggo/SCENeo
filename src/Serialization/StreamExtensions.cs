@@ -5,7 +5,7 @@ using System.Text.Unicode;
 
 namespace SCENeo.Serialization;
 
-public static class SerialExtensions
+public static class StreamExtensions
 {
 	public static void WriteBool(this Stream stream, bool value)
 	{
