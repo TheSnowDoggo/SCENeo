@@ -1,37 +1,11 @@
-﻿using System.Text;
-
-namespace SCENeo.Ui;
+﻿namespace SCENeo.Ui;
 
 /// <summary>
 /// A UI control representing a text label.
 /// </summary>
-public sealed class TextLabel : UiBase, IRenderable
+public sealed class TextLabel : UiBaseDimensioned, IRenderable
 {
     private readonly Image _buffer = [];
-
-    private bool _update;
-
-    private int _width;
-
-    /// <summary>
-    /// Gets or sets the width.
-    /// </summary>
-    public int Width
-    {
-        get => _width;
-        set => ObserveSet(ref _width, value, ref _update);
-    }
-
-    private int _height;
-
-    /// <summary>
-    /// Gets or sets the height.
-    /// </summary>
-    public int Height
-    {
-        get => _height;
-        set => ObserveSet(ref _height, value, ref _update);
-    }
 
     private Pixel _basePixel;
 
@@ -41,7 +15,7 @@ public sealed class TextLabel : UiBase, IRenderable
     public Pixel BasePixel
     {
         get => _basePixel;
-        set => ObserveSet(ref _basePixel, value, ref _update);
+        set => ObserveSet(ref _basePixel, value);
     }
 
     private string _text = string.Empty;
@@ -52,7 +26,7 @@ public sealed class TextLabel : UiBase, IRenderable
     public string Text
     {
         get => _text;
-        set => ObserveSet(ref _text, value, ref _update);
+        set => ObserveSet(ref _text, value);
     }
 
     private SCEColor _textFgColor = SCEColor.Gray;
@@ -63,7 +37,7 @@ public sealed class TextLabel : UiBase, IRenderable
     public SCEColor TextFgColor
     {
         get => _textFgColor;
-        set => ObserveSet(ref _textFgColor, value, ref _update);
+        set => ObserveSet(ref _textFgColor, value);
     }
 
     private SCEColor _textBgColor = SCEColor.Black;
@@ -74,7 +48,7 @@ public sealed class TextLabel : UiBase, IRenderable
     public SCEColor TextBgColor
     {
         get => _textBgColor;
-        set => ObserveSet(ref _textBgColor, value, ref _update);
+        set => ObserveSet(ref _textBgColor, value);
     }
 
     private Anchor _textAnchor;
@@ -85,7 +59,7 @@ public sealed class TextLabel : UiBase, IRenderable
     public Anchor TextAnchor
     {
         get => _textAnchor;
-        set => ObserveSet(ref _textAnchor, value, ref _update);
+        set => ObserveSet(ref _textAnchor, value);
     }
 
     private TextWrapping _textWrapping;
@@ -96,7 +70,7 @@ public sealed class TextLabel : UiBase, IRenderable
     public TextWrapping TextWrapping
     {
         get => _textWrapping;
-        set => ObserveSet(ref _textWrapping, value, ref _update);
+        set => ObserveSet(ref _textWrapping, value);
     }
 
     private bool _fitToLength;
@@ -107,21 +81,18 @@ public sealed class TextLabel : UiBase, IRenderable
     public bool FitToLength
     {
         get => _fitToLength;
-        set => ObserveSet(ref _fitToLength, value, ref _update);
+        set => ObserveSet(ref _fitToLength, value);
     }
 
     public IView<Pixel> Render()
     {
-        if (_update)
+        if (!_update)
         {
-            Update();
+            return _buffer;
         }
-
-        return _buffer.AsReadonly();
-    }
-
-    private void Update()
-    {
+        
+        _update = false;
+        
         if (Width != _buffer.Width || Height != _buffer.Height)
         {
             _buffer.CleanResize(Width, Height);
@@ -129,12 +100,27 @@ public sealed class TextLabel : UiBase, IRenderable
 
         _buffer.Fill(BasePixel);
 
-        IReadOnlyList<string> lines = GetLines();
+        var textMapper = new TextMapper()
+        {
+            FitToLength = _fitToLength,
+            Anchor = _textAnchor,
+            Wrapping = _textWrapping,
+            FgColor = _textFgColor,
+            BgColor = _textBgColor,
+        };
+        
+        textMapper.MapText(_buffer, _text);
 
-        int top = TextAnchor.AnchorVertical(Height - lines.Count);
+        return _buffer;
+    }
+    
+    /*
+     * string[] lines = GetLines(Text, Width, TextWrapping);
+
+        int top = TextAnchor.AnchorVertical(Height - lines.Length);
 
         int startY = Math.Max(top, 0);
-        int endY = Math.Min(top + lines.Count, Height);
+        int endY = Math.Min(top + lines.Length, Height);
 
         for (int y = startY, i = startY - top; y < endY; y++, i++)
         {
@@ -145,95 +131,7 @@ public sealed class TextLabel : UiBase, IRenderable
             }
 
             int x = TextAnchor.AnchorHorizontal(Width - lines[i].Length);
-
             _buffer.MapLine(lines[i], x, y, _textFgColor, _textBgColor);
         }
-
-        _update = false;
-    }
-
-    private List<string> CharacterSplitLines()
-    {
-        var list = new List<string>();
-
-        var sb = new StringBuilder();
-
-        for (int i = 0; i < Text.Length; i++)
-        {
-            bool newline = Text[i] == '\n';
-
-            if (!newline)
-            {
-                sb.Append(Text[i]);
-            }
-
-            if (!newline && (sb.Length != Width || (i != Text.Length - 1 && Text[i + 1] == '\n')))
-            {
-                continue;
-            }
-            
-            list.Add(sb.ToString());
-            sb.Clear();
-        }
-
-        if (sb.Length != 0)
-        {
-            list.Add(sb.ToString());
-        }
-
-        return list;
-    }
-
-    private List<string> WordSplitLines()
-    {
-        var list = new List<string>();
-
-        var wordBuilder = new StringBuilder();
-        var lineBuilder = new StringBuilder();
-
-        for (int i = 0; i < Text.Length; i++)
-        {
-            bool newLine = Text[i] == '\n';
-
-            if (Text[i] != ' ' && !newLine)
-            {
-                wordBuilder.Append(Text[i]);
-                
-                if (i != Text.Length - 1)
-                {
-                    continue;
-                }
-            }
-
-            if (newLine || lineBuilder.Length + wordBuilder.Length >= Width)
-            {
-                list.Add(lineBuilder.ToString());
-                lineBuilder.Clear();
-            }
-
-            lineBuilder.Append(wordBuilder);
-            wordBuilder.Clear();
-
-
-            if (lineBuilder.Length < Width)
-            {
-                lineBuilder.Append(' ');
-            }
-        }
-
-        if (lineBuilder.Length != 0)
-        {
-            list.Add(lineBuilder.ToString());
-        }
-
-        return list;
-    }
-
-    private IReadOnlyList<string> GetLines() => TextWrapping switch
-    {
-        TextWrapping.None      => Text.Split('\n'),
-        TextWrapping.Character => CharacterSplitLines(),
-        TextWrapping.Word      => WordSplitLines(),
-        _ => throw new Exception($"Impossible wrapping mode {TextWrapping}")
-    };
+     */
 }

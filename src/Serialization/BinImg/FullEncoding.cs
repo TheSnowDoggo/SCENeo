@@ -8,7 +8,7 @@ public sealed class FullEncoding : BinImgEncoding
 	{
 		Pixel pixel = view[x, y];
 
-		stream.WriteChar(pixel.Element);
+		stream.WriteByte((byte)pixel.Element);
 		stream.WriteByte((byte)pixel.FgColor);
 		stream.WriteByte((byte)pixel.BgColor);
 	}
@@ -17,7 +17,7 @@ public sealed class FullEncoding : BinImgEncoding
 	{
 		grid[x, y] = new Pixel()
 		{
-			Element = stream.ReadChar(),
+			Element = (char)stream.ReadExactByte(),
 			FgColor = (SCEColor)stream.ReadExactByte(),
 			BgColor = (SCEColor)stream.ReadExactByte(),
 		};

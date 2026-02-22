@@ -30,13 +30,13 @@ public abstract class UiBase
         }
         
         property = value;
-        updateFlag   = true;
+        updateFlag = true;
     }
     
-    protected static void ObserveSet<T>(ref UpdateList<T> property, UpdateList<T> value, ref bool updateFlag, Action updateCallback)
+    protected static void ObserveSet<T>(ref T property, T value, ref bool updateFlag, Action updateCallback)
         where T : IUpdate
     {
-        if (value == property)
+        if (EqualityComparer<T>.Default.Equals(value, property))
         {
             return;
         }
@@ -53,5 +53,6 @@ public abstract class UiBase
         
         property = value;
         updateFlag = true;
+        updateCallback?.Invoke();
     }
 }

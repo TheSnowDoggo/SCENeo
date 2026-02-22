@@ -1,45 +1,19 @@
 ﻿namespace SCENeo.Ui;
 
-public sealed class ProgressBar : UiBase, IRenderable
+public sealed class ProgressBar : UiBaseDimensioned, IRenderable
 {
     private readonly Image _buffer = new Image();
 
-    private bool _update = false;
-
-    private bool _valueUpdate = false;
+    private bool _valueUpdate;
 
     private int _lastFill = -1;
-
-    public ProgressBar() { }
-
-    private int _width;
-
-    /// <summary>
-    /// Gets or sets the width.
-    /// </summary>
-    public int Width
-    {
-        get => _width;
-        set => ObserveSet(ref _width, value, ref _update);
-    }
-
-    private int _height;
-
-    /// <summary>
-    /// Gets or sets the height.
-    /// </summary>
-    public int Height
-    {
-        get => _height;
-        set => ObserveSet(ref _height, value, ref _update);
-    }
 
     private ProgressBarFlow _mode;
 
     public ProgressBarFlow Mode
     {
         get => _mode;
-        set => ObserveSet(ref _mode, value, ref _update);
+        set => ObserveSet(ref _mode, value);
     }
 
     private double _min;
@@ -47,7 +21,7 @@ public sealed class ProgressBar : UiBase, IRenderable
     public double Min
     {
         get => _min;
-        set => ObserveSet(ref _min, value, ref _update);
+        set => ObserveSet(ref _min, value);
     }
 
     private double _max;
@@ -55,7 +29,7 @@ public sealed class ProgressBar : UiBase, IRenderable
     public double Max
     {
         get => _max;
-        set => ObserveSet(ref _max, value, ref _update);
+        set => ObserveSet(ref _max, value);
     }
 
     private double _value;
@@ -63,7 +37,7 @@ public sealed class ProgressBar : UiBase, IRenderable
     public double Value
     {
         get => _value;
-        set => ObserveSet(ref _value, value, ref _update);
+        set => ObserveSet(ref _value, value, ref _valueUpdate);
     }
 
     private Pixel _fillPixel = Pixel.Green;
@@ -71,7 +45,7 @@ public sealed class ProgressBar : UiBase, IRenderable
     public Pixel FillPixel
     {
         get => _fillPixel;
-        set => ObserveSet(ref _fillPixel, value, ref _update);
+        set => ObserveSet(ref _fillPixel, value);
     }
 
     private Pixel _backPixel = Pixel.DarkGray;
@@ -79,7 +53,7 @@ public sealed class ProgressBar : UiBase, IRenderable
     public Pixel BackPixel
     {
         get => _backPixel;
-        set => ObserveSet(ref _backPixel, value, ref _update);
+        set => ObserveSet(ref _backPixel, value);
     }
 
     public bool Horizontal => Mode is ProgressBarFlow.LeftRight or ProgressBarFlow.RightLeft;

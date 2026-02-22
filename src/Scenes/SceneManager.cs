@@ -6,6 +6,8 @@ public class SceneManager : Scene, IReadOnlyList<Scene>
 {
 	private readonly List<Scene> _scenes = [];
 
+	private bool _flush;
+	
 	public int Count => _scenes.Count;
 	
 	public Scene InputFocus { get; set; }
@@ -26,6 +28,11 @@ public class SceneManager : Scene, IReadOnlyList<Scene>
 		}
 		scene.Parent = null;
 		return true;
+	}
+
+	public void Flush()
+	{
+		_flush = true;
 	}
 
 	public override void Open()
@@ -94,9 +101,15 @@ public class SceneManager : Scene, IReadOnlyList<Scene>
 	public override void UnfocusedInput(ConsoleKeyInfo cki)
 	{
 		var focus = InputFocus;
+		_flush = false;
 		
 		foreach (var scene in _scenes)
 		{
+			if (_flush)
+			{
+				break;
+			}
+			
 			if (!scene.Enabled)
 			{
 				continue;

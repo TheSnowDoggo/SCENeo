@@ -9,23 +9,25 @@ public abstract class UpdateBase : IUpdate
 		Updated?.Invoke();
 	}
 	
-	protected void ObserveSet<T>(ref T field, T value)
+	protected bool ObserveSet<T>(ref T field, T value)
 	{
 		if (EqualityComparer<T>.Default.Equals(field, value))
 		{
-			return;
+			return false;
 		}
 
 		field = value;
 		Updated?.Invoke();
+
+		return true;
 	}
 	
-	protected void ObserveSet<T>(ref T field, T value, Action updateCallback)
+	protected bool ObserveSet<T>(ref T field, T value, Action updateCallback)
 		where T : IUpdate
 	{
 		if (EqualityComparer<T>.Default.Equals(field, value))
 		{
-			return;
+			return false;
 		}
 
 		if (field != null)
@@ -40,5 +42,7 @@ public abstract class UpdateBase : IUpdate
 
 		field = value;
 		Updated?.Invoke();
+
+		return true;
 	}
 }

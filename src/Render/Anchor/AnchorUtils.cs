@@ -1,4 +1,6 @@
-﻿namespace SCENeo;
+﻿using System.ComponentModel;
+
+namespace SCENeo;
 
 public static class AnchorUtils
 {
@@ -14,37 +16,31 @@ public static class AnchorUtils
     {
         Top,
         Bottom,
-        MiddleTop,
-        MiddleBottom,
+        MidTop,
+        MidBottom,
     }
 
-    public static int AnchorHorizontal(this Anchor anchor, int difference)
+    public static int AnchorHorizontal(this Anchor anchor, int difference) => anchor.GetHorizontal() switch
     {
-        return anchor.GetHorizontal() switch
-        {
-            Horizontal.Left        => 0,
-            Horizontal.Right       => difference,
-            Horizontal.CenterLeft  => difference / 2,
-            Horizontal.CenterRight => int.IsOddInteger(difference) ? (difference / 2) + 1 : difference / 2,
-            _ => throw new Exception($"Unknown horizontal state")
-        };
-    }
+        Horizontal.Left        => 0,
+        Horizontal.Right       => difference,
+        Horizontal.CenterLeft  => difference / 2,
+        Horizontal.CenterRight => int.IsOddInteger(difference) ? difference / 2 + 1 : difference / 2,
+        _ => throw new InvalidEnumArgumentException(nameof(anchor), (int)anchor, typeof(Anchor)),
+    };
 
-    public static int AnchorVertical(this Anchor anchor, int difference)
+    public static int AnchorVertical(this Anchor anchor, int difference) => anchor.GetVertical() switch
     {
-        return anchor.GetVertical() switch
-        {
-            Vertical.Top          => 0,
-            Vertical.Bottom       => difference,
-            Vertical.MiddleTop    => difference / 2,
-            Vertical.MiddleBottom => int.IsOddInteger(difference) ? (difference / 2) + 1 : difference / 2,
-            _ => throw new Exception($"Unknown horizontal state")
-        };
-    }
+        Vertical.Top       => 0,
+        Vertical.Bottom    => difference,
+        Vertical.MidTop    => difference / 2,
+        Vertical.MidBottom => int.IsOddInteger(difference) ? difference / 2 + 1 : difference / 2,
+        _ => throw new InvalidEnumArgumentException(nameof(anchor), (int)anchor, typeof(Anchor)),
+    };
 
     public static Vec2I AnchorDimension(this Anchor anchor, Vec2I difference)
     {
-        return new Vec2I(AnchorHorizontal(anchor, difference.X), AnchorVertical(anchor, difference.Y));
+        return new Vec2I(anchor.AnchorHorizontal(difference.X), anchor.AnchorVertical(difference.Y));
     }
 
     public static float AnchorHorizontal(this Anchor anchor, float difference)
@@ -90,13 +86,15 @@ public static class AnchorUtils
         }
 
         bool more = text.Length > length;
+        
+        Horizontal horizontal = anchor.GetHorizontal();
 
-        switch (anchor.GetHorizontal())
+        switch (horizontal)
         {
         case Horizontal.Left:
             return more ? text[..length] : text.PadRight(length, fill);
         case Horizontal.Right:
-            return more ? text[(text.Length - length)..] : text.PadLeft(length, fill);
+            return more ? text[^length..] : text.PadLeft(length, fill);
         case Horizontal.CenterLeft:
             if (more)
             {
@@ -125,13 +123,13 @@ public static class AnchorUtils
                 return new string(fill, half) + text + new string(fill, difference - half);
             }
         default:
-            throw new Exception($"Unknown horizontal state");
+            throw new InvalidEnumArgumentException(nameof(horizontal), (int)horizontal, typeof(Anchor));
         }
     }
 
     public static string FitToLength(this string text, int length, Anchor anchor = Anchor.None)
     {
-        return FitToLength(text, length, ' ', anchor);
+        return text.FitToLength(length, ' ', anchor);
     }
 
     public static bool Contains(this Anchor anchor, Anchor value)
@@ -157,7 +155,7 @@ public static class AnchorUtils
 
         if (anchor.Contains(Anchor.Middle))
         {
-            return bottom ? Vertical.MiddleBottom : Vertical.MiddleTop;
+            return bottom ? Vertical.MidBottom : Vertical.MidTop;
         }
 
         return bottom ? Vertical.Bottom : Vertical.Top;

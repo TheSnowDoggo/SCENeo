@@ -1,46 +1,20 @@
-﻿namespace SCENeo.Ui;
+﻿using System.ComponentModel;
+
+namespace SCENeo.Ui;
 
 /// <summary>
 /// A UI control representing a vertical set of lines.
 /// </summary>
-public sealed class List : UiBase, IRenderable
+public sealed class List : UiBaseDimensioned, IRenderable
 {
     private readonly Image _buffer = new Image();
 
-    private bool _update;
-
     private UpdateList<ListItem> _items = [];
-
-    public List()
-    {
-    }
 
     public UpdateList<ListItem> Items
     {
         get => _items;
-        set => ObserveSet(ref _items, value, ref _update, Lines_OnUpdate);
-    }
-
-    private int _width;
-
-    /// <summary>
-    /// Gets or sets the width.
-    /// </summary>
-    public int Width
-    {
-        get => _width;
-        set => ObserveSet(ref _width, value, ref _update);
-    }
-
-    private int _height;
-
-    /// <summary>
-    /// Gets or sets the height.
-    /// </summary>
-    public int Height
-    {
-        get => _height;
-        set => ObserveSet(ref _height, value, ref _update);
+        set => ObserveSet(ref _items, value, () => _update = true);
     }
 
     private Pixel _basePixel = new Pixel(SCEColor.Gray, SCEColor.Black);
@@ -51,7 +25,7 @@ public sealed class List : UiBase, IRenderable
     public Pixel BasePixel
     {
         get => _basePixel;
-        set => ObserveSet(ref _basePixel, value, ref _update);
+        set => ObserveSet(ref _basePixel, value);
     }
 
     private StackMode _stackMode = StackMode.TopDown;
@@ -62,7 +36,7 @@ public sealed class List : UiBase, IRenderable
     public StackMode StackMode
     {
         get => _stackMode;
-        set => ObserveSet(ref _stackMode, value, ref _update);
+        set => ObserveSet(ref _stackMode, value);
     }
 
     private int _scroll;
@@ -73,27 +47,27 @@ public sealed class List : UiBase, IRenderable
     public int Scroll
     {
         get => _scroll;
-        set => ObserveSet(ref _scroll, value, ref _update);
+        set => ObserveSet(ref _scroll, value);
     }
 
     public IView<Pixel> Render()
     {
-        if (_update)
+        if (!_update)
         {
-            Update();
+            return _buffer;
+        }
+        
+        _update = false;
+        
+        _buffer.TryCleanResize(Width, Height);
+
+        if (Items == null || Items.Count == 0)
+        {
+            _buffer.Fill(BasePixel);
+            return _buffer;
         }
 
-        return _buffer.AsReadonly();
-    }
-
-    private void Update()
-    {
-        if (_buffer.Width != Width || _buffer.Height != Height)
-        {
-            _buffer.CleanResize(Width, Height);
-        }
-
-        for (int y = 0; y < Height; y++)
+        for (int y = 0; y < _buffer.Height; y++)
         {
             int index = TranslateIndex(y) + Scroll;
 
@@ -110,47 +84,36 @@ public sealed class List : UiBase, IRenderable
                 ClearLine(y);
                 continue;
             }
+            
+            string text = line.GetText();
 
-            string text      = line.GetText();
-            SCEColor fgColor = line.GetFgColor();
-            SCEColor bgColor = line.GetBgColor();
-            Anchor anchor    = line.GetAnchor();
-
-            if (line.GetFitToLength())
+            var textMapper = new TextMapper()
             {
-                _buffer.MapLine(text.FitToLength(Width, anchor), 0, y, fgColor, bgColor);
-
-                continue;
-            }
-
-            int x = anchor.AnchorHorizontal(Width - text.Length);
-
-            _buffer.MapLine(text, x, y, fgColor, bgColor);
+                FitToLength = line.GetFitToLength(),
+                Anchor = line.GetAnchor(),
+                FgColor = line.GetFgColor(),
+                BgColor = line.GetBgColor(),
+                StartOffset = new Vec2I(0, y),
+            };
+            
+            textMapper.MapText(_buffer, text);
         }
 
-        _update = false;
+        return _buffer;
     }
 
     private void ClearLine(int y)
     {
-        for (int x = 0; x < Width; x++)
+        for (int x = 0; x < _buffer.Width; x++)
         {
             _buffer[x, y] = BasePixel;
         }
     }
 
-    private int TranslateIndex(int i)
+    private int TranslateIndex(int i) => StackMode switch
     {
-        return StackMode switch
-        {
-            StackMode.TopDown  => i,
-            StackMode.BottomUp => Height - i - 1,
-            _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}.")
-        };
-    }
-
-    private void Lines_OnUpdate()
-    {
-        _update = true;
-    }
+        StackMode.TopDown  => i,
+        StackMode.BottomUp => Height - i - 1,
+        _ => throw new InvalidEnumArgumentException(nameof(StackMode), (int)StackMode, typeof(StackMode)),
+    };
 }

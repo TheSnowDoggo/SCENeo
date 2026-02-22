@@ -42,7 +42,7 @@ public static class SIFSerializer
         var writer = new StreamWriter(stream, Encoding.UTF8);
 
         writer.Write(Signature);
-
+        
         if (image.Width == 0 && image.Height == 0)
         {
             writer.Write(EmptySif);

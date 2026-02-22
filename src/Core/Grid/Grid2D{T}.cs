@@ -197,6 +197,11 @@ public class Grid2D<T> : IView<T>, IEnumerable<T>,
     /// <param name="height">The new height.</param>
     public void Resize(int width, int height)
     {
+        if (width == Width && height == Height)
+        {
+            return;
+        }
+        
         var newData = new T[width, height];
 
         int minWidth  = Math.Min(width , Width );
@@ -239,6 +244,27 @@ public class Grid2D<T> : IView<T>, IEnumerable<T>,
     public void CleanResize(Vec2I size)
     {
         CleanResize(size.X, size.Y);
+    }
+
+    /// <summary>
+    /// Attempts to clean resize if the width or height are different.
+    /// </summary>
+    public bool TryCleanResize(int width, int height)
+    {
+        if (width == Width || height == Height)
+        {
+            return false;
+        }
+        _data = new T[width, height];
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to clean resize if the width or height are different.
+    /// </summary>
+    public bool TryCleanResize(Vec2I size)
+    {
+        return TryCleanResize(size.X, size.Y);
     }
 
     /// <summary>

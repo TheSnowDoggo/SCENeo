@@ -6,7 +6,7 @@ namespace SCENeo.Ui;
 /// Represents a list of update items.
 /// </summary>
 /// <typeparam name="T">The stored <see cref="IUpdate"/> type.</typeparam>
-public sealed class UpdateList<T> : IList<T>, IUpdate
+public class UpdateList<T> : IList<T>, IUpdate
     where T : IUpdate
 {
     private readonly List<T> _list = [];
@@ -29,10 +29,10 @@ public sealed class UpdateList<T> : IList<T>, IUpdate
 
     public T this[int index]
     {
-        get { return _list[index]; }
+        get => _list[index];
         set
         {
-            if (Comparer<T>.Default.Compare(value, _list[index]) == 0)
+            if (EqualityComparer<T>.Default.Equals(value, _list[index]))
             {
                 return;
             }
@@ -41,16 +41,16 @@ public sealed class UpdateList<T> : IList<T>, IUpdate
             Hook(value);
 
             _list[index] = value;
+            Updated?.Invoke();
         }
     }
 
     public int Count => _list.Count;
-
     public int Capacity => _list.Capacity;
 
     public bool IsReadOnly => false;
 
-    public void Add(T item)
+    public virtual void Add(T item)
     {
         _list.Add(item);
         Hook(item);
@@ -71,21 +71,22 @@ public sealed class UpdateList<T> : IList<T>, IUpdate
 
     public bool Remove(T item)
     {
-        if (!_list.Remove(item))
+        int index = _list.IndexOf(item);
+
+        if (index == -1)
         {
             return false;
         }
 
-        Unhook(item);
-
-        Item_Update();
-
+        RemoveAt(index);
         return true;
     }
 
-    public void RemoveAt(int index)
+    public virtual void RemoveAt(int index)
     {
-        Unhook(_list[index]);
+        var item = _list[index];
+        
+        Unhook(item);
 
         _list.RemoveAt(index);
 

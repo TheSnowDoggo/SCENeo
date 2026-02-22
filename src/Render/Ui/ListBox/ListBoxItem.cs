@@ -118,6 +118,16 @@ public class ListBoxItem : UpdateBase
         return UnselectedBgColor ?? Inherited?.GetUnselectedBgColor() ?? SCEColor.Black;
     }
 
+    public SCEColor GetFgColor(bool selected)
+    {
+        return selected ? GetSelectedFgColor() : GetUnselectedFgColor();
+    }
+    
+    public SCEColor GetBgColor(bool selected)
+    {
+        return selected ? GetSelectedBgColor() : GetUnselectedBgColor();
+    }
+
     public Anchor GetAnchor()
     {
         return Anchor ?? Inherited?.GetAnchor() ?? SCENeo.Anchor.None;

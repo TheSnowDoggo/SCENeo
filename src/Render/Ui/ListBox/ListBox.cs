@@ -1,17 +1,13 @@
-﻿namespace SCENeo.Ui;
+﻿using System.ComponentModel;
+
+namespace SCENeo.Ui;
 
 /// <summary>
-/// A UI control representinng a vertical set of options.
+/// A UI control representing a vertical set of options.
 /// </summary>
-public sealed class ListBox : UiBase, IRenderable
+public sealed class ListBox : UiBaseDimensioned, IRenderable
 {
     private readonly Image _buffer = new Image();
-
-    private bool _update;
-
-    public ListBox()
-    {
-    }
 
     private UpdateList<ListBoxItem> _items = [];
 
@@ -21,29 +17,7 @@ public sealed class ListBox : UiBase, IRenderable
     public UpdateList<ListBoxItem> Items
     {
         get => _items;
-        set => ObserveSet(ref _items, value, ref _update, () => _update = true);
-    }
-
-    private int _width;
-
-    /// <summary>
-    /// Gets or sets the width.
-    /// </summary>
-    public int Width
-    {
-        get => _width;
-        set => ObserveSet(ref _width, value, ref _update);
-    }
-
-    private int _height;
-
-    /// <summary>
-    /// Gets or sets the height.
-    /// </summary>
-    public int Height
-    {
-        get => _height;
-        set => ObserveSet(ref _height, value, ref _update);
+        set => ObserveSet(ref _items, value, () => _update = true);
     }
 
     private Pixel _basePixel = new Pixel(SCEColor.Gray, SCEColor.Black);
@@ -51,15 +25,15 @@ public sealed class ListBox : UiBase, IRenderable
     public Pixel BasePixel
     {
         get => _basePixel;
-        set => ObserveSet(ref _basePixel, value, ref _update);
+        set => ObserveSet(ref _basePixel, value);
     }
 
-    private StackMode _stackMode = StackMode.TopDown;
+    private StackMode _stackMode;
 
     public StackMode StackMode
     {
         get => _stackMode;
-        set => ObserveSet(ref _stackMode, value, ref _update);
+        set => ObserveSet(ref _stackMode, value);
     }
 
     private int _selected;
@@ -67,7 +41,7 @@ public sealed class ListBox : UiBase, IRenderable
     public int Selected
     {
         get => _selected;
-        set => ObserveSet(ref _selected, value, ref _update);
+        set => ObserveSet(ref _selected, value);
     }
 
     private int _scroll;
@@ -78,7 +52,7 @@ public sealed class ListBox : UiBase, IRenderable
     public int Scroll
     {
         get => _scroll;
-        set => ObserveSet(ref _scroll, value, ref _update);
+        set => ObserveSet(ref _scroll, value);
     }
 
     public void WrapMove(int move)
@@ -102,31 +76,22 @@ public sealed class ListBox : UiBase, IRenderable
 
     public IView<Pixel> Render()
     {
-        if (_update)
+        if (!_update)
         {
-            Update();
+            return _buffer;
+        }
+        
+        _update = false;
+        
+        _buffer.TryCleanResize(Width, Height);
+        
+        if (Items == null || Items.Count == 0)
+        {
+            _buffer.Fill(BasePixel);
+            return _buffer;
         }
 
-        return _buffer.AsReadonly();
-    }
-
-    public int TranslateIndex(int i) => StackMode switch
-    {
-        StackMode.TopDown  => i,
-        StackMode.BottomUp => Height - i - 1,
-        _ => throw new NotImplementedException($"Unimplemented stack mode {StackMode}."),
-    };
-
-    private void Update()
-    {
-        if (_buffer.Width != Width || _buffer.Height != Height)
-        {
-            _buffer.CleanResize(Width, Height);
-        }
-
-        _buffer.Fill(BasePixel);
-
-        for (int y = 0; y < Height; y++)
+        for (int y = 0; y < _buffer.Height; y++)
         {
             int index = TranslateIndex(y) + Scroll;
 
@@ -143,35 +108,38 @@ public sealed class ListBox : UiBase, IRenderable
                 ClearLine(y);
                 continue;
             }
-
+            
+            bool selected = index == _selected;
+            
             string text = option.GetText();
 
-            Anchor anchor = option.GetAnchor();
-
-            bool selected = index == _selected;
-
-            SCEColor fgColor = selected ? option.GetSelectedFgColor() : option.GetUnselectedFgColor();
-            SCEColor bgColor = selected ? option.GetSelectedBgColor() : option.GetUnselectedBgColor();
-
-            if (option.GetFitToLength())
+            var textMapper = new TextMapper()
             {
-                _buffer.MapLine(text.FitToLength(Width, anchor), 0, y, fgColor, bgColor);
-                continue;
-            }
-
-            int x = anchor.AnchorHorizontal(Width - text.Length);
-
-            _buffer.MapLine(text, x, y, fgColor, bgColor);
+                FitToLength =  option.GetFitToLength(),
+                Anchor = option.GetAnchor(),
+                FgColor = option.GetFgColor(selected),
+                BgColor = option.GetBgColor(selected),
+                StartOffset = new Vec2I(0, y),
+            };
+            
+            textMapper.MapText(_buffer, text);
         }
 
-        _update = false;
+        return _buffer;
     }
 
     private void ClearLine(int y)
     {
-        for (int x = 0; x < Width; x++)
+        for (int x = 0; x < _buffer.Width; x++)
         {
             _buffer[x, y] = BasePixel;
         }
     }
+    
+    public int TranslateIndex(int i) => StackMode switch
+    {
+        StackMode.TopDown  => i,
+        StackMode.BottomUp => Height - i - 1,
+        _ => throw new InvalidEnumArgumentException(nameof(StackMode), (int)StackMode, typeof(StackMode)),
+    };
 }
