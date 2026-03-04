@@ -11,6 +11,6 @@ public sealed class BgOnlyEncoding : BinImgEncoding
 
 	protected override void DeserializeData(Stream stream, Grid2D<Pixel> grid, int x, int y)
 	{
-		grid[x, y] = new Pixel((SCEColor)stream.ReadExactByte());
+		grid[x, y] = Pixel.CreateOpaqueOrTransparent((SCEColor)stream.ReadExactByte());
 	}
 }

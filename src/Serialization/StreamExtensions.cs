@@ -74,7 +74,7 @@ public static class StreamExtensions
 		Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(span), value);
 		stream.Write(span);
 	}
-
+ 
 	public static int WriteUtf8(this Stream stream, string value)
 	{
 		if (string.IsNullOrEmpty(value))

@@ -44,6 +44,11 @@ public readonly partial struct Pixel
     public static bool operator ==(Pixel p1, Pixel p2) => p1.Equals(p2);
     public static bool operator !=(Pixel p1, Pixel p2) => !p1.Equals(p2);
 
+    public static Pixel CreateOpaqueOrTransparent(SCEColor bgColor)
+    {
+        return bgColor == SCEColor.Transparent ? Null :  new Pixel(bgColor);
+    }
+
     /// <summary>
     /// Merges this pixel with the other pixel.
     /// </summary>
@@ -52,15 +57,12 @@ public readonly partial struct Pixel
     /// </remarks>
     /// <param name="other">Represents the pixel to be mapped on top of this pixel.</param>
     /// <returns>The merged pixel.</returns>
-    public readonly Pixel Merge(Pixel other)
+    public Pixel Merge(Pixel other) => new Pixel()
     {
-        return new Pixel()
-        {
-            Element = Element.Merge(other.Element),
-            FgColor = FgColor.Merge(other.FgColor),
-            BgColor = BgColor.Merge(other.BgColor),
-        };
-    }
+        Element = Element.Merge(other.Element),
+        FgColor = FgColor.Merge(other.FgColor),
+        BgColor = BgColor.Merge(other.BgColor),
+    };
 
     /// <summary>
     /// Deconstructs this pixel.
@@ -75,17 +77,17 @@ public readonly partial struct Pixel
         bgColor = BgColor;
     }
 
-    public readonly bool Equals(Pixel other)
+    public bool Equals(Pixel other)
     {
         return Element == other.Element && FgColor == other.FgColor && BgColor == other.BgColor;
     }
 
-    public readonly override bool Equals(object obj)
+    public override bool Equals(object obj)
     {
         return obj is Pixel pixel && Equals(pixel);
     }
 
-    public readonly bool LooksLike(Pixel other)
+    public bool LooksLike(Pixel other)
     {
         if (BgColor != other.BgColor)
         {
@@ -101,7 +103,7 @@ public readonly partial struct Pixel
         return false;
     }
 
-    public readonly override int GetHashCode()
+    public override int GetHashCode()
     {
         return HashCode.Combine(Element, FgColor, BgColor);
     }
