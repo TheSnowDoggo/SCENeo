@@ -9,7 +9,7 @@ public static class SIFSerializer
 {
     private const char Delimiter   = '|';
     private const char EmptySif    = '^';
-    private const string Signature = "SIF0";
+    public const string Signature = "SIF0";
 
     public static IReadOnlyBiMap<char, SCEColor> SifCodes { get; } = new BiMap<char, SCEColor>()
     {

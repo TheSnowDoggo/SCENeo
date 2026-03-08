@@ -40,4 +40,9 @@ public sealed class DisplayMap : Image, IRenderable
     {
         return AsReadonly();
     }
+    
+    public override string ToString()
+    {
+        return $"DisplayMap[{Width}, {Height}]";
+    }
 }

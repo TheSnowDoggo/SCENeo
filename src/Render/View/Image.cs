@@ -146,4 +146,9 @@ public class Image : Grid2D<Pixel>
     {
         return MapLine(line, position.X, position.Y, fgColor, bgColor);
     }
+
+    public override string ToString()
+    {
+        return $"Image[{Width}, {Height}]";
+    }
 }

@@ -485,7 +485,7 @@ public class Grid2D<T> : IView<T>, IEnumerable<T>,
         return GetEnumerator();
     }
 
-    public override string ToString()
+    public string Format()
     {
         var sb = new StringBuilder("[ { ");
 
@@ -510,5 +510,10 @@ public class Grid2D<T> : IView<T>, IEnumerable<T>,
         sb.Append(" } ]");
 
         return sb.ToString();
+    }
+
+    public override string ToString()
+    {
+        return $"Grid2D<{typeof(T).Name}>[{Width}, {Height}]";
     }
 }
